@@ -1,0 +1,25 @@
+From f03d1be700649a6793a04fa14aac5985780cc805 Mon Sep 17 00:00:00 2001
+From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Date: Thu, 10 Apr 2014 02:12:18 +0900
+Subject: [PATCH 2/2] hydro does not have ros-hydro-pcl
+
+---
+ package.xml |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package.xml b/package.xml
+index f201ce1..93baa27 100644
+--- a/package.xml
++++ b/package.xml
+@@ -40,7 +40,7 @@
+   <run_depend>tf_conversions</run_depend>
+   <run_depend>tf2_ros</run_depend>
+   <run_depend>pcl_conversions</run_depend>
+-  <run_depend>pcl_ros</run_depend><run_depend>pcl</run_depend>
++  <run_depend>pcl_ros</run_depend>
+   <run_depend>pcl_msgs</run_depend>
+   <run_depend>opencv2</run_depend>
+   <run_depend>tf</run_depend>
+-- 
+1.7.9.5
+
