@@ -14,7 +14,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <!-- <build_depend>pcl</build_depend> -->
-  <build_depend>pcl_ros</build_depend><build_depend>pcl</build_depend>
+  <build_depend>pcl_ros</build_depend>
   <build_depend>pcl_msgs</build_depend>
   <build_depend>opencv2</build_depend>
   <build_depend>tf</build_depend>
