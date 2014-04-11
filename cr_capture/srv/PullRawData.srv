@@ -1,4 +1,0 @@
-bool exclude_camera_images
-bool exclude_range_images
----
-cr_capture/RawCloudData data
