@@ -2,6 +2,9 @@
 Changelog for package jsk_perception
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.2 (2014-04-11)
+------------------
+
 0.1.1 (2014-04-10)
 ------------------
 * catkinize jsk_perception
