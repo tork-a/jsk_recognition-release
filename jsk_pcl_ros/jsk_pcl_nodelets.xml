@@ -1,5 +1,36 @@
 <library path="lib/libjsk_pcl_ros">
 
+  <class name="jsk_pcl/NormalEstimationIntegralImage" type="NormalEstimationIntegralImage"
+         base_class_type="nodelet::Nodelet">
+    <description>estimates normals based on integral image</description>
+  </class>
+
+  <class name="jsk_pcl/SelectedClusterPublisher" type="SelectedClusterPublisher"
+         base_class_type="nodelet::Nodelet">
+    <description>publish the points of the clusters according to the selected index</description>
+  </class>
+
+
+  <class name="jsk_pcl/MultiPlaneExtraction" type="MultiPlaneExtraction"
+         base_class_type="nodelet::Nodelet">
+    <description>extracts the points which does not belongs to the planes</description>
+  </class>
+
+  <class name="jsk_pcl/OrganizedMultiPlaneSegmentation" type="OrganizedMultiPlaneSegmentation"
+         base_class_type="nodelet::Nodelet">
+    <description>segment pointcloud by organized multi plane segmentation</description>
+  </class>
+
+  <class name="jsk_pcl/RegionGrowingSegmentation" type="RegionGrowingSegmentation"
+         base_class_type="nodelet::Nodelet">
+    <description>segment pointcloud by region growing</description>
+  </class>
+
+  <class name="jsk_pcl/NormalConcatenater" type="NormalConcatenater"
+         base_class_type="nodelet::Nodelet">
+    <description>Concatenater normal to x, y, z and rgb pointcloud</description>
+  </class>
+
   <class name="jsk_pcl/ImageRotateNodelet" type="ImageRotateNodelet"
          base_class_type="nodelet::Nodelet">
     <description>Nodelet to rotate sensor_msgs/Image</description>
@@ -44,10 +75,10 @@
     </description>
   </class>
 
-  <class name="jsk_pcl/HSVColorFilter" type="HSVColorFilter"
+  <class name="jsk_pcl/HSIColorFilter" type="HSIColorFilter"
          base_class_type="nodelet::Nodelet">
     <description>
-      filter using HSV color scale
+      filter using HSI color scale
     </description>
   </class>
 
@@ -128,6 +159,18 @@
          base_class_type="nodelet::Nodelet">
     <description>
       HintedPlaneDetector nodelet node
+    </description>
+  </class>
+  <class name="jsk_pcl/OctreeChangePublisher" type="OctreeChangePublisher"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      OctreeChangePublisher nodelet node
+    </description>
+  </class>
+  <class name="jsk_pcl/TfTransformCloud" type="TfTransformCloud"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      publish transformed cloud with target id
     </description>
   </class>
 </library>
