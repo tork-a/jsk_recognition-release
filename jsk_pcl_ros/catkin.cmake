@@ -19,16 +19,24 @@ endif()
 find_package(catkin REQUIRED COMPONENTS dynamic_reconfigure pcl_ros nodelet message_generation genmsg ${PCL_MSGS} sensor_msgs geometry_msgs
   eigen_conversions tf_conversions tf2_ros tf image_transport nodelet cv_bridge)
 
-add_message_files(FILES IndicesArray.msg PointsArray.msg ClusterPointIndices.msg Int32Stamped.msg SnapItRequest.msg PolygonArray.msg
-  SlicedPointCloud.msg)
+add_message_files(FILES PointsArray.msg ClusterPointIndices.msg Int32Stamped.msg SnapItRequest.msg PolygonArray.msg
+  ModelCoefficientsArray.msg
+  SlicedPointCloud.msg
+  BoundingBox.msg
+  BoundingBoxArray.msg)
 add_service_files(FILES SwitchTopic.srv  TransformScreenpoint.srv CheckCircle.srv RobotPickupReleasePoint.srv  TowerPickUp.srv EuclideanSegment.srv TowerRobotMoveCommand.srv SetPointCloud2.srv
   CallSnapIt.srv CallPolygon.srv)
 
 # generate the dynamic_reconfigure config file
 generate_dynamic_reconfigure_options(
-  cfg/HSVColorFilter.cfg
+  cfg/EuclideanClustering.cfg
+  cfg/HSIColorFilter.cfg
   cfg/RGBColorFilter.cfg
   cfg/ImageRotate.cfg
+  cfg/RegionGrowingSegmentation.cfg
+  cfg/OrganizedMultiPlaneSegmentation.cfg
+  cfg/MultiPlaneExtraction.cfg
+  cfg/NormalEstimationIntegralImage.cfg
   )
 
 find_package(OpenCV REQUIRED core imgproc)
@@ -52,6 +60,8 @@ macro(jsk_pcl_nodelet _nodelet_cpp _nodelet_class _single_nodelet_exec_name)
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 endmacro(jsk_pcl_nodelet _nodelet_cpp _nodelet_class _single_nodelet_exec_name)
 
+add_definitions("-O2")
+
 # pcl_ros::Filter based class is not working...
 # https://github.com/ros-perception/perception_pcl/issues/9
 jsk_pcl_nodelet(src/pointcloud_screenpoint_nodelet.cpp "jsk_pcl/PointcloudScreenpoint" "pointcloud_screenpoint")
@@ -62,6 +72,7 @@ jsk_pcl_nodelet(src/snapit_nodelet.cpp "jsk_pcl/Snapit" "snapit")
 jsk_pcl_nodelet(src/keypoints_publisher_nodelet.cpp "jsk_pcl/KeypointsPublisher" "keypoints_publisher")
 jsk_pcl_nodelet(src/hinted_plane_detector_nodelet.cpp "jsk_pcl/HintedPlaneDetector" "hinted_plane_detector")
 jsk_pcl_nodelet(src/pointcloud_throttle_nodelet.cpp "jsk_pcl/NodeletPointCloudThrottle" "point_cloud_throttle")
+jsk_pcl_nodelet(src/centroid_publisher_nodelet.cpp "jsk_pcl/CentroidPublisher" "centroid_publisher")
 jsk_pcl_nodelet(src/image_throttle_nodelet.cpp
   "jsk_pcl/NodeletImageThrottle" "image_throttle")
 jsk_pcl_nodelet(src/image_mux_nodelet.cpp
@@ -70,11 +81,44 @@ jsk_pcl_nodelet(src/image_demux_nodelet.cpp
   "jsk_pcl/NodeletImageDEMUX" "image_demux")
 jsk_pcl_nodelet(src/image_rotate_nodelet.cpp
   "jsk_pcl/ImageRotateNodelet" "image_rotate")
+jsk_pcl_nodelet(src/octree_change_publisher_nodelet.cpp
+  "jsk_pcl/OctreeChangePublisher" "octree_change_publisher")
+jsk_pcl_nodelet(src/tf_transform_cloud_nodelet.cpp
+  "jsk_pcl/TfTransformCloud" "tf_transform_cloud")
+jsk_pcl_nodelet(src/color_filter_nodelet.cpp
+  "jsk_pcl/RGBColorFilter" "rgb_color_filter")
+jsk_pcl_nodelet(src/color_filter_nodelet.cpp
+  "jsk_pcl/HSIColorFilter" "hsi_color_filter")
+jsk_pcl_nodelet(src/euclidean_cluster_extraction_nodelet.cpp
+  "jsk_pcl/EuclideanClustering" "euclidean_clustering")
+jsk_pcl_nodelet(src/cluster_point_indices_decomposer_nodelet.cpp
+  "jsk_pcl/ClusterPointIndicesDecomposer" "cluster_point_indices_decomposer")
+jsk_pcl_nodelet(src/cluster_point_indices_decomposer_z_axis_nodelet.cpp
+  "jsk_pcl/ClusterPointIndicesDecomposerZAxis" "cluster_point_indices_decomposer_z_axis")
+jsk_pcl_nodelet(src/resize_points_publisher_nodelet.cpp
+  "jsk_pcl/ResizePointsPublisher" "resize_points_publisher")
+jsk_pcl_nodelet(src/normal_concatenater_nodelet.cpp
+  "jsk_pcl/NormalConcatenater" "normal_concatenater")
+jsk_pcl_nodelet(src/normal_estimation_integral_image_nodelet.cpp
+  "jsk_pcl/NormalEstimationIntegralImage" "normal_estimation_integral_image")
+if(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
+  jsk_pcl_nodelet(src/region_growing_segmentation_nodelet.cpp
+    "jsk_pcl/RegionGrowingSegmentation" "region_growing_segmentation")
+endif(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
 
+jsk_pcl_nodelet(src/organized_multi_plane_segmentation_nodelet.cpp
+  "jsk_pcl/OrganizedMultiPlaneSegmentation" "organized_multi_plane_segmentation")
+
+jsk_pcl_nodelet(src/multi_plane_extraction_nodelet.cpp
+  "jsk_pcl/MultiPlaneExtraction" "multi_plane_extraction")
+
+jsk_pcl_nodelet(src/selected_cluster_publisher_nodelet.cpp
+  "jsk_pcl/SelectedClusterPublisher" "selected_cluster_publisher")
 
 add_library(jsk_pcl_ros SHARED ${jsk_pcl_nodelet_sources})
 target_link_libraries(jsk_pcl_ros ${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES})
 add_dependencies(jsk_pcl_ros ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
+
 
 generate_messages(DEPENDENCIES ${PCL_MSGS} sensor_msgs geometry_msgs)
 
