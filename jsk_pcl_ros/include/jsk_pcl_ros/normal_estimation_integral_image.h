@@ -1,3 +1,4 @@
+// -*- mode: c++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
@@ -31,45 +32,38 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
+#ifndef JSK_PCL_ROS_NORMAL_ESTIMATION_INTEGRAL_IMAGE_H_
+#define JSK_PCL_ROS_NORMAL_ESTIMATION_INTEGRAL_IMAGE_H_
 
-#include <pluginlib/class_list_macros.h>
-#include "jsk_pcl_ros/color_converter_nodelet.h"
+#include <ros/ros.h>
+#include <ros/names.h>
+#include <sensor_msgs/PointCloud2.h>
 
-namespace pcl_ros
+#include <pcl_ros/pcl_nodelet.h>
+#include <dynamic_reconfigure/server.h>
+#include "jsk_pcl_ros/NormalEstimationIntegralImageConfig.h"
+
+namespace jsk_pcl_ros
 {
-    void
-    RGB2HSVColorConverter::computePublish
-    (const PointCloudInConstPtr &cloud,
-     const PointCloudInConstPtr &surface,
-     const IndicesPtr &indices)
-    {
-        impl_.setInputCloud (cloud);
-        impl_.setIndices (indices);
-        PointCloudOut output;
-        impl_.compute (output);
-        output.header = cloud->header;
-        pub_output_.publish (output.makeShared ());
-    }
-    
-    void HSV2RGBColorConverter::computePublish
-    (const PointCloudInConstPtr &cloud,
-     const PointCloudInConstPtr &surface,
-     const IndicesPtr &indices)
-    {
-        impl_.setInputCloud (cloud);
-        impl_.setIndices (indices);
-        PointCloudOut output;
-        impl_.compute (output);
-        output.header = cloud->header;
-        pub_output_.publish (output.makeShared ());
-    }
-    
+  class NormalEstimationIntegralImage: public pcl_ros::PCLNodelet
+  {
+  public:
+    typedef jsk_pcl_ros::NormalEstimationIntegralImageConfig Config;    
+  protected:
+    ros::Subscriber sub_input_;
+    ros::Publisher pub_;
+    boost::mutex mutex_;
+    int estimation_method_;
+    bool depth_dependent_smoothing_;
+    double max_depth_change_factor_;
+    double normal_smoothing_size_;
+    bool border_policy_ignore_;
+    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
+    virtual void configCallback (Config& config, uint32_t level);
+    virtual void compute(const sensor_msgs::PointCloud2::ConstPtr& msg);
+  private:
+    virtual void onInit();
+  };
 }
 
-typedef pcl_ros::RGB2HSVColorConverter RGB2HSVColorConverter;
-typedef pcl_ros::HSV2RGBColorConverter HSV2RGBColorConverter;
-
-PLUGINLIB_DECLARE_CLASS (jsk_pcl, RGB2HSVColorConverter,
-                         RGB2HSVColorConverter, nodelet::Nodelet);
-PLUGINLIB_DECLARE_CLASS (jsk_pcl, HSV2RGBColorConverter,
-                         HSV2RGBColorConverter, nodelet::Nodelet);
+#endif
