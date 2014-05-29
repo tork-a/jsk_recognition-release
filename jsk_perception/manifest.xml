@@ -1,0 +1,43 @@
+<package>
+  <description brief="jsk_perception">
+
+     jsk_perception
+
+  </description>
+  <author>Manabu Saito</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/jsk_perception</url>
+  <depend package="rospy"/>
+  <depend package="roseus"/>
+
+  <!-- for eusmodel_template_* -->
+  <depend package="imagesift"/>
+
+  <!-- for metchtemplate -->
+  <depend package="sensor_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="cv_bridge"/>
+  <depend package="image_geometry"/>
+  <depend package="image_transport"/>
+  <depend package="driver_base"/>
+  <depend package="dynamic_reconfigure"/>
+
+  <!-- for pointcloud -->
+  <depend package="pcl"/>
+  <depend package="pcl_ros"/>
+  
+  <!-- for build -->
+  <depend package="rosbuild"/>
+  <depend package="cmake_modules"/>
+  <depend package="mk"/>
+  <depend package="angles"/>
+  <depend package="nodelet" />
+  
+  <rosdep name="opencv2"/>
+
+  <export>
+    <nodelet plugin="${prefix}/jsk_perception_nodelets.xml"/>
+  </export>
+  
+</package>
