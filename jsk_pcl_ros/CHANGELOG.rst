@@ -2,6 +2,9 @@
 Changelog for package jsk_pcl_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.6 (2014-05-30)
+------------------
+
 0.1.5 (2014-05-29)
 ------------------
 * add new nodelet to publish the points of the cluster selected by
