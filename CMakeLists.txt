@@ -53,7 +53,6 @@ jsk_pcl_nodelet(src/voxel_grid_downsample_decoder_nodelet.cpp "jsk_pcl/VoxelGrid
 jsk_pcl_nodelet(src/snapit_nodelet.cpp "jsk_pcl/Snapit" "snapit")
 jsk_pcl_nodelet(src/keypoints_publisher_nodelet.cpp "jsk_pcl/KeypointsPublisher" "keypoints_publisher")
 jsk_pcl_nodelet(src/hinted_plane_detector_nodelet.cpp "jsk_pcl/HintedPlaneDetector" "hinted_plane_detector")
-#jsk_pcl_nodelet(src/color_filter_nodelet.cpp "jsk_pcl/RGBColorFilter" "rgb_color_filter")
 jsk_pcl_nodelet(src/resize_points_publisher_nodelet.cpp "jsk_pcl/ResizePointsPublisher" "resize_points_publisher")
 jsk_pcl_nodelet(src/depth_image_creator_nodelet.cpp "jsk_pcl/DepthImageCreator" "depth_image_creator")
 jsk_pcl_nodelet(src/euclidean_cluster_extraction_nodelet.cpp "jsk_pcl/EuclideanClustering" "euclidean_clustering")
@@ -70,12 +69,30 @@ jsk_pcl_nodelet(src/image_demux_nodelet.cpp
   "jsk_pcl/NodeletImageDEMUX" "image_demux")
 jsk_pcl_nodelet(src/image_rotate_nodelet.cpp
   "jsk_pcl/ImageRotateNodelet" "image_rotate")
-
+jsk_pcl_nodelet(src/octree_change_publisher_nodelet.cpp
+  "jsk_pcl/OctreeChangePublisher" "octree_change_publisher")
+jsk_pcl_nodelet(src/tf_transform_cloud_nodelet.cpp
+  "jsk_pcl/TfTransformCloud" "tf_transform_cloud")
+jsk_pcl_nodelet(src/color_filter_nodelet.cpp
+  "jsk_pcl/RGBColorFilter" "rgb_color_filter")
+jsk_pcl_nodelet(src/color_filter_nodelet.cpp
+  "jsk_pcl/HSIColorFilter" "hsi_color_filter")
+jsk_pcl_nodelet(src/normal_concatenater_nodelet.cpp
+  "jsk_pcl/NormalConcatenater" "normal_concatenater")
+jsk_pcl_nodelet(src/normal_estimation_integral_image_nodelet.cpp
+  "jsk_pcl/NormalEstimationIntegralImage" "normal_estimation_integral_image")
+# PCL1.6 does not support these classes
+# jsk_pcl_nodelet(src/region_growing_segmentation_nodelet.cpp
+#   "jsk_pcl/RegionGrowingSegmentation" "region_growing_segmentation")
+# jsk_pcl_nodelet(src/organized_multi_plane_segmentation_nodelet.cpp
+#  "jsk_pcl/OrganizedMultiPlaneSegmentation" "organized_multi_plane_segmentation")
+jsk_pcl_nodelet(src/multi_plane_extraction_nodelet.cpp
+  "jsk_pcl/MultiPlaneExtraction" "multi_plane_extraction")
+jsk_pcl_nodelet(src/selected_cluster_publisher_nodelet.cpp
+  "jsk_pcl/SelectedClusterPublisher" "selected_cluster_publisher")
 rosbuild_add_library (jsk_pcl_ros
   ${jsk_pcl_nodelet_sources}
 #  ${pcl_ros_PACKAGE_PATH}/src/pcl_ros/features/feature.cpp
-  src/filter.cpp # copy from pcl_ros https://github.com/ros-perception/perception_pcl/issues/9
-  src/color_filter_nodelet.cpp
 )
 
 rosbuild_add_compile_flags (jsk_pcl_ros ${SSE_FLAGS})
