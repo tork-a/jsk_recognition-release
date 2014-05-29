@@ -42,7 +42,6 @@
 #include <std_msgs/ColorRGBA.h>
 
 #include <dynamic_reconfigure/server.h>
-#include "pcl_ros/FilterConfig.h"
 
 #include <pcl_ros/pcl_nodelet.h>
 
@@ -228,7 +227,6 @@ namespace pcl_ros
 
       if (cloud->points.size() == 0) {
           ROS_WARN("empty input");
-          return;
       }
       
 #if ( PCL_MAJOR_VERSION >= 1 && PCL_MINOR_VERSION >= 5 )
@@ -249,7 +247,6 @@ namespace pcl_ros
       impl_.extract (cluster_indices);
       if (cluster_indices.size() == 0) {
           ROS_WARN("empty cluster");
-          return;               // do nothing
       }
       // Publish result indices
       jsk_pcl_ros::ClusterPointIndices result;
@@ -295,7 +292,15 @@ namespace pcl_ros
       
       for (size_t i = 0; i < cluster_indices.size(); i++)
       {
+#if ROS_VERSION_MINIMUM(1, 10, 0)
+// hydro and later
+          result.cluster_indices[i].header
+            = pcl_conversions::fromPCL(cluster_indices[i].header);
+#else
+// groovy
           result.cluster_indices[i].header = cluster_indices[i].header;
+#endif
+
           result.cluster_indices[i].indices = cluster_indices[i].indices;
       }
 
@@ -361,13 +366,25 @@ namespace pcl_ros
       ROS_INFO("clusters: %lu", cluster_indices.size());
 
       res.output.resize( cluster_indices.size() );
+#if ( PCL_MAJOR_VERSION >= 1 && PCL_MINOR_VERSION >= 7 )
+      pcl::PCLPointCloud2::Ptr pcl_cloud(new pcl::PCLPointCloud2);
+      pcl_conversions::toPCL(req.input, *pcl_cloud);
+      pcl::ExtractIndices<pcl::PCLPointCloud2> ex;
+      ex.setInputCloud(pcl_cloud);
+#else
       pcl::ExtractIndices<sensor_msgs::PointCloud2> ex;
       ex.setInputCloud ( boost::make_shared< sensor_msgs::PointCloud2 > (req.input) );
+#endif
       for ( size_t i = 0; i < cluster_indices.size(); i++ ) {
-        //ex.setInputCloud ( boost::make_shared< sensor_msgs::PointCloud2 > (req.input) );
         ex.setIndices ( boost::make_shared< pcl::PointIndices > (cluster_indices[i]) );
         ex.setNegative ( false );
+#if ( PCL_MAJOR_VERSION >= 1 && PCL_MINOR_VERSION >= 7 )
+        pcl::PCLPointCloud2 output_cloud;
+        ex.filter ( output_cloud );
+        pcl_conversions::fromPCL(output_cloud, res.output[i]);
+#else
         ex.filter ( res.output[i] );
+#endif
       }
 
       return true;
