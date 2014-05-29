@@ -1,0 +1,12 @@
+Source: ros-hydro-jsk-recognition
+Section: misc
+Priority: extra
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-hydro-catkin
+Homepage: http://ros.org/wiki/jsk_recognition
+Standards-Version: 3.9.2
+
+Package: ros-hydro-jsk-recognition
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-hydro-checkerboard-detector, ros-hydro-imagesift, ros-hydro-jsk-pcl-ros, ros-hydro-jsk-perception, ros-hydro-resized-image-transport
+Description: Metapackage that contains recognition package for jsk-ros-pkg
