@@ -9,9 +9,11 @@ if [ $ROS_DISTRO == "indigo" -a "$TRAVIS_JOB_ID" ]; then
 fi
 
 function error {
+    trap - ERR
     if [ $BUILDER == rosbuild -a -e ${HOME}/.ros/rosmake/ ]; then find ${HOME}/.ros/rosmake/ -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
     if [ -e ${HOME}/.ros/test_results ]; then find ${HOME}/.ros/test_results -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
     for file in ${HOME}/.ros/log/rostest-*; do echo "=== $file ==="; cat $file; done
+    if [ $BUILDER == catkin ]; then find ~/ros/ws_$REPOSITORY_NAME/build -name LastTest.log -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
     exit 1
 }
 
@@ -30,8 +32,9 @@ sudo apt-get install -qq -y python-catkin-pkg python-rosdep python-wstool ros-$R
 if [ $ROSWS == rosws ]; then sudo apt-get install -qq -y python-rosinstall     ; fi
 if [ $BUILDER == rosbuild ]; then sudo apt-get install -qq -y ros-$ROS_DISTRO-rosmake ; fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
-sudo apt-get remove -y mongodb mongodb-10gen || echo "ok"
-sudo apt-get install -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || ecoh "ok" # default actions
+(dpkg -s mongodb || echo "ok"; export HAVE_MONGO_DB=$?)
+if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get remove -y mongodb mongodb-10gen || echo "ok"; fi
+if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get install -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"; fi # default actions
 # Setup rosdep
 sudo rosdep init
 rosdep update; while [ $? != 0 ]; do sleep 1; rosdep update; done
@@ -69,7 +72,7 @@ if [ $BUILDER == catkin ]; then rm -fr devel src build                 ; fi
 if [ $BUILDER == catkin ]; then source install/setup.bash              ; fi
 if [ $BUILDER == catkin ]; then export EXIT_STATUS=0; for pkg in $TARGET_PKG; do [ "`find install/share/$pkg -iname '*.test'`" == "" ] && echo "[$pkg] No tests ware found!!!"  || find install/share/$pkg -iname "*.test" -print0 | xargs -0 -n1 rostest || export EXIT_STATUS=$?; done; [ $EXIT_STATUS == 0 ] ; fi
 # for rosbuild
-if [ $BUILDER == rosbuild ]; then rosmake -a --profile            ; fi
+if [ $BUILDER == rosbuild ]; then rosmake --profile `find -L $CI_SOURCE_PATH | grep manifest.xml | sed s@.*/\\\\\([^\/]*\\\\\)/manifest.xml\\\$@\\\1@g` ; fi
 if [ $BUILDER == rosbuild ]; then export TARGET_PKG=`find -L src | grep $REPOSITORY_NAME | grep /build/Makefile$ | sed s@.*/\\\\\([^\/]*\\\\\)/build/Makefile@\\\1@g` ; fi
 if [ $BUILDER == rosbuild ]; then rosmake --test-only $TARGET_PKG ; fi
 
