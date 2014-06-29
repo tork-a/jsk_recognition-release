@@ -1,8 +1,8 @@
-// -*- mode: C++ -*-
+// -*- mode: c++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2013, Ryohei Ueda and JSK Lab
+ *  Copyright (c) 2014, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,57 +33,35 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_PCL_ROS_PLANE_REJECTOR_H_
-#define JSK_PCL_ROS_PLANE_REJECTOR_H_
+#ifndef JSK_PCL_ROS_GRID_SAMPLER_H_
+#define JSK_PCL_ROS_GRID_SAMPLER_H_
 
-
-// ros
-#include <ros/ros.h>
-#include <ros/names.h>
-#include <sensor_msgs/PointCloud2.h>
-#include <tf/transform_broadcaster.h>
-#include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
-#include <message_filters/synchronizer.h>
-#include <tf/transform_listener.h>
-#include <dynamic_reconfigure/server.h>
-// pcl
 #include <pcl_ros/pcl_nodelet.h>
+#include <dynamic_reconfigure/server.h>
+#include <jsk_pcl_ros/ClusterPointIndices.h>
+#include <sensor_msgs/PointCloud2.h>
 
-#include <jsk_pcl_ros/PolygonArray.h>
-#include <jsk_pcl_ros/ModelCoefficientsArray.h>
-#include "jsk_pcl_ros/PlaneRejectorConfig.h"
+#include <jsk_pcl_ros/GridSamplerConfig.h>
 
 namespace jsk_pcl_ros
 {
-  class PlaneRejector: public pcl_ros::PCLNodelet
+  class GridSampler: public pcl_ros::PCLNodelet
   {
   public:
-    typedef message_filters::sync_policies::ExactTime< jsk_pcl_ros::PolygonArray,
-                                                       jsk_pcl_ros::ModelCoefficientsArray > SyncPolicy;
-    typedef jsk_pcl_ros::PlaneRejectorConfig Config;
+    typedef jsk_pcl_ros::GridSamplerConfig Config;
   protected:
     virtual void onInit();
-    virtual void reject(const jsk_pcl_ros::PolygonArray::ConstPtr& polygons,
-                        const jsk_pcl_ros::ModelCoefficientsArray::ConstPtr& coefficients);
-    message_filters::Subscriber<jsk_pcl_ros::PolygonArray> sub_polygons_;
-    message_filters::Subscriber<jsk_pcl_ros::ModelCoefficientsArray> sub_coefficients_;
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
-    bool use_tf2_;
-    std::string processing_frame_id_;
-    // axis
-    Eigen::Vector3d reference_axis_;
-    double angle_thr_;
-    boost::shared_ptr<tf::TransformListener> listener_;
+    virtual void sample(const sensor_msgs::PointCloud2::ConstPtr& msg);
+    virtual void configCallback(Config &config, uint32_t level);
     boost::mutex mutex_;
+    double grid_size_;
+    int min_indices_;
+    ros::Subscriber sub_;
+    ros::Publisher pub_;
     boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
-    ros::Publisher polygons_pub_, coefficients_pub_;
-    virtual void configCallback (Config &config, uint32_t level);
-    virtual bool readVectorParam(const std::string& param_name);
-    virtual double getXMLDoubleValue(XmlRpc::XmlRpcValue val);
   private:
     
-  };
+  }; 
 }
 
-#endif 
+#endif
