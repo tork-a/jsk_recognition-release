@@ -61,7 +61,7 @@ namespace jsk_pcl_ros
   public:
     typedef message_filters::sync_policies::ExactTime< jsk_pcl_ros::PolygonArray,
                                                        jsk_pcl_ros::ModelCoefficientsArray > SyncPolicy;
-typedef jsk_pcl_ros::PlaneRejectorConfig Config;
+    typedef jsk_pcl_ros::PlaneRejectorConfig Config;
   protected:
     virtual void onInit();
     virtual void reject(const jsk_pcl_ros::PolygonArray::ConstPtr& polygons,
