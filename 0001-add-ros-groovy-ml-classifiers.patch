@@ -1,0 +1,30 @@
+From ced68dfff7391900bf1cf0a2012abd4b64a91c4c Mon Sep 17 00:00:00 2001
+From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Date: Sun, 29 Jun 2014 17:13:59 +0900
+Subject: [PATCH] add ros-groovy-ml-classifiers
+
+---
+ debian/control.em |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/debian/control.em b/debian/control.em
+index 8b9cd67..e819f76 100644
+--- a/debian/control.em
++++ b/debian/control.em
+@@ -2,11 +2,11 @@ Source: @(Package)
+ Section: misc
+ Priority: extra
+ Maintainer: @(Maintainer)
+-Build-Depends: debhelper (>= @(debhelper_version).0.0), @(', '.join(BuildDepends))
++Build-Depends: debhelper (>= @(debhelper_version).0.0), @(', '.join(BuildDepends)), ros-groovy-ml-classifiers
+ Homepage: @(Homepage)
+ Standards-Version: 3.9.2
+ 
+ Package: @(Package)
+ Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}, @(', '.join(Depends))
++Depends: ${shlibs:Depends}, ${misc:Depends}, @(', '.join(Depends)), ros-groovy-ml-classifiers
+ Description: @(Description)
+-- 
+1.7.9.5
+
