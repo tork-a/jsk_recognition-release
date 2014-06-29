@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2013, Ryohei Ueda and JSK Lab
+ *  Copyright (c) 2014, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,57 +33,57 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_PCL_ROS_PLANE_REJECTOR_H_
-#define JSK_PCL_ROS_PLANE_REJECTOR_H_
+#ifndef JSK_PCL_ROS_HANDLE_ESTIMATOR_H_
+#define JSK_PCL_ROS_HANDLE_ESTIMATOR_H_
 
+#include <pcl_ros/pcl_nodelet.h>
 
-// ros
-#include <ros/ros.h>
-#include <ros/names.h>
-#include <sensor_msgs/PointCloud2.h>
-#include <tf/transform_broadcaster.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
 #include <message_filters/synchronizer.h>
-#include <tf/transform_listener.h>
-#include <dynamic_reconfigure/server.h>
-// pcl
-#include <pcl_ros/pcl_nodelet.h>
 
-#include <jsk_pcl_ros/PolygonArray.h>
-#include <jsk_pcl_ros/ModelCoefficientsArray.h>
-#include "jsk_pcl_ros/PlaneRejectorConfig.h"
+#include <tf/transform_listener.h>
+
+#include <jsk_pcl_ros/BoundingBox.h>
 
 namespace jsk_pcl_ros
 {
-  class PlaneRejector: public pcl_ros::PCLNodelet
+  class HandleEstimator: public pcl_ros::PCLNodelet
   {
   public:
-    typedef message_filters::sync_policies::ExactTime< jsk_pcl_ros::PolygonArray,
-                                                       jsk_pcl_ros::ModelCoefficientsArray > SyncPolicy;
-    typedef jsk_pcl_ros::PlaneRejectorConfig Config;
+    typedef message_filters::sync_policies::ExactTime< sensor_msgs::PointCloud2,
+                                                       jsk_pcl_ros::BoundingBox > SyncPolicy;
+    enum HandleType
+    {
+      NO_HANDLE,
+      HANDLE_SMALL_ENOUGH_STAND_ON_PLANE,
+      HANDLE_SMALL_ENOUGH_LIE_ON_PLANE_Y_LONGEST,
+      HANDLE_SMALL_ENOUGH_LIE_ON_PLANE_X_LONGEST
+    };
+    
   protected:
     virtual void onInit();
-    virtual void reject(const jsk_pcl_ros::PolygonArray::ConstPtr& polygons,
-                        const jsk_pcl_ros::ModelCoefficientsArray::ConstPtr& coefficients);
-    message_filters::Subscriber<jsk_pcl_ros::PolygonArray> sub_polygons_;
-    message_filters::Subscriber<jsk_pcl_ros::ModelCoefficientsArray> sub_coefficients_;
+    virtual void estimate(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg,
+                          const jsk_pcl_ros::BoundingBox::ConstPtr& box_msg);
+    virtual void estimateHandle(const HandleType& handle_type,
+                                const sensor_msgs::PointCloud2::ConstPtr& cloud_msg,
+                                const jsk_pcl_ros::BoundingBox::ConstPtr& box_msg);
+    virtual void handleSmallEnoughLieOnPlane(
+      const sensor_msgs::PointCloud2::ConstPtr& cloud_msg,
+      const jsk_pcl_ros::BoundingBox::ConstPtr& box_msg,
+      bool y_longest);
+    virtual void handleSmallEnoughStandOnPlane(
+      const sensor_msgs::PointCloud2::ConstPtr& cloud_msg,
+      const jsk_pcl_ros::BoundingBox::ConstPtr& box_msg);
+    ros::Publisher pub_, pub_best_, pub_preapproach_;
     boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
-    bool use_tf2_;
-    std::string processing_frame_id_;
-    // axis
-    Eigen::Vector3d reference_axis_;
-    double angle_thr_;
-    boost::shared_ptr<tf::TransformListener> listener_;
-    boost::mutex mutex_;
-    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
-    ros::Publisher polygons_pub_, coefficients_pub_;
-    virtual void configCallback (Config &config, uint32_t level);
-    virtual bool readVectorParam(const std::string& param_name);
-    virtual double getXMLDoubleValue(XmlRpc::XmlRpcValue val);
+    message_filters::Subscriber<sensor_msgs::PointCloud2> sub_input_;
+    message_filters::Subscriber<jsk_pcl_ros::BoundingBox> sub_box_;
+    boost::shared_ptr<tf::TransformListener> tf_listener_;
+    double gripper_size_;
+    double approach_offset_;
   private:
-    
   };
 }
 
-#endif 
+#endif
