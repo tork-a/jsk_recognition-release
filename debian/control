@@ -1,0 +1,12 @@
+Source: ros-groovy-jsk-recognition
+Section: misc
+Priority: extra
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 7.0.0), ros-groovy-catkin
+Homepage: http://ros.org/wiki/jsk_recognition
+Standards-Version: 3.9.2
+
+Package: ros-groovy-jsk-recognition
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-groovy-checkerboard-detector, ros-groovy-imagesift, ros-groovy-jsk-pcl-ros, ros-groovy-jsk-perception, ros-groovy-resized-image-transport
+Description: Metapackage that contains recognition package for jsk-ros-pkg
