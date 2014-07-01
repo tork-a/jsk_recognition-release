@@ -1,6 +1,6 @@
-From ef2036172f3f7362552fd6c140b3bdb99085631d Mon Sep 17 00:00:00 2001
+From 187c4d730843625c788d809b4553a87207278c88 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
-Date: Sun, 29 Jun 2014 17:12:54 +0900
+Date: Tue, 1 Jul 2014 15:35:37 +0900
 Subject: [PATCH] comment out ml_classifiers that is not have entory in rosdep
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH] comment out ml_classifiers that is not have entory in rosdep
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index bb16113..a938ac7 100644
+index b87c560..56100fd 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -37,7 +37,7 @@
@@ -18,17 +18,17 @@ index bb16113..a938ac7 100644
 -  <build_depend>ml_classifiers</build_depend>
 +  <!-- <build_depend>ml_classifiers</build_depend> -->
    <build_depend>sklearn</build_depend>
- 
- 
-@@ -65,7 +65,7 @@
+   <build_depend>diagnostic_updater</build_depend>
+   <build_depend>diagnostic_msgs</build_depend>
+@@ -66,7 +66,7 @@
    <run_depend>boost</run_depend>
    <run_depend>rosboost_cfg</run_depend>
    <run_depend>cv_bridge</run_depend>
 -  <run_depend>ml_classifiers</run_depend>
 +  <!-- <run_depend>ml_classifiers</run_depend> -->
    <run_depend>sklearn</run_depend>
- 
-   <export>
+   <run_depend>diagnostic_updater</run_depend>
+   <run_depend>diagnostic_msgs</run_depend>
 -- 
 1.7.9.5
 
