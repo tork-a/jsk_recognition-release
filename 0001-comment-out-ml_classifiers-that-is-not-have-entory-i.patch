@@ -1,4 +1,4 @@
-From 187c4d730843625c788d809b4553a87207278c88 Mon Sep 17 00:00:00 2001
+From 3222cf7ba2e35291624aa77331c58c8a32876a56 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Tue, 1 Jul 2014 15:35:37 +0900
 Subject: [PATCH] comment out ml_classifiers that is not have entory in rosdep
