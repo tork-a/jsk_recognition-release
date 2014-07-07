@@ -59,6 +59,8 @@
 
 #include "jsk_pcl_ros/pcl_util.h"
 
+#include "jsk_pcl_ros/grid_map.h"
+
 namespace jsk_pcl_ros
 {
   class EnvironmentPlaneModeling: public pcl_ros::PCLNodelet
@@ -75,11 +77,11 @@ namespace jsk_pcl_ros
       ModelCoefficientsArray> SyncPolicy;
   protected:
     virtual void onInit();
-
-    
     virtual void estimateOcclusion(
-      const sensor_msgs::PointCloud2::ConstPtr& input,
+      const pcl::PointCloud<pcl::PointXYZRGB>::Ptr input,
       const ClusterPointIndices::ConstPtr& input_indices,
+      const std::vector<pcl::PointCloud<PointT>::Ptr>& segmented_cloud,
+      std::vector<GridMap::Ptr>& grid_maps,
       const PolygonArray::ConstPtr& polygons,
       const ModelCoefficientsArray::ConstPtr& coefficients,
       const PolygonArray::ConstPtr& static_polygons,
@@ -108,6 +110,11 @@ namespace jsk_pcl_ros
       const geometry_msgs::PolygonStamped sample_polygon,
       pcl::PointCloud<PointT>::Ptr output,
       double sampling_param);
+    
+    virtual void decomposePointCloud(
+      const pcl::PointCloud<PointT>::Ptr& input,
+      const ClusterPointIndices::ConstPtr& input_indices,
+      std::vector<pcl::PointCloud<PointT>::Ptr>& output);
     virtual void internalPointDivide(const PointT& A, const PointT& B,
                                      const double ratio,
                                      PointT& output);
@@ -120,8 +127,14 @@ namespace jsk_pcl_ros
     virtual void updateAppendingInfo(const int env_plane_index,
                                      const size_t static_plane_index,
                                      std::map<int, std::set<size_t> >& result);
-
-    
+    virtual void buildGridMap(
+      const std::vector<pcl::PointCloud<PointT>::Ptr>& segmented_clouds,
+      const PolygonArray::ConstPtr& polygons,
+      const ModelCoefficientsArray::ConstPtr& coefficients,
+      std::vector<GridMap::Ptr>& grid_maps);
+    virtual void publishGridMap(
+      const std_msgs::Header& header,
+      const std::vector<GridMap::Ptr> grid_maps);
     // find the nearest plane to static_polygon and static_coefficient
     // from polygons and coefficients
     virtual int findNearestPolygon(
@@ -141,7 +154,8 @@ namespace jsk_pcl_ros
      const PolygonArray& result_polygons,
      const std::map<int, std::set<size_t> >& estimation_summary,
      pcl::PointCloud<PointT>::Ptr all_cloud,
-     ClusterPointIndices& all_indices);
+     ClusterPointIndices& all_indices,
+     std::vector<GridMap::Ptr> grid_maps);
     
     virtual void copyClusterPointIndices
     (const ClusterPointIndices::ConstPtr& indices,
@@ -153,7 +167,12 @@ namespace jsk_pcl_ros
                             PCLIndicesMsg& output);
     virtual void updateDiagnostic(
       diagnostic_updater::DiagnosticStatusWrapper &stat);
-
+    // for historical_accumulation_
+    virtual int findCorrespondGridMap(
+      const std::vector<float>& coefficients,
+      const geometry_msgs::Polygon& polygon);
+    virtual void registerGridMap(const GridMap::Ptr new_grid_map);
+    virtual void selectionGridMaps();
     
     boost::mutex mutex_;
 
@@ -205,13 +224,21 @@ namespace jsk_pcl_ros
     // parameters for occlusion
     double plane_distance_threshold_;
     double plane_angle_threshold_;
+    // grid map
+    double grid_map_distance_threshold_;
+    double grid_map_angle_threshold_;
     bool continuous_estimation_;
-    
-    
+    bool history_accumulation_;
+    bool history_statical_rejection_;
+    int static_generation_;
+    int required_vote_;
+    std::vector<GridMap::Ptr> grid_maps_;
     TimeAccumulator occlusion_estimate_time_acc_;
     TimeAccumulator grid_building_time_acc_;
-    
+    TimeAccumulator kdtree_building_time_acc_;
+    TimeAccumulator polygon_collision_check_time_acc_;
     boost::shared_ptr<diagnostic_updater::Updater> diagnostic_updater_;
+    int generation_;
   private:
   };
 }
