@@ -1,0 +1,12 @@
+Source: ros-hydro-jsk-perception
+Section: misc
+Priority: extra
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), libeigen3-dev, ros-hydro-angles, ros-hydro-catkin, ros-hydro-cmake-modules, ros-hydro-cv-bridge, ros-hydro-driver-base, ros-hydro-dynamic-reconfigure, ros-hydro-geometry-msgs, ros-hydro-image-geometry, ros-hydro-image-transport, ros-hydro-imagesift, ros-hydro-jsk-pcl-ros, ros-hydro-message-generation, ros-hydro-mk, ros-hydro-nodelet, ros-hydro-rosbuild, ros-hydro-roscpp, ros-hydro-roseus, ros-hydro-rospack, ros-hydro-rospy, ros-hydro-rostest, ros-hydro-sensor-msgs, ros-hydro-std-msgs, ros-hydro-tf
+Homepage: http://ros.org/wiki/jsk_perception
+Standards-Version: 3.9.2
+
+Package: ros-hydro-jsk-perception
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeigen3-dev, ros-hydro-angles, ros-hydro-cv-bridge, ros-hydro-driver-base, ros-hydro-dynamic-reconfigure, ros-hydro-geometry-msgs, ros-hydro-image-geometry, ros-hydro-image-transport, ros-hydro-imagesift, ros-hydro-jsk-pcl-ros, ros-hydro-message-runtime, ros-hydro-mk, ros-hydro-nodelet, ros-hydro-rosbuild, ros-hydro-roscpp, ros-hydro-roseus, ros-hydro-rospack, ros-hydro-rospy, ros-hydro-rostest, ros-hydro-sensor-msgs, ros-hydro-std-msgs, ros-hydro-tf
+Description: jsk_perception
