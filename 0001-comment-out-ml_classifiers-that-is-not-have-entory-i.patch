@@ -1,4 +1,4 @@
-From 5147b6fce0a6cdc05c7dd798e07e2bb16131ddfa Mon Sep 17 00:00:00 2001
+From 37c43233af5560ed94a7070e22436784b7c12d3d Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Tue, 1 Jul 2014 15:35:37 +0900
 Subject: [PATCH] comment out ml_classifiers that is not have entory in rosdep
@@ -8,7 +8,7 @@ Subject: [PATCH] comment out ml_classifiers that is not have entory in rosdep
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 1171e07..d460db9 100644
+index 0ea5fc1..65e802b 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -37,7 +37,7 @@
@@ -20,7 +20,7 @@ index 1171e07..d460db9 100644
    <build_depend>sklearn</build_depend>
    <build_depend>diagnostic_updater</build_depend>
    <build_depend>diagnostic_msgs</build_depend>
-@@ -66,7 +66,7 @@
+@@ -70,7 +70,7 @@
    <run_depend>boost</run_depend>
    <run_depend>rosboost_cfg</run_depend>
    <run_depend>cv_bridge</run_depend>
