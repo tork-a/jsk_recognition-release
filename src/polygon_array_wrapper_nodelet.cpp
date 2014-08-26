@@ -33,9 +33,47 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_PCL_ROS_PCL_UTIL_H_
-#define JSK_PCL_ROS_PCL_UTIL_H_
+#include "jsk_pcl_ros/polygon_array_wrapper.h"
 
-#include <pcl/point_types.h>
+namespace jsk_pcl_ros
+{
+  void PolygonArrayWrapper::onInit()
+  {
+    PCLNodelet::onInit();
+    pub_polygon_array_ = pnh_->advertise<jsk_pcl_ros::PolygonArray>(
+      "output_polygons", 1);
+    pub_coefficients_array_
+      = pnh_->advertise<jsk_pcl_ros::ModelCoefficientsArray>(
+        "output_coefficients", 1);
+    sync_ = boost::make_shared<message_filters::Synchronizer<SyncPolicy> >(100);
+    sub_polygon_.subscribe(*pnh_, "input_polygon", 1);
+    sub_coefficients_.subscribe(*pnh_, "input_coefficients", 1);
+    sync_->connectInput(sub_polygon_, sub_coefficients_);
+    sync_->registerCallback(boost::bind(
+                              &PolygonArrayWrapper::wrap,
+                              this, _1, _2));
+  }
 
-#endif
+  
+  void PolygonArrayWrapper::wrap(
+    const geometry_msgs::PolygonStamped::ConstPtr& polygon,
+    const PCLModelCoefficientMsg::ConstPtr& coefficients)
+  {
+    jsk_pcl_ros::PolygonArray array_msg;
+    array_msg.header = polygon->header;
+    geometry_msgs::PolygonStamped new_polygon(*polygon);
+    array_msg.polygons.push_back(new_polygon);
+    pub_polygon_array_.publish(array_msg);
+
+    jsk_pcl_ros::ModelCoefficientsArray coefficients_array;
+    coefficients_array.header = coefficients->header;
+    PCLModelCoefficientMsg new_coefficients(*coefficients);
+    coefficients_array.coefficients.push_back(new_coefficients);
+    pub_coefficients_array_.publish(coefficients_array);
+  }
+  
+}
+
+#include <pluginlib/class_list_macros.h>
+typedef jsk_pcl_ros::PolygonArrayWrapper PolygonArrayWrapper;
+PLUGINLIB_DECLARE_CLASS (jsk_pcl, PolygonArrayWrapper, PolygonArrayWrapper, nodelet::Nodelet);
