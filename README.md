@@ -1,3 +1,29 @@
+## jsk_recognition (hydro) - 0.1.15-0
+
+The packages in the `jsk_recognition` repository were released into the `hydro` distro by running `/var/lib/jenkins/send_to_bloom.py jsk-ros-pkg jsk_recognition` on `Tue, 26 Aug 2014 09:28:34 -0000`
+
+These packages were released:
+- `checkerboard_detector`
+- `imagesift`
+- `jsk_libfreenect2`
+- `jsk_pcl_ros`
+- `jsk_perception`
+- `jsk_recognition`
+- `resized_image_transport`
+
+Version of package(s) in repository `jsk_recognition`:
+- rosdistro version: `0.1.14-0`
+- old version: `0.1.14-0`
+- new version: `0.1.15-0`
+
+Versions of tools used:
+- bloom version: `0.5.9`
+- catkin_pkg version: `0.2.2`
+- rosdep version: `0.10.27`
+- rosdistro version: `0.3.5`
+- vcstools version: `0.1.33`
+
+
 ## jsk_recognition (groovy) - 0.1.15-0
 
 The packages in the `jsk_recognition` repository were released into the `groovy` distro by running `/var/lib/jenkins/send_to_bloom.py jsk-ros-pkg jsk_recognition` on `Tue, 26 Aug 2014 09:22:58 -0000`
