@@ -1,8 +1,8 @@
-// -*- mode: c++ -*-
+// -*- mode: C++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2014, JSK Lab
+ *  Copyright (c) 2013, Ryohei Ueda and JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,33 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_PCL_ROS_PCL_UTIL_H_
-#define JSK_PCL_ROS_PCL_UTIL_H_
+#ifndef JSK_PCL_ROS_ORGANIZE_POINTCLOUD_H_
+#define JSK_PCL_ROS_ORGANIZE_POINTCLOUD_H_
 
+// ros
+#include <ros/ros.h>
+#include <ros/names.h>
+#include <sensor_msgs/PointCloud2.h>
+
+// pcl
+#include <pcl_ros/pcl_nodelet.h>
 #include <pcl/point_types.h>
+#include <pcl/filters/extract_indices.h>
+#include <pcl/range_image/range_image.h>
+
+namespace jsk_pcl_ros
+{
+  class OrganizePointCloud: public pcl_ros::PCLNodelet
+  {
+  protected:
+    double angular_resolution, angle_width, angle_height;
+    int min_points;
+    ros::Subscriber sub_;
+    ros::Publisher pub_;
+    virtual void extract(const sensor_msgs::PointCloud2ConstPtr &input);
+  private:
+    virtual void onInit();
+  };
+}
 
 #endif
