@@ -2,6 +2,9 @@
 Changelog for package jsk_libfreenect2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.17 (2014-09-07)
+-------------------
+
 0.1.16 (2014-09-04)
 -------------------
 * Install files generated in jsk_libfreenect2
