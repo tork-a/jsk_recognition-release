@@ -34,69 +34,72 @@
  *********************************************************************/
 
 
-#ifndef JSK_PCL_ROS_PARALLEL_EDGE_FINDER_H_
-#define JSK_PCL_ROS_PARALLEL_EDGE_FINDER_H_
+#ifndef JSK_PCL_ROS_COLORIZE_DISTANCE_FROM_PLANE_H_
+#define JSK_PCL_ROS_COLORIZE_DISTANCE_FROM_PLANE_H_
 
 #include <pcl_ros/pcl_nodelet.h>
-#include <jsk_pcl_ros/ParallelEdgeArray.h>
-#include <jsk_pcl_ros/ModelCoefficientsArray.h>
-#include <jsk_pcl_ros/ClusterPointIndices.h>
-#include <jsk_pcl_ros/ParallelEdgeFinderConfig.h>
-#include "jsk_pcl_ros/pcl_conversion_util.h"
-#include <dynamic_reconfigure/server.h>
-
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
 #include <message_filters/synchronizer.h>
+
+#include <sensor_msgs/PointCloud2.h>
+#include <jsk_pcl_ros/ClusterPointIndices.h>
+#include <jsk_pcl_ros/ModelCoefficientsArray.h>
+#include <jsk_pcl_ros/PolygonArray.h>
+#include <dynamic_reconfigure/server.h>
+#include <jsk_pcl_ros/ColorizeDistanceFromPlaneConfig.h>
 #include "jsk_pcl_ros/geo_util.h"
-
-
 
 namespace jsk_pcl_ros
 {
-  class ParallelEdgeFinder: public pcl_ros::PCLNodelet
+  class ColorizeDistanceFromPlane: public pcl_ros::PCLNodelet
   {
   public:
+    typedef pcl::PointXYZRGB PointT;
+    typedef boost::shared_ptr<ColorizeDistanceFromPlane> Ptr;
     typedef message_filters::sync_policies::ExactTime<
-    ClusterPointIndices,
-    ModelCoefficientsArray > SyncPolicy;
-    typedef jsk_pcl_ros::ParallelEdgeFinderConfig Config;
+      sensor_msgs::PointCloud2,
+      ClusterPointIndices, ModelCoefficientsArray,
+      PolygonArray
+      > SyncPolicy;
+    typedef ColorizeDistanceFromPlaneConfig Config;
   protected:
     ////////////////////////////////////////////////////////
     // methods
     ////////////////////////////////////////////////////////
     virtual void onInit();
+    
+    virtual void colorize(const sensor_msgs::PointCloud2::ConstPtr& cloud,
+                          const ClusterPointIndices::ConstPtr& indices,
+                          const ModelCoefficientsArray::ConstPtr& coefficients,
+                          const PolygonArray::ConstPtr& polygons);
 
-    virtual void estimate(
-      const ClusterPointIndices::ConstPtr& input_indices,
-      const ModelCoefficientsArray::ConstPtr& input_coefficients);
-
-    virtual void publishResult(
-      const std::vector<std::set<int> >& parallel_groups_list,
-      const ClusterPointIndices::ConstPtr& input_indices,
-      const ModelCoefficientsArray::ConstPtr& input_coefficients);
-
-    // for visualization
-    virtual void publishResultAsCluser(
-      const std::vector<std::set<int> >& parallel_groups_list,
-      const ClusterPointIndices::ConstPtr& input_indices,
-      const ModelCoefficientsArray::ConstPtr& input_coefficients);
-
-    virtual void configCallback (Config &config, uint32_t level);
+    virtual double distanceToConvexes(
+      const PointT& p, const std::vector<ConvexPolygon::Ptr>& convexes);
+    
+    virtual uint32_t colorForDistance(const double d);
+    
+    virtual void configCallback(Config &config, uint32_t level);
     
     ////////////////////////////////////////////////////////
-    // ROS variables
+    // ROS variabels
     ////////////////////////////////////////////////////////
+    ros::Publisher pub_;
+    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
+    message_filters::Subscriber<sensor_msgs::PointCloud2> sub_input_;
     message_filters::Subscriber<ClusterPointIndices> sub_indices_;
     message_filters::Subscriber<ModelCoefficientsArray> sub_coefficients_;
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
-    ros::Publisher pub_, pub_clusters_;
+    message_filters::Subscriber<PolygonArray> sub_polygons_;
     boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
     boost::mutex mutex_;
+    
     ////////////////////////////////////////////////////////
-    // parallel estimation parameters
+    // varibales to configure colorization
     ////////////////////////////////////////////////////////
-    double angle_threshold_;
+    double max_distance_;
+    double min_distance_;
+    bool only_projectable_;
+    
   private:
     
   };
