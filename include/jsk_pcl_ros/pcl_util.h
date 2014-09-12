@@ -48,11 +48,25 @@
 #include <set>
 #include <map>
 
+#include <sensor_msgs/PointCloud2.h>
+#include <ros/ros.h>
+#include <pcl/PointIndices.h>
+#include <std_msgs/ColorRGBA.h>
+
+#include <jsk_topic_tools/time_accumulator.h>
+
+#include <diagnostic_updater/diagnostic_updater.h>
+
 namespace jsk_pcl_ros
 {
   std::vector<int> addIndices(const std::vector<int>& a,
                               const std::vector<int>& b);
+  pcl::PointIndices::Ptr addIndices(const pcl::PointIndices& a,
+                                    const pcl::PointIndices& b);
 
+  // select color out of 20 colors
+  std_msgs::ColorRGBA colorCategory20(int i);
+  
   class Counter
   {
   public:
@@ -84,18 +98,35 @@ namespace jsk_pcl_ros
   //   vertex.
   // 
   //   graph_map := A map representeing edges of the graph.
-  //                The graph is one-directional graph.
+  //                The graph is bidirectional graph.
   //                the key means "from vertex" and the value
   //                means the "to indices" from the key vertex.
   //   from_index := The index to pay attension
   //   to_indices := The "to indices" from from_index
   //   output_set := result
   ////////////////////////////////////////////////////////
-  void buildGroupFromGraphMap(std::map<int, std::vector<int> > graph_map,
+  typedef std::map<int, std::vector<int> > IntegerGraphMap;
+  
+  void buildGroupFromGraphMap(IntegerGraphMap graph_map,
+                              const int from_index,
+                              std::vector<int>& to_indices,
+                              std::set<int>& output_set);
+  void _buildGroupFromGraphMap(IntegerGraphMap graph_map,
                               const int from_index,
                               std::vector<int>& to_indices,
                               std::set<int>& output_set);
   
+  ////////////////////////////////////////////////////////
+  // buildAllGraphSetFromGraphMap
+  //   get all the list of set represented in graph_map
+  ////////////////////////////////////////////////////////
+  void buildAllGroupsSetFromGraphMap(IntegerGraphMap graph_map,
+                                     std::vector<std::set<int> >& output_sets);
+  
+  ////////////////////////////////////////////////////////
+  // addSet<class>(A, B)
+  //   add two set like A = A + B
+  ////////////////////////////////////////////////////////
   template <class T>
   void addSet(std::set<T>& output,
               const std::set<T>& new_set)
@@ -108,6 +139,17 @@ namespace jsk_pcl_ros
       output.insert(*it);
     }
   }
+
+  ////////////////////////////////////////////////////////
+  // add TimeAcumulator information to Diagnostics
+  ////////////////////////////////////////////////////////
+  void addDiagnosticInformation(
+    const std::string& string_prefix,
+    jsk_topic_tools::TimeAccumulator& accumulator,
+    diagnostic_updater::DiagnosticStatusWrapper& stat);
+
+  static boost::mutex global_chull_mutex;
+  
 }
 
 #endif
