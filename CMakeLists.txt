@@ -117,6 +117,10 @@ jsk_pcl_nodelet(src/edge_depth_refinement_nodelet.cpp
   "jsk_pcl/EdgeDepthRefinementr" "edge_depth_refinement")
 jsk_pcl_nodelet(src/parallel_edge_finder_nodelet.cpp
   "jsk_pcl/ParallelEdgeFinder" "parallel_edge_finder")
+jsk_pcl_nodelet(src/edgebased_cube_finder_nodelet.cpp
+  "jsk_pcl/EdgebasedCubeFinder" "edgebased_cube_finder")
+jsk_pcl_nodelet(src/colorize_distance_from_plane_nodelet.cpp
+  "jsk_pcl/ColorizeDistanceFromPlane" "colorize_distance_from_plane")
 
 rosbuild_add_library (jsk_pcl_ros
   ${jsk_pcl_nodelet_sources}
