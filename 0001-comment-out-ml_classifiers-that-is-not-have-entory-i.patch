@@ -1,4 +1,4 @@
-From d870452affd1ef334ac5844b8805fb96cdf60abd Mon Sep 17 00:00:00 2001
+From c786fa7de55e36f177e95fb010d781533fe9d455 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Tue, 1 Jul 2014 15:35:37 +0900
 Subject: [PATCH] comment out ml_classifiers that is not have entory in rosdep
@@ -8,7 +8,7 @@ Subject: [PATCH] comment out ml_classifiers that is not have entory in rosdep
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 2199b64..43ef08a 100644
+index 8fe4765..e86175b 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -37,7 +37,7 @@
