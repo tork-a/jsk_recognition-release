@@ -1,4 +1,4 @@
-From e4d27edc7c6cc26f41209068fcb8f08a464a5448 Mon Sep 17 00:00:00 2001
+From 2f36d38ef2b4a0602a2176106d72be154384902f Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Sun, 29 Jun 2014 17:13:59 +0900
 Subject: [PATCH] add ros-groovy-ml-classifiers
