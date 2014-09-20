@@ -1,0 +1,12 @@
+Source: ros-groovy-jsk-perception
+Section: misc
+Priority: extra
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), git-core, libeigen3-dev, ros-groovy-angles, ros-groovy-catkin, ros-groovy-cmake-modules, ros-groovy-cv-bridge, ros-groovy-driver-base, ros-groovy-dynamic-reconfigure, ros-groovy-geometry-msgs, ros-groovy-image-geometry, ros-groovy-image-transport, ros-groovy-imagesift, ros-groovy-jsk-pcl-ros, ros-groovy-jsk-topic-tools, ros-groovy-message-generation, ros-groovy-mk, ros-groovy-nodelet, ros-groovy-rosbuild, ros-groovy-roscpp, ros-groovy-roseus, ros-groovy-rospack, ros-groovy-rospy, ros-groovy-rostest, ros-groovy-sensor-msgs, ros-groovy-std-msgs, ros-groovy-tf
+Homepage: http://ros.org/wiki/jsk_perception
+Standards-Version: 3.9.2
+
+Package: ros-groovy-jsk-perception
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeigen3-dev, ros-groovy-angles, ros-groovy-cv-bridge, ros-groovy-driver-base, ros-groovy-dynamic-reconfigure, ros-groovy-geometry-msgs, ros-groovy-image-geometry, ros-groovy-image-transport, ros-groovy-imagesift, ros-groovy-jsk-pcl-ros, ros-groovy-jsk-topic-tools, ros-groovy-message-runtime, ros-groovy-mk, ros-groovy-nodelet, ros-groovy-rosbuild, ros-groovy-roscpp, ros-groovy-roseus, ros-groovy-rospack, ros-groovy-rospy, ros-groovy-rostest, ros-groovy-sensor-msgs, ros-groovy-std-msgs, ros-groovy-tf
+Description: jsk_perception
