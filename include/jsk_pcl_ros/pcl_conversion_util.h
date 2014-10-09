@@ -81,6 +81,23 @@ namespace jsk_pcl_ros
   {
     to[0] = from[0]; to[1] = from[1]; to[2] = from[2];
   }
+
+  template<class FromT, class ToT>
+  void convertMatrix4(const FromT& from,
+                      ToT& to)
+  {
+    for (size_t i = 0; i < 4; i++) {
+      for (size_t j = 0; j < 4; j++) {
+        to(i, j) = from(i, j);
+      }
+    }
+  }
+
+  void convertEigenAffine3(const Eigen::Affine3d& from,
+                           Eigen::Affine3f& to);
+  void convertEigenAffine3(const Eigen::Affine3f& from,
+                           Eigen::Affine3d& to);
+  
 }
 // extend pcl_conversions package's toPCL and fromPCL functions
 namespace pcl_conversions
