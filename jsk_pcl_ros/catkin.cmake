@@ -67,6 +67,10 @@ add_service_files(FILES SwitchTopic.srv
 
 # generate the dynamic_reconfigure config file
 generate_dynamic_reconfigure_options(
+  cfg/BilateralFilter.cfg
+  cfg/ICPRegistration.cfg
+  cfg/PlaneReasoner.cfg
+  cfg/OrganizedPassThrough.cfg
   cfg/EuclideanClustering.cfg
   cfg/ColorizeDistanceFromPlane.cfg
   cfg/HSIColorFilter.cfg
@@ -100,7 +104,7 @@ endif(EXISTS ${jsk_topic_tools_SOURCE_DIR}/cmake/nodelet.cmake)
 
 macro(jsk_pcl_nodelet _nodelet_cpp _nodelet_class _single_nodelet_exec_name)
   jsk_nodelet(${_nodelet_cpp} ${_nodelet_class} ${_single_nodelet_exec_name}
-    jsk_pcl_nodelet_sources)
+    jsk_pcl_nodelet_sources jsk_pcl_nodelet_executables)
 endmacro(jsk_pcl_nodelet _nodelet_cpp _nodelet_class _single_nodelet_exec_name)
 
 add_definitions("-O2 -g")
@@ -210,10 +214,26 @@ jsk_pcl_nodelet(src/multi_plane_sac_segmentation_nodelet.cpp
   "jsk_pcl/MultiPlaneSACSegmentation" "multi_plane_sac_segmentation")
 jsk_pcl_nodelet(src/bounding_box_filter_nodelet.cpp
   "jsk_pcl/BoundingBoxFilter" "bounding_box_filter")
+jsk_pcl_nodelet(src/organized_pass_through_nodelet.cpp
+  "jsk_pcl/OrganizedPassThrough" "organized_pass_through")
+jsk_pcl_nodelet(src/plane_reasoner_nodelet.cpp
+  "jsk_pcl/PlaneReasoner" "plane_reasoner")
+jsk_pcl_nodelet(src/joint_state_static_filter_nodelet.cpp
+  "jsk_pcl/JointStateStaticFilter" "joint_state_static_filter")
+jsk_pcl_nodelet(src/icp_registration_nodelet.cpp
+  "jsk_pcl/ICPRegistration" "icp_registration")
+jsk_pcl_nodelet(src/transform_pointcloud_in_bounding_box_nodelet.cpp
+  "jsk_pcl/TransformPointcloudInBoundingBox" "transform_pointcloud_in_bounding_box")
+jsk_pcl_nodelet(src/pointcloud_database_server_nodelet.cpp
+  "jsk_pcl/PointcloudDatabaseServer" "pointcloud_database_server")
+jsk_pcl_nodelet(src/bilateral_filter_nodelet.cpp
+  "jsk_pcl/BilateralFilter" "bilateral_filter")
 
 add_library(jsk_pcl_ros SHARED ${jsk_pcl_nodelet_sources}
   src/grid_index.cpp src/grid_map.cpp src/grid_line.cpp src/geo_util.cpp
-  src/pcl_conversion_util.cpp src/pcl_util.cpp)
+  src/pcl_conversion_util.cpp src/pcl_util.cpp
+  src/diagnostic_nodelet.cpp
+  src/connection_based_nodelet.cpp)
 target_link_libraries(jsk_pcl_ros ${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES})
 add_dependencies(jsk_pcl_ros ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
@@ -229,7 +249,7 @@ catkin_package(
 install(DIRECTORY include/${PROJECT_NAME}/
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
 
-install(TARGETS jsk_pcl_ros
+install(TARGETS jsk_pcl_ros ${jsk_pcl_nodelet_executables}
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
