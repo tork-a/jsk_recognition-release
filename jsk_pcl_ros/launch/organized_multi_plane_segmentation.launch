@@ -32,6 +32,7 @@
           output="screen"/>
   </group>
 
+  
   <group if="$(arg RUN_SELF_FILTER)">
     <node pkg="pr2_navigation_self_filter"
           type="self_filter" clear_params="true"
@@ -177,6 +178,13 @@
     <remap from="~selected_index" to="/bounding_box_marker/selected_index" />
     <remap from="~output" to="/selected_pointcloud" />
   </node>
+  <node pkg="nodelet" type="nodelet" name="estimated_plane_respected_to_odom"
+          args="load jsk_pcl/PolygonArrayTransformer /$(arg MANAGER)">
+      <remap from="~input_polygons" to="multi_plane_estimate/output_refined_polygon" />
+      <remap from="~input_coefficients" to="multi_plane_estimate/output_refined_coefficients" />
+      <param name="frame_id" value="CHEST_LINK1" />
+    </node>
+
   <group if="$(arg COLOR_HISTOGRAM)">
     <node pkg="nodelet" type="nodelet" name="color_histogram"
           args="load jsk_pcl/ColorHistogramMatcher /$(arg MANAGER)"
