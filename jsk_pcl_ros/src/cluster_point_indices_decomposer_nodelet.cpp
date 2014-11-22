@@ -42,7 +42,7 @@
 #include <pcl/registration/ia_ransac.h>
 #include <pcl/filters/project_inliers.h>
 #include <pcl/common/pca.h>
-
+#include <jsk_topic_tools/color_utils.h>
 #include <Eigen/Geometry> 
 
 #include "jsk_pcl_ros/geo_util.h"
@@ -53,23 +53,7 @@ namespace jsk_pcl_ros
 {
   void ClusterPointIndicesDecomposer::onInit()
   {
-    PCLNodelet::onInit();
-    
-    diagnostic_updater_.reset(
-      new TimeredDiagnosticUpdater(*pnh_, ros::Duration(1.0)));
-    diagnostic_updater_->setHardwareID(getName());
-    diagnostic_updater_->add(
-      getName() + "::ClusterPointIndicesDecomposer",
-      boost::bind(
-        &ClusterPointIndicesDecomposer::updateDiagnostic,
-        this,
-        _1));
-    double vital_rate;
-    pnh_->param("vital_rate", vital_rate, 1.0);
-    vital_checker_.reset(
-      new jsk_topic_tools::VitalChecker(1 / vital_rate));
-    diagnostic_updater_->start();
-    
+    DiagnosticNodelet::onInit();
     pnh_->param("publish_tf", publish_tf_, true);
     if (!pnh_->getParam("tf_prefix", tf_prefix_))
     {
@@ -285,7 +269,7 @@ namespace jsk_pcl_ros
    size_t i,
    pcl::PointCloud<pcl::PointXYZRGB>& debug_output)
   {
-    uint32_t rgb = colorRGBAToUInt32(colorCategory20(i));
+    uint32_t rgb = colorRGBAToUInt32(jsk_topic_tools::colorCategory20(i));
     for (size_t j = 0; j < segmented_cloud->points.size(); j++) {
       pcl::PointXYZRGB p;
       p.x= segmented_cloud->points[j].x;
