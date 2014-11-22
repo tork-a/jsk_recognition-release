@@ -105,9 +105,10 @@ namespace jsk_pcl_ros
                                 int original_x, int original_y);
     virtual cv::Mat toImage();
     virtual bool check4Neighbor(int x, int y);
-    
+    virtual ConvexPolygon::Ptr toConvexPolygon();
+    virtual pcl::PointCloud<pcl::PointXYZ>::Ptr toPointCloud();
     virtual void decrease(int i);
-    
+    virtual void add(GridMap& other);
   protected:
     virtual void decreaseOne();
     

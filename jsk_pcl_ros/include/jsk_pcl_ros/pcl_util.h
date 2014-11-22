@@ -65,10 +65,23 @@ namespace jsk_pcl_ros
                               const std::vector<int>& b);
   pcl::PointIndices::Ptr addIndices(const pcl::PointIndices& a,
                                     const pcl::PointIndices& b);
+  // substract indices like: a - b
+  std::vector<int> subIndices(const std::vector<int>& a,
+                              const std::vector<int>& b);
+  pcl::PointIndices::Ptr subIndices(const pcl::PointIndices& a,
+                                    const pcl::PointIndices& b);
 
+  template<class T>
+  void appendVector(std::vector<T>& a, const std::vector<T>& b)
+  {
+    for (size_t i = 0; i < b.size(); i++) {
+      a.push_back(b[i]);
+    }
+  }
+  
   // select color out of 20 colors
   std_msgs::ColorRGBA colorCategory20(int i);
-  
+
   class Counter
   {
   public:
