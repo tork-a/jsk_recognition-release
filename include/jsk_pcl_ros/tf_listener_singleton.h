@@ -1,7 +1,8 @@
+// -*- mode: c++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2013, Ryohei Ueda and JSK Lab
+ *  Copyright (c) 2014, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,20 +33,26 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include <ros/ros.h>
-#include <nodelet/loader.h>
 
-int main(int argc, char **argv)
+#ifndef JSK_PCL_ROS_TF_LISTENER_SINGLETON_H_
+#define JSK_PCL_ROS_TF_LISTENER_SINGLETON_H_
+
+#include <tf/transform_listener.h>
+
+namespace jsk_pcl_ros
 {
-  ros::init(argc, argv, "@DEFAULT_NODE_NAME@");
-
-  // Shared parameters to be propagated to nodelet private namespaces
-  nodelet::Loader manager(true); // Don't bring up the manager ROS API
-  nodelet::M_string remappings;
-  nodelet::V_string my_argv;
-
-  manager.load(ros::this_node::getName(), "@NODELET@", remappings, my_argv);
-
-  ros::spin();
-  return 0;
+  class TfListenerSingleton
+  {
+  public:
+    static tf::TransformListener* getInstance();
+    static void destroy();
+  protected:
+    static tf::TransformListener* instance_;
+    static boost::mutex mutex_;
+  private:
+    TfListenerSingleton(TfListenerSingleton const&){};
+    TfListenerSingleton& operator=(TfListenerSingleton const&){};
+  };
 }
+
+#endif

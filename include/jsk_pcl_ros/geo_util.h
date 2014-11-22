@@ -88,6 +88,7 @@ namespace jsk_pcl_ros
     typedef boost::shared_ptr<Line> Ptr;
     Line(const Eigen::Vector3f& direction, const Eigen::Vector3f& origin);
     virtual void getDirection(Eigen::Vector3f& output) const;
+    virtual Eigen::Vector3f getDirection() const;
     virtual void getOrigin(Eigen::Vector3f& output) const;
     virtual double distanceToPoint(const Eigen::Vector3f& from) const;
     virtual double distanceToPoint(const Eigen::Vector3f& from, Eigen::Vector3f& foot) const;
@@ -135,7 +136,7 @@ namespace jsk_pcl_ros
     Plane(Eigen::Vector3f normal, Eigen::Vector3f p);
     virtual ~Plane();
     virtual Plane flip();
-    
+    virtual Plane::Ptr faceToOrigin();
     virtual bool isSameDirection(const Plane& another);
     virtual bool isSameDirection(const Eigen::Vector3f& another_normal);
     virtual double signedDistanceToPoint(const Eigen::Vector4f p);
