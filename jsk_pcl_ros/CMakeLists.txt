@@ -137,6 +137,19 @@ jsk_pcl_nodelet(src/pointcloud_database_server_nodelet.cpp
   "jsk_pcl/PointcloudDatabaseServer" "pointcloud_database_server")
 jsk_pcl_nodelet(src/bilateral_filter_nodelet.cpp
   "jsk_pcl/BilateralFilter" "bilateral_filter")
+jsk_pcl_nodelet(src/line_segment_detector_nodelet.cpp
+  "jsk_pcl/LineSegmentDetector" "line_segment_detector")
+jsk_pcl_nodelet(src/line_segment_collector_nodelet.cpp
+  "jsk_pcl/LineSegmentCollector" "line_segment_collector")
+jsk_pcl_nodelet(src/depth_calibration_nodelet.cpp
+  "jsk_pcl/DepthCalibration" "depth_calibration")
+jsk_pcl_nodelet(src/tilt_laser_listener_nodelet.cpp
+  "jsk_pcl/TiltLaserListener" "tilt_laser_listener")
+jsk_pcl_nodelet(src/region_growing_multiple_plane_segmentation_nodelet.cpp
+  "jsk_pcl/RegionGrowingMultiplePlaneSegmentation"
+  "region_growing_multiple_plane_segmentation")
+jsk_pcl_nodelet(src/normal_direction_filter_nodelet.cpp
+  "jsk_pcl/NormalDirectionFilter" "normal_direction_filter")
 
 rosbuild_add_library (jsk_pcl_ros
   ${jsk_pcl_nodelet_sources}
@@ -144,6 +157,7 @@ rosbuild_add_library (jsk_pcl_ros
   src/pcl_conversion_util.cpp src/pcl_util.cpp
   src/diagnostic_nodelet.cpp
   src/connection_based_nodelet.cpp
+  src/pointcloud_moveit_filter.cpp
 )
 rosbuild_add_openmp_flags(jsk_pcl_ros)
 
