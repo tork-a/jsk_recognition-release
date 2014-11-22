@@ -57,6 +57,8 @@
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/surface/convex_hull.h>
 
+#include <jsk_topic_tools/color_utils.h>
+
 namespace jsk_pcl_ros
 {
 
@@ -195,6 +197,7 @@ namespace jsk_pcl_ros
     const std::vector<pcl::PointIndices>& boundary_indices,
     IntegerGraphMap& connection_map)
   {
+    NODELET_DEBUG("size of model_coefficients: %lu", model_coefficients.size());
     if (model_coefficients.size() == 0) {
       return;                   // do nothing
     }
@@ -206,9 +209,10 @@ namespace jsk_pcl_ros
     
     pcl::ExtractIndices<PointT> extract;
     extract.setInputCloud(input);
-    for (size_t i = 0; i < model_coefficients.size() - 1; i++) {
+    for (size_t i = 0; i < model_coefficients.size(); i++) {
       // initialize connection_map[i]
       connection_map[i] = std::vector<int>();
+      connection_map[i].push_back(i);
       for (size_t j = i + 1; j < model_coefficients.size(); j++) {
         // check if i and j can be connected
         pcl::ModelCoefficients a_coefficient = model_coefficients[i];
@@ -309,6 +313,19 @@ namespace jsk_pcl_ros
     std::vector<pcl::PointCloud<PointT> >& output_boundary_clouds)
   { 
     std::vector<std::set<int> > cloud_sets;
+    NODELET_DEBUG("connection_map:");
+    for (IntegerGraphMap::const_iterator it = connection_map.begin();
+         it != connection_map.end();
+         ++it) {
+      int from_index = it->first;
+      std::stringstream ss;
+      ss << "connection map: " << from_index << " [";
+      for (size_t i = 0; i < it->second.size(); i++) {
+        ss << i << ", ";
+      }
+      NODELET_DEBUG("%s", ss.str().c_str());
+    }
+
     buildAllGroupsSetFromGraphMap(connection_map, cloud_sets);
     connected_plane_num_counter_.add(cloud_sets.size());
     for (size_t i = 0; i < cloud_sets.size(); i++) {
@@ -482,7 +499,7 @@ namespace jsk_pcl_ros
     connection_marker.scale.x = 0.01;
     connection_marker.header = header;
     connection_marker.pose.orientation.w = 1.0;
-    connection_marker.color = colorCategory20(0);
+    connection_marker.color = jsk_topic_tools::colorCategory20(0);
     
     ////////////////////////////////////////////////////////
     // first, compute centroids for each clusters
@@ -520,8 +537,8 @@ namespace jsk_pcl_ros
           to_point, to_point_ros);
         connection_marker.points.push_back(from_point_ros);
         connection_marker.points.push_back(to_point_ros);
-        connection_marker.colors.push_back(colorCategory20(from_index));
-        connection_marker.colors.push_back(colorCategory20(from_index));
+        connection_marker.colors.push_back(jsk_topic_tools::colorCategory20(from_index));
+        connection_marker.colors.push_back(jsk_topic_tools::colorCategory20(from_index));
       }
     }
     pub_connection_marker_.publish(connection_marker);
