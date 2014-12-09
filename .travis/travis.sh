@@ -32,9 +32,9 @@ sudo apt-get install -qq -y python-catkin-pkg python-rosdep python-wstool ros-$R
 if [ $ROSWS == rosws ]; then sudo apt-get install -qq -y python-rosinstall     ; fi
 if [ $BUILDER == rosbuild ]; then sudo apt-get install -qq -y ros-$ROS_DISTRO-rosmake ; fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
-(dpkg -s mongodb || echo "ok"; export HAVE_MONGO_DB=$?)
-if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get remove -y mongodb mongodb-10gen || echo "ok"; fi
-if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get install -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"; fi # default actions
+dpkg -s mongodb || echo "ok"; export HAVE_MONGO_DB=$?
+if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get remove -qq -y mongodb mongodb-10gen || echo "ok"; fi
+if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get install -qq -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"; fi # default actions
 # Setup rosdep
 sudo rosdep init
 rosdep update; while [ $? != 0 ]; do sleep 1; rosdep update; done
@@ -52,12 +52,15 @@ if [ $USE_DEB == false -o $BUILDER == rosbuild ]; then $ROSWS set $REPOSITORY_NA
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
 cd ../
 # Install dependencies for source repos
-find -L src -name package.xml -exec dirname {} \; | xargs -n 1 -i find {} -name manifest.xml | xargs -n 1 -i mv {} {}.deprecated # rename manifest.xml for rosdep install
-rosdep install -r -n --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
-find -L src -name manifest.xml.deprecated | xargs -n 1 -i dirname {} | xargs -n 1 -i ln -sf `pwd`/{}/manifest.xml.deprecated `pwd`/{}/manifest.xml # rename manifest.xml for rosdep install
+if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
+    ROSDEP_ARGS=>/dev/null
+fi
+source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
+${CI_SOURCE_PATH}/.travis/rosdep-install.sh
+
 
 ### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
 if [ $BUILDER == rosbuild ]; then source src/setup.bash        ; fi
 if [ $BUILDER == rosbuild ]; then rospack profile              ; fi
 
@@ -75,4 +78,3 @@ if [ $BUILDER == catkin ]; then export EXIT_STATUS=0; for pkg in $TARGET_PKG; do
 if [ $BUILDER == rosbuild ]; then rosmake --profile `find -L $CI_SOURCE_PATH | grep manifest.xml | sed s@.*/\\\\\([^\/]*\\\\\)/manifest.xml\\\$@\\\1@g` ; fi
 if [ $BUILDER == rosbuild ]; then export TARGET_PKG=`find -L src | grep $REPOSITORY_NAME | grep /build/Makefile$ | sed s@.*/\\\\\([^\/]*\\\\\)/build/Makefile@\\\1@g` ; fi
 if [ $BUILDER == rosbuild ]; then rosmake --test-only $TARGET_PKG ; fi
-
