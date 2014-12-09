@@ -1,0 +1,12 @@
+Source: ros-hydro-imagesift
+Section: misc
+Priority: extra
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-hydro-catkin, ros-hydro-cv-bridge, ros-hydro-image-transport, ros-hydro-libsiftfast, ros-hydro-posedetection-msgs, ros-hydro-roscpp, ros-hydro-sensor-msgs
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-hydro-imagesift
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-hydro-cv-bridge, ros-hydro-image-transport, ros-hydro-libsiftfast, ros-hydro-posedetection-msgs, ros-hydro-roscpp, ros-hydro-sensor-msgs
+Description: For every image, computes its sift features and send a new message with the image, its intrinsic parameters, and the features. Parameters include: display - shows the image on the local computer
