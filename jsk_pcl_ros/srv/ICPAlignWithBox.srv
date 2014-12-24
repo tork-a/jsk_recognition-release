@@ -1,4 +1,0 @@
-sensor_msgs/PointCloud2 target_cloud
-jsk_pcl_ros/BoundingBox target_box
----
-jsk_pcl_ros/ICPResult result
