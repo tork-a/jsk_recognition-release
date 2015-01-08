@@ -34,72 +34,53 @@
  *********************************************************************/
 
 
-#ifndef JSK_PCL_ROS_ATTENTION_CLIPPER_H_
-#define JSK_PCL_ROS_ATTENTION_CLIPPER_H_
+#ifndef JSK_PCL_ROS_SUPERVOXEL_SEGMENTATION_H_
+#define JSK_PCL_ROS_SUPERVOXEL_SEGMENTATION_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/CameraInfo.h>
 #include "jsk_pcl_ros/pcl_conversion_util.h"
-#include "jsk_pcl_ros/geo_util.h"
-#include "jsk_pcl_ros/tf_listener_singleton.h"
-#include <image_geometry/pinhole_camera_model.h>
-#include <jsk_pcl_ros/BoundingBoxArray.h>
-#include <geometry_msgs/PoseArray.h>
-#include <sensor_msgs/Image.h>
-
+#include <dynamic_reconfigure/server.h>
+#include <jsk_pcl_ros/SupervoxelSegmentationConfig.h>
+#include <jsk_pcl_ros/ClusterPointIndices.h>
 namespace jsk_pcl_ros
 {
-  class AttentionClipper: public jsk_topic_tools::DiagnosticNodelet
+  class SupervoxelSegmentation: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    AttentionClipper(): DiagnosticNodelet("AttentionClipper") { }
-    
+    typedef pcl::PointXYZRGB PointT;
+    typedef boost::shared_ptr<SupervoxelSegmentation> Ptr;
+    typedef SupervoxelSegmentationConfig Config;
+    SupervoxelSegmentation(): DiagnosticNodelet("SupervoxelSegmentation") {}
   protected:
     ////////////////////////////////////////////////////////
     // methods
     ////////////////////////////////////////////////////////
     virtual void onInit();
-    virtual void clip(const sensor_msgs::CameraInfo::ConstPtr& msg);
-    virtual void clipPointcloud(const sensor_msgs::PointCloud2::ConstPtr& msg);
-    virtual void poseCallback(const geometry_msgs::PoseStamped::ConstPtr& pose);
-    virtual void boxCallback(const jsk_pcl_ros::BoundingBox::ConstPtr& box);
-    virtual void poseArrayCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
-    virtual void boxArrayCallback(const jsk_pcl_ros::BoundingBoxArray::ConstPtr& box);
-    virtual Vertices cubeVertices(Eigen::Vector3f& dimension);
     virtual void subscribe();
     virtual void unsubscribe();
     virtual void updateDiagnostic(
       diagnostic_updater::DiagnosticStatusWrapper &stat);
-    virtual void computeROI(
-      const sensor_msgs::CameraInfo::ConstPtr& msg,
-      std::vector<cv::Point2d>& points,
-      cv::Mat& mask);
-    virtual void publishBoundingBox(const std_msgs::Header& header);
-    virtual void initializePoseList(size_t num);
+    virtual void segment(
+      const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
+    virtual void configCallback (Config &config, uint32_t level);
     ////////////////////////////////////////////////////////
     // ROS variables
     ////////////////////////////////////////////////////////
-    ros::Subscriber sub_;
-    ros::Subscriber sub_pose_;
-    ros::Subscriber sub_box_;
-    ros::Subscriber sub_points_;
-    ros::Publisher pub_camera_info_;
-    ros::Publisher pub_bounding_box_array_;
-    ros::Publisher pub_mask_;
-    ros::Publisher pub_indices_;
-    tf::TransformListener* tf_listener_;
     boost::mutex mutex_;
+    ros::Subscriber sub_;
+    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
+    ros::Publisher pub_indices_;
+    ros::Publisher pub_cloud_;
 
     ////////////////////////////////////////////////////////
     // parameters
     ////////////////////////////////////////////////////////
-    // only cube is supported
-    Vertices vertices_;
-    // for multiple attention
-    std::vector<Eigen::Affine3f> pose_list_;
-    std::vector<std::string> frame_id_list_;
-    Vertices dimensions_;
-    bool use_multiple_attention_;
+    double color_importance_;
+    double spatial_importance_;
+    double normal_importance_;
+    double voxel_resolution_;
+    double seed_resolution_;
+    bool use_transform_;
   private:
     
   };
