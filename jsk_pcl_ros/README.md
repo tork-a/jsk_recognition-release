@@ -59,19 +59,130 @@ time end
 Represent range of time.
 
 ## nodelets
+### jsk\_pcl/PlaneConcatenator
+![](image/plane_concatenator.png)
+
+Concatenate near planes and build new set of planes.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input pointcloud.
+* `~input/indices` (`jsk_pcl_ros/ClusterPointIndices`)
+* `~input/polygons` (`jsk_pcl_ros/PolygonArray`)
+* `~input/coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`)
+  Input planes.
+
+#### Publishing Topics
+* `~output/indices` (`jsk_pcl_ros/ClusterPointIndices`)
+* `~output/polygons` (`jsk_pcl_ros/PolygonArray`)
+* `~output/coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`)
+  Concatenated planes. Coefficients parameters are refined by RANSAC.
+
+#### Parameters
+* `~connect_angular_threshold` (Double, default: `0.1`)
+
+   Angular threshold to regard two planes as near.
+* `~connect_distance_threshold` (Double, default: `0.1`)
+
+   Euclidean distance threshold to regard two planes as near.
+* `~ransac_refinement_max_iteration` (Integer, default: `100`)
+
+  The maximum number of iteration of RANSAC refinement.
+* `~ransac_refinement_outlier_threshold` (Double, default: `0.1`)
+
+  Outlier threshold of RANSAC refinmenet.
+* `~ransac_refinement_eps_angle` (Double, default: `0.1`)
+
+  Eps angle threshold of RANSAC refinment using normal direction of the plane.
+### jsk\_pcl/SupervoxelSegmentation
+![](images/supervoxel_segmentation.png)
+
+Segment pointcloud based on Supervoxel technique.
+see Voxel Cloud Connectivity Segmentation - Supervoxels for Point Clouds (J. Papon et al. CVPR2013).
+#### Subscribing Topic
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input pointcloud. It should have rgb field.
+
+#### Publishing Topic
+* `~output/cloud` (`sensor_msgs/PointCloud2`)
+
+  Output pointcloud downsampled by voxel grid.
+
+* `~output/indices` (`jsk_pcl_ros/ClusterPointIndices`)
+
+  Clustering result.
+
+#### Parameters
+* `~color_importance` (`Double`, default: `0.2`)
+
+  Color importance factor.
+* `~spatial_importance` (`Double`, default: `0.4`)
+
+  Spatial importance factor.
+* `~normal_importance` (`Double`, default: `1.0`)
+
+  Normal importance factor.
+* `~use_transform` (`Boolean`, default: `True`)
+
+  Use single cloud transform
+* `~seed_resolution` (`Double`, default: `0.1`)
+
+  Seed resolution of super voxels.
+* `~voxel_resolution` (`Double`, default: `0.008`)
+
+  Voxel grid resolution of super voxels.
+
+### jsk\_pcl/IncrementalModelRegistration
+#### What Is This
+![](images/incremental_model_registration.png)
+
+Build a full-model from sequential captured data.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input pointcloud. RGB field is required.
+* `~input/pose` (`geometry_msgs/PoseStamped`)
+
+  Initial pose to estimate acculate pose of the pointcloud.
+* `~input/indices` (`pcl_msgs/PointIndices`)
+
+  Indices to mask object in `~input` pointcloud.
+
+#### Publishing Topic
+* `~output/non_registered` (`sensor_msgs/PointCloud2`)
+
+  Pointcloud just concatenated according to `~input/pose`
+
+* `~output/registered` (`sensor_msgs/PointCloud2`)
+
+  Pointcloud refined by ICP.
+#### Using Services
+* `~icp_service` (`jsk_pcl_ros/ICPAlign`)
+
+  ICP service interface to refine model.
+
 ### jsk\_pcl/IntermittentImageAnnotator
 #### What Is This
 ![](images/intermittent_image_annotator.png)
+![](images/intermittent_image_annotator_pointcloud_clip.png)
 
 1. Store images when `~shutter` service is called
 2. Publish snapshots as one concatenated image
 3. Subscribe `~output/screenrectangle` to get ROI.
 4. Publish ROI information to `~output` namespace.
+5. Publish pointcloud inside of the ROI to `~output/cloud` if `~store_pointcloud` is set
 
 #### Subscribing Topic
 * `~input/image` and `~input/camera_info` (`sensor_msgs/Image` and `sensor_msgs/CameraInfo`)
 
   Input image and camera info.
+
+* `~input/cloud` (`sensor_msgs/PointCloud2`)
+
+  Input pointcloud to be clipped by specified ROI.
 
 * `~output/screenrectangle` (`geometry_msgs/PolygonStamped`)
 
@@ -89,6 +200,15 @@ Represent range of time.
 * `~output/roi` (`jsk_pcl_ros/PosedCameraInfo`)
 
   Publish ROI of specified region as `PosedCameraInfo`.
+
+* `~output/cloud` (`sensor_msgs/PointCloud`)
+
+  Pointcloud inside of ROI. pointcloud is stored when `~shutter` service is called and
+  its timestamp will be updated according to the latest image.
+
+* `~output/marker` (`visualization_msgs/Marker`)
+
+  Marker to visualize ROI (`~output/roi`).
 #### Parameters
 * `~fixed_frame_id` (`String`, default: `odom`)
 
@@ -97,6 +217,14 @@ Represent range of time.
 * `~max_image_buffer` (`Integer`, default: `5`)
 
   The maximum number of images to store in this nodelet.
+
+* `~store_pointcloud` (`Boolean`, default: `false`)
+
+  Store pointcloud if it's true
+
+* `~keep_organized` (`Boolean`, default: `false`)
+
+  Keep pointcloud organized after clipping by specified ROI.
 
 #### Advertising Service
 
@@ -138,6 +266,8 @@ A nodelet to detect object using LINEMOD.
 
 ### jsk\_pcl/LINEMODTrainer
 #### What Is This
+![](images/linemod_trainer.png)
+
 
 A nodelet to train LINEMOD data from pointcloud and indices to mask the objects.
 This nodelet stores data of pointcloud and if you call `~start_training` service,
@@ -151,6 +281,9 @@ it will train the data and dump the templates into lmt file.
 
   Indices to mask object in `~input` pointcloud.
 
+* `~input/info` (`sensor_msgs/CameraInfo`)
+
+  Camera parameter to sample viewpoint.
 #### Advertising Servicies
 * `~start_training` (`std_srvs/Empty`)
 
@@ -163,6 +296,19 @@ it will train the data and dump the templates into lmt file.
 * `~output_file` (`String`, default: `template.lmt`)
 
    A file path to dump trained data.
+
+* `~sample_viewpoint` (`Bool`, default: `False`)
+
+  Generate training data by samplingenerating viewpoint if this parameter is set to true.
+
+* `~sample_viewpoint_angle_step` (`Double`, default: `40.0`)
+* `~sample_viewpoint_angle_min` (`Double`, default: `-80.0`)
+* `~sample_viewpoint_angle_max` (`Double`, default: `80.0`)
+* `~sample_viewpoint_radius_step` (`Double`, default: `0.2`)
+* `~sample_viewpoint_radius_min` (`Double`, default: `0.4`)
+* `~sample_viewpoint_radius_max` (`Double`, default: `0.8`)
+
+  Viewpoint sampling parameters.
 
 ### jsk\_pcl/CaptureStereoSynchronizer
 #### What Is This
@@ -215,6 +361,20 @@ synchronizing timestamp and republish them into `~output` namespace.
 #### Sample
 Please check [capture_multisense_training_data.launch](launch/capture_multisense_training_data.launch).
 
+### jsk\_pcl/MaskImageToPointIndices
+A nodelet to convert mask image (`sensor_msgs::Image`) to `pcl_msgs/PointIndices` for
+organized pointcloud.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/Image`)
+
+  Input mask image.
+
+#### Publishing Topic
+* `~output` (`pcl_msgs/PointIndices`)
+
+  Output indices converted from the mask image.
+
 ### jsk\_pcl/PointIndicesToMaskImage
 #### What Is This
 ![](images/point_indices_to_mask_image.png)
@@ -259,20 +419,58 @@ to see the object.
   Original pointcloud.
 * `~input/pose` (`geometry_msgs/PoseStamped`)
 * `~input/box` (`jsk_pcl_ros/BoundingBox`)
-  Specify the pose of the bounding box. Timestamp will be ignored and camera info's timestamp will be used. If you use `~input/box`, you can change the size of attention region.
+  Specify the pose of the bounding box. Timestamp will be ignored and camera info's timestamp will be used. If you use `~input/box`, you can change the size of attention region. There callbacks are only enabled if `~use_multiple_attention` is false.
 
+* `~input/pose_array` (`geometry_msgs/PoseArray`)
+* `~input/box_array` (`jsk_pcl_ros/BoundingBoxArray`)
+  It's an array version of `~input/pose` and `~input/box`. There callbacks are only enabled if `~use_multiple_attention` is true.
 #### Publishing Topic
 * `~output` (`sensor_msgs/CameraInfo`)
 
   This camera info is same with `~input` except for roi field.
 
+* `~output/mask` (`sensor_msgs/Image`)
+
+  Mask image to mask the regions of specified interest.
+
+* `~output/point_indices` (`pcl_msgs/PointIndices`)
+
+  Indices of `~input/points` which are inside of interest regions.
+
 #### Parameter
+* `~use_multiple_attention` (Boolean, default: `False`)
+
+  If you want to enable multiple attentions, please set this variable True.
+
 * `~dimension_x` (Double, default: `0.1`)
 * `~dimension_y` (Double, default: `0.1`)
 * `~dimension_z` (Double, default: `0.1`)
 
-  Size of bounding box
+  Size of bounding box. Available only if `~use_multiple_attention` is false.
 
+* `~frame_id` (String, default: `base_link`)
+
+  Frame id of attention region. Available only if `~use_multiple_attention` is false.
+
+* `~initial_pos` (Array of double, default: `None`):
+
+  Initial pose of interesting region. Available only if `~use_multiple_attention` is false.
+
+* `~initial_rot` (Array of double, default: `None`):
+
+  Initial orientation of interesting region. The value should be represented in
+  [roll, pitch, yaw]. Available only if `~use_multiple_attention` is false.
+
+* `~initial_pos_list` (Array of array of double, default: `None`)
+* `~initial_rot_list` (Array of array of double, default: `None`)
+* `~frame_id_list` (Array of string, default: `None`)
+* `~dimensions` (Array of array of double, default: `None`)
+
+  Position, Rotation, frame id and Dimensions of multiple attention regions respectively.
+  `~iniital_pos_list` should follow `[[x, y, z], ...]`,
+  `~initial_rot_list` should follow `[[rx, ry, rz], ...]` and
+  `~dimensions` should follow `[[x, y, z], ...]`.
+  Available only if `~use_multiple_attention` is true.
 ### jsk\_pcl/ROIClipper
 #### What Is This
 ![](images/attention_clipper.png)
@@ -345,7 +543,7 @@ Extract the points above the planes between `~min_height` and `~max_height`.
 * `~input_polygons` (`jsk_pcl_ros/PolygonArray`)
 * `~input_coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`):
 
-   The input planes.
+   The input planes. If `~use_indices` parameter is false, `~indices` will not be used.
 #### Publishing Topics
 * `~output` (`sensor_msgs/PointCloud2`):
 
@@ -362,6 +560,12 @@ Extract the points above the planes between `~min_height` and `~max_height`.
 * `~max_queue_size` (Integer, default: `100`)
 
    Queue length for subscribing topics.
+
+* `~use_indices` (Bool, default: `True`)
+
+   Use indices of planar regions to filter if it's set true.
+   You can disable this parameter to filter pointcloud which is not the same pointcloud
+   to segment planes
 
 ### jsk\_pcl/RegionGrowingMultiplePlaneSegmentation
 ![jsk_pcl/RegionGrowingMultiplePlaneSegmentation](images/region_growing_multiple_plane_segmentation.png).
@@ -560,6 +764,11 @@ You can choose several types of tilt/spindle lasers such as tilt-laser of PR2, i
    A service to build 3-D pointcloud from scan pointcloud.
    It should be remapped to `assemble_scans2` service of
    [laser_assembler](http://wiki.ros.org/laser_assembler).
+
+#### Advertising Service
+* `~clear_cache` (`std_srvs/Empty`)
+
+   Clear cache and restart collecting data.
 
 #### Parameters
 * `~use_laser_assembler` (Boolean, default: `False`):
