@@ -32,7 +32,8 @@ generate_dynamic_reconfigure_options(
   cfg/ColorHistogram.cfg
   cfg/HoughCircles.cfg
   cfg/ColorHistogramSlidingMatcher.cfg
-  cfg/BackgroundSubstraction.cfg)
+  cfg/BackgroundSubstraction.cfg
+  cfg/GrabCut.cfg)
 
 add_message_files(FILES
       PointsArray.msg RotatedRectStamped.msg LineArray.msg Rect.msg Line.msg RotatedRect.msg SparseImage.msg
@@ -87,7 +88,7 @@ jsk_perception_nodelet(src/sparse_image_decoder.cpp "jsk_perception/SparseImageD
 jsk_perception_nodelet(src/color_histogram.cpp "jsk_perception/ColorHistogram" "color_histogram")
 jsk_perception_nodelet(src/background_substraction_nodelet.cpp "jsk_perception/BackgroundSubstraction" "background_substraction")
 jsk_perception_nodelet(src/hough_circles.cpp "jsk_perception/HoughCircleDetector" "hough_circles")
-
+jsk_perception_nodelet(src/grabcut_nodelet.cpp "jsk_perception/GrabCut" "grabcut")
 jsk_perception_nodelet(src/slic_superpixels.cpp "jsk_perception/SLICSuperPixels" "slic_super_pixels")
 # compiling jsk_perception library for nodelet
 add_library(${PROJECT_NAME} SHARED ${jsk_perception_nodelet_sources}
