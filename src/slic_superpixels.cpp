@@ -33,63 +33,91 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include <ros/ros.h>
-#include <nodelet/nodelet.h>
-#include <sensor_msgs/image_encodings.h>
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
-#include <dynamic_reconfigure/server.h>
-#include <boost/thread.hpp>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include "jsk_perception/slic_superpixels.h"
 #include "slic.h"
+#include <sensor_msgs/image_encodings.h>
 
 namespace jsk_perception
 {
-  class SLICSuperPixels: public nodelet::Nodelet
+      
+  void SLICSuperPixels::onInit()
   {
-  public:
-    ros::NodeHandle nh_, pnh_;
-    boost::shared_ptr<image_transport::ImageTransport> it_;
-    boost::mutex mutex_;
-    image_transport::Subscriber image_sub_;
-    void imageCallback(const sensor_msgs::Image::ConstPtr& image)
-    {
-      boost::mutex::scoped_lock lock(mutex_);
-      cv_bridge::CvImagePtr cv_ptr;
-      cv_ptr = cv_bridge::toCvCopy(image, sensor_msgs::image_encodings::BGR8);
-      cv::Mat bgr_image = cv_ptr->image;
-
-      IplImage bgr_image_ipl;
-      bgr_image_ipl = bgr_image;
-      IplImage* lab_image = cvCloneImage(&bgr_image_ipl);
-      IplImage* out_image = cvCloneImage(&bgr_image_ipl);
-      // slic
-      cvCvtColor(&bgr_image_ipl, lab_image, CV_BGR2Lab);
-      int w = image->width, h = image->height;
-      int nr_superpixels = 200;
-      int nc = 4;
-      double step = sqrt((w * h) / (double) nr_superpixels);
-      Slic slic;
-      slic.generate_superpixels(lab_image, step, nc);
-      slic.create_connectivity(lab_image);
-      slic.display_contours(out_image, CV_RGB(255,0,0));
-      cvShowImage("result", out_image);
-      cvWaitKey(10);
-    }
+    nh_ = ros::NodeHandle(getNodeHandle(), "image");
+    pnh_ = getPrivateNodeHandle();
+    srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (pnh_);
+    dynamic_reconfigure::Server<Config>::CallbackType f =
+      boost::bind (
+        &SLICSuperPixels::configCallback, this, _1, _2);
+    srv_->setCallback (f);
     
-    virtual void onInit()
-    {
-      nh_ = ros::NodeHandle(getNodeHandle(), "image");
-      pnh_ = getPrivateNodeHandle();
-      it_.reset(new image_transport::ImageTransport(nh_));
-      image_sub_ = it_->subscribe("", 1, &SLICSuperPixels::imageCallback, this);
+    it_.reset(new image_transport::ImageTransport(nh_));
+    pub_ = pnh_.advertise<sensor_msgs::Image>("output", 1);
+    pub_debug_ = pnh_.advertise<sensor_msgs::Image>("debug", 1);
+    pub_debug_mean_color_ = pnh_.advertise<sensor_msgs::Image>("debug/mean_color", 1);
+    pub_debug_center_grid_ = pnh_.advertise<sensor_msgs::Image>("debug/center_grid", 1);
+    image_sub_ = it_->subscribe("", 1, &SLICSuperPixels::imageCallback, this);
+  }
+  
+  void SLICSuperPixels::imageCallback(const sensor_msgs::Image::ConstPtr& image)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    cv::Mat in_image = cv_bridge::toCvShare(image, image->encoding)->image;
+    cv::Mat bgr_image;
+    if (in_image.channels() == 1) {
+      // gray image
+      cv::cvtColor(in_image, bgr_image, CV_GRAY2BGR);
     }
-  protected:
-  private:
-  };
+    else if (image->encoding == sensor_msgs::image_encodings::RGB8) {
+      // convert to BGR8
+      cv::cvtColor(in_image, bgr_image, CV_RGB2BGR);
+    }
+    else {
+      bgr_image = in_image;
+    }
+    //cv::Mat bgr_image = cv_ptr->image;
+    cv::Mat lab_image, out_image, mean_color_image, center_grid_image;
+    // slic
+    bgr_image.copyTo(out_image);
+    bgr_image.copyTo(mean_color_image);
+    bgr_image.copyTo(center_grid_image);
+    cv::cvtColor(bgr_image, lab_image, CV_BGR2Lab);
+    int w = image->width, h = image->height;
+    double step = sqrt((w * h) / (double) number_of_super_pixels_);
+    Slic slic;
+    slic.generate_superpixels(lab_image, step, weight_);
+    slic.create_connectivity(lab_image);
+    slic.colour_with_cluster_means(mean_color_image);
+    slic.display_center_grid(center_grid_image, cv::Scalar(0, 0, 255));
+    slic.display_contours(out_image, cv::Vec3b(0,0,255));
+    pub_debug_.publish(cv_bridge::CvImage(
+                         image->header,
+                         sensor_msgs::image_encodings::BGR8,
+                         out_image).toImageMsg());
+    pub_debug_mean_color_.publish(cv_bridge::CvImage(
+                                    image->header,
+                                    sensor_msgs::image_encodings::BGR8,
+                                    mean_color_image).toImageMsg());
+    pub_debug_center_grid_.publish(cv_bridge::CvImage(
+                                     image->header,
+                                     sensor_msgs::image_encodings::BGR8,
+                                     center_grid_image).toImageMsg());
+    // publish clusters
+    cv::Mat clusters;
+    cv::transpose(slic.clusters, clusters);
+    clusters = clusters + cv::Scalar(1);
+    pub_.publish(cv_bridge::CvImage(
+                   image->header,
+                   sensor_msgs::image_encodings::TYPE_32SC1,
+                   clusters).toImageMsg());
+  }
+
+  void SLICSuperPixels::configCallback(Config &config, uint32_t level)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    weight_ = config.weight;
+    number_of_super_pixels_ = config.number_of_super_pixels;
+  }
 }
 
 #include <pluginlib/class_list_macros.h>
-typedef jsk_perception::SLICSuperPixels SLICSuperPixels;
-PLUGINLIB_DECLARE_CLASS (jsk_perception, SLICSuperPixels, SLICSuperPixels, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS (jsk_perception::SLICSuperPixels, nodelet::Nodelet);
