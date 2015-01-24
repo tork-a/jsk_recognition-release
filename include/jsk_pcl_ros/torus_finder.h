@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2014, JSK Lab
+ *  Copyright (c) 2015, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -34,56 +34,50 @@
  *********************************************************************/
 
 
-
-#ifndef JSK_PCL_ROS_ROI_CLIPPER_H_
-#define JSK_PCL_ROS_ROI_CLIPPER_H_
+#ifndef JSK_PCL_ROS_TORUS_FINDER_H_
+#define JSK_PCL_ROS_TORUS_FINDER_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
-#include <message_filters/synchronizer.h>
-#include <sensor_msgs/Image.h>
-#include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <pcl_conversions/pcl_conversions.h>
+#include <jsk_pcl_ros/TorusArray.h>
+#include <jsk_pcl_ros/Torus.h>
+#include <jsk_pcl_ros/TorusFinderConfig.h>
+#include <dynamic_reconfigure/server.h>
 namespace jsk_pcl_ros
 {
-  class ROIClipper: public jsk_topic_tools::DiagnosticNodelet
+  class TorusFinder: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    typedef message_filters::sync_policies::ExactTime<
-    sensor_msgs::Image,
-    sensor_msgs::CameraInfo > SyncPolicy;
-    ROIClipper(): DiagnosticNodelet("ROIClipper") {}
-    
+    typedef TorusFinderConfig Config;
+    TorusFinder(): DiagnosticNodelet("TorusFinder") {}
   protected:
     virtual void onInit();
-    virtual void clip(const sensor_msgs::Image::ConstPtr& image_msg,
-                      const sensor_msgs::CameraInfo::ConstPtr& camera_info_msg);
     virtual void subscribe();
     virtual void unsubscribe();
-    virtual void updateDiagnostic(
-      diagnostic_updater::DiagnosticStatusWrapper &stat);
-    virtual void imageCallback(
-      const sensor_msgs::Image::ConstPtr& image_msg);
-    virtual void infoCallback(
-      const sensor_msgs::CameraInfo::ConstPtr& info_msg);
-    virtual void cloudCallback(
-      const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
+    virtual void segment(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
+    virtual void configCallback(Config &config, uint32_t level);
     
+    ////////////////////////////////////////////////////////
+    // ROS variables
+    ////////////////////////////////////////////////////////
+    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
+    ros::Subscriber sub_;
+    ros::Publisher pub_torus_;
+    ros::Publisher pub_torus_array_;
+    ros::Publisher pub_inliers_;
+    ros::Publisher pub_coefficients_;
     boost::mutex mutex_;
-    bool not_sync_;
-    bool keep_organized_;
-    ros::Publisher pub_image_;
-    ros::Publisher pub_cloud_;
-    message_filters::Subscriber<sensor_msgs::Image> sub_image_;
-    message_filters::Subscriber<sensor_msgs::CameraInfo> sub_info_;
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
-    ros::Subscriber sub_image_no_sync_;
-    ros::Subscriber sub_info_no_sync_;
-    ros::Subscriber sub_cloud_no_sync_;
-    sensor_msgs::CameraInfo::ConstPtr latest_camera_info_;
+
+    ////////////////////////////////////////////////////////
+    // Parameters
+    ////////////////////////////////////////////////////////
+    double min_radius_;
+    double max_radius_;
+    double outlier_threshold_;
+    int max_iterations_;
+    int min_size_;
   private:
+    
   };
 }
 
