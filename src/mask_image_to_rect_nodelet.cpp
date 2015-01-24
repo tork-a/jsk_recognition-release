@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2014, JSK Lab
+ *  Copyright (c) 2015, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -33,48 +33,58 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-
-#ifndef JSK_PCL_ROS_BORDER_ESTIMATOR_H_
-#define JSK_PCL_ROS_BORDER_ESTIMATOR_H_
-
-#include <pcl_ros/pcl_nodelet.h>
-#include <pcl/range_image/range_image.h>
-#include <pcl/features/range_image_border_extractor.h>
-
-#include <sensor_msgs/PointCloud2.h>
-#include <sensor_msgs/CameraInfo.h>
-#include "jsk_pcl_ros/pcl_conversion_util.h"
-
-#include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
-#include <message_filters/synchronizer.h>
-
-#include "jsk_topic_tools/connection_based_nodelet.h"
+#include "jsk_pcl_ros/mask_image_to_rect.h"
+#include <opencv2/opencv.hpp>
+#include <sensor_msgs/image_encodings.h>
+#include <cv_bridge/cv_bridge.h>
 
 namespace jsk_pcl_ros
 {
-  class BorderEstimator: public jsk_topic_tools::ConnectionBasedNodelet
+  void MaskImageToRect::onInit()
   {
-  public:
-    typedef message_filters::sync_policies::ApproximateTime<
-    sensor_msgs::PointCloud2, sensor_msgs::CameraInfo> SyncPolicy;
+    DiagnosticNodelet::onInit();
+    pub_ = advertise<geometry_msgs::PolygonStamped>(*pnh_, "output", 1);
+  }
 
-  protected:
-    virtual void onInit();
-    virtual void estimate(const sensor_msgs::PointCloud2::ConstPtr& msg,
-                          const sensor_msgs::CameraInfo::ConstPtr& caminfo);
-    virtual void publishCloud(ros::Publisher& pub,
-                              const pcl::PointIndices& inlier,
-                              const std_msgs::Header& header);
-    virtual void subscribe();
-    virtual void unsubscribe();
-    message_filters::Subscriber<sensor_msgs::PointCloud2> sub_point_;
-    message_filters::Subscriber<sensor_msgs::CameraInfo> sub_camera_info_;
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
-    ros::Publisher pub_border_, pub_veil_, pub_shadow_;
-  private:
-    
-  };
+  void MaskImageToRect::subscribe()
+  {
+    sub_mask_ = pnh_->subscribe("input", 1, &MaskImageToRect::convert, this);
+  }
+
+  void MaskImageToRect::unsubscribe()
+  {
+    sub_mask_.shutdown();
+  }
+
+  void MaskImageToRect::convert(
+    const sensor_msgs::Image::ConstPtr& mask_msg)
+  {
+    vital_checker_->poke();
+    std::vector<cv::Point> indices;
+    cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(
+      mask_msg, sensor_msgs::image_encodings::MONO8);
+    cv::Mat mask = cv_ptr->image;
+    for (size_t j = 0; j < mask.rows; j++) {
+      for (size_t i = 0; i < mask.cols; i++) {
+        if (mask.at<uchar>(j, i) == 255) {
+          indices.push_back(cv::Point(i, j));
+        }
+      }
+    }
+    cv::Rect mask_rect = cv::boundingRect(indices);
+    geometry_msgs::PolygonStamped rect;
+    rect.header = mask_msg->header;
+    geometry_msgs::Point32 min_pt, max_pt;
+    min_pt.x = mask_rect.x;
+    min_pt.y = mask_rect.y;
+    max_pt.x = mask_rect.x + mask_rect.width;
+    max_pt.y = mask_rect.y + mask_rect.height;
+    rect.polygon.points.push_back(min_pt);
+    rect.polygon.points.push_back(max_pt);
+    pub_.publish(rect);
+  }
+  
 }
 
-#endif
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS (jsk_pcl_ros::MaskImageToRect, nodelet::Nodelet);
