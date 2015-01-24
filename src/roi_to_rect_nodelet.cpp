@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2014, JSK Lab
+ *  Copyright (c) 2015, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -33,48 +33,43 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-
-#ifndef JSK_PCL_ROS_BORDER_ESTIMATOR_H_
-#define JSK_PCL_ROS_BORDER_ESTIMATOR_H_
-
-#include <pcl_ros/pcl_nodelet.h>
-#include <pcl/range_image/range_image.h>
-#include <pcl/features/range_image_border_extractor.h>
-
-#include <sensor_msgs/PointCloud2.h>
-#include <sensor_msgs/CameraInfo.h>
-#include "jsk_pcl_ros/pcl_conversion_util.h"
-
-#include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
-#include <message_filters/synchronizer.h>
-
-#include "jsk_topic_tools/connection_based_nodelet.h"
+#include "jsk_pcl_ros/roi_to_rect.h"
 
 namespace jsk_pcl_ros
 {
-  class BorderEstimator: public jsk_topic_tools::ConnectionBasedNodelet
+  void ROIToRect::onInit()
   {
-  public:
-    typedef message_filters::sync_policies::ApproximateTime<
-    sensor_msgs::PointCloud2, sensor_msgs::CameraInfo> SyncPolicy;
+    DiagnosticNodelet::onInit();
+    pub_ = advertise<geometry_msgs::PolygonStamped>(
+      *pnh_, "output", 1);
+  }
 
-  protected:
-    virtual void onInit();
-    virtual void estimate(const sensor_msgs::PointCloud2::ConstPtr& msg,
-                          const sensor_msgs::CameraInfo::ConstPtr& caminfo);
-    virtual void publishCloud(ros::Publisher& pub,
-                              const pcl::PointIndices& inlier,
-                              const std_msgs::Header& header);
-    virtual void subscribe();
-    virtual void unsubscribe();
-    message_filters::Subscriber<sensor_msgs::PointCloud2> sub_point_;
-    message_filters::Subscriber<sensor_msgs::CameraInfo> sub_camera_info_;
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
-    ros::Publisher pub_border_, pub_veil_, pub_shadow_;
-  private:
-    
-  };
+  void ROIToRect::subscribe()
+  {
+    sub_ = pnh_->subscribe("input", 1, &ROIToRect::convert, this);
+  }
+
+  void ROIToRect::unsubscribe()
+  {
+    sub_.shutdown();
+  }
+
+  void ROIToRect::convert(
+    const sensor_msgs::CameraInfo::ConstPtr& roi_msg)
+  {
+    vital_checker_->poke();
+    geometry_msgs::PolygonStamped rect;
+    rect.header = roi_msg->header;
+    geometry_msgs::Point32 min_pt, max_pt;
+    min_pt.x = roi_msg->roi.x_offset;
+    min_pt.y = roi_msg->roi.y_offset;
+    max_pt.x = roi_msg->roi.x_offset + roi_msg->roi.width;
+    max_pt.y = roi_msg->roi.y_offset + roi_msg->roi.height;
+    rect.polygon.points.push_back(min_pt);
+    rect.polygon.points.push_back(max_pt);
+    pub_.publish(rect);
+  }
 }
 
-#endif
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS (jsk_pcl_ros::ROIToRect, nodelet::Nodelet);
