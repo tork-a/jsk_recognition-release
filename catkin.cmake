@@ -5,7 +5,7 @@ find_package(catkin REQUIRED COMPONENTS
   mk message_generation imagesift std_msgs sensor_msgs geometry_msgs cv_bridge
   image_geometry image_transport driver_base dynamic_reconfigure cmake_modules
   roscpp nodelet rostest tf rospack
-  jsk_topic_tools)
+  jsk_topic_tools pcl_ros jsk_pcl_ros)
 find_package(OpenCV REQUIRED)
 find_package(Boost REQUIRED COMPONENTS filesystem system signals)
 
@@ -23,6 +23,12 @@ endif()
 
 # Dynamic reconfigure support
 generate_dynamic_reconfigure_options(
+  cfg/BlobDetector.cfg
+  cfg/SingleChannelHistogram.cfg
+  cfg/ColorHistogramLabelMatch.cfg
+  cfg/GridLabel.cfg
+  cfg/SLICSuperPixels.cfg
+  cfg/SnakeSegmentation.cfg
   cfg/camshiftdemo.cfg
   cfg/EdgeDetector.cfg
   cfg/HoughLines.cfg
@@ -59,7 +65,7 @@ execute_process(
   MK_DIR=${mk_PREFIX}/share/mk installed
   RESULT_VARIABLE _make_failed)
 
-include_directories(include ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR}/build/SLIC-Superpixels)
+include_directories(include ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR}/build/patched-SLIC-Superpixels)
 add_executable(camshiftdemo src/camshiftdemo.cpp)
 add_executable(linemod src/linemod.cpp)
 add_executable(virtual_camera_mono src/virtual_camera_mono.cpp)
@@ -74,6 +80,8 @@ add_executable(oriented_gradient_node src/oriented_gradient_node.cpp)
 
 if(EXISTS ${jsk_topic_tools_SOURCE_DIR}/cmake/nodelet.cmake)
   include(${jsk_topic_tools_SOURCE_DIR}/cmake/nodelet.cmake)
+elseif(EXISTS ${jsk_topic_tools_SOURCE_PREFIX}/cmake/nodelet.cmake)
+  include(${jsk_topic_tools_SOURCE_PREFIX}/cmake/nodelet.cmake)
 else(EXISTS ${jsk_topic_tools_SOURCE_DIR}/cmake/nodelet.cmake)
   include(${jsk_topic_tools_PREFIX}/share/jsk_topic_tools/cmake/nodelet.cmake)
 endif(EXISTS ${jsk_topic_tools_SOURCE_DIR}/cmake/nodelet.cmake)
@@ -90,9 +98,25 @@ jsk_perception_nodelet(src/background_substraction_nodelet.cpp "jsk_perception/B
 jsk_perception_nodelet(src/hough_circles.cpp "jsk_perception/HoughCircleDetector" "hough_circles")
 jsk_perception_nodelet(src/grabcut_nodelet.cpp "jsk_perception/GrabCut" "grabcut")
 jsk_perception_nodelet(src/slic_superpixels.cpp "jsk_perception/SLICSuperPixels" "slic_super_pixels")
+jsk_perception_nodelet(src/rgb_decomposer.cpp "jsk_perception/RGBDecomposer" "rgb_decomposer")
+jsk_perception_nodelet(src/hsv_decomposer.cpp "jsk_perception/HSVDecomposer" "hsv_decomposer")
+jsk_perception_nodelet(src/lab_decomposer.cpp "jsk_perception/LabDecomposer" "lab_decomposer")
+jsk_perception_nodelet(src/ycc_decomposer.cpp "jsk_perception/YCCDecomposer" "ycc_decomposer")
+jsk_perception_nodelet(src/contour_finder.cpp "jsk_perception/ContourFinder" "contour_finder")
+jsk_perception_nodelet(src/snake_segmentation.cpp "jsk_perception/SnakeSegmentation" "snake_segmentation")
+jsk_perception_nodelet(src/colorize_labels.cpp "jsk_perception/ColorizeLabels" "colorize_labels")
+jsk_perception_nodelet(src/grid_label.cpp "jsk_perception/GridLabel" "grid_label")
+jsk_perception_nodelet(src/color_histogram_label_match.cpp "jsk_perception/ColorHistogramLabelMatch" "color_histogram_label_match")
+jsk_perception_nodelet(src/apply_mask_image.cpp "jsk_perception/ApplyMaskImage" "apply_mask_image")
+jsk_perception_nodelet(src/unapply_mask_image.cpp "jsk_perception/UnapplyMaskImage" "unapply_mask_image")
+jsk_perception_nodelet(src/single_channel_histogram.cpp "jsk_perception/SingleChannelHistogram" "single_channel_histogram")
+jsk_perception_nodelet(src/blob_detector.cpp "jsk_perception/BlobDetector" "blob_detector")
+jsk_perception_nodelet(src/add_mask_image.cpp "jsk_perception/AddMaskImage" "add_mask_image")
+jsk_perception_nodelet(src/multiply_mask_image.cpp "jsk_perception/MultiplyMaskImage" "multiply_mask_image")
+jsk_perception_nodelet(src/find_object_on_plane.cpp "jsk_perception/FindObjectOnPlane" "find_object_on_plane")
 # compiling jsk_perception library for nodelet
 add_library(${PROJECT_NAME} SHARED ${jsk_perception_nodelet_sources}
-  ${CMAKE_CURRENT_BINARY_DIR}/build/SLIC-Superpixels/slic.cpp)
+  ${CMAKE_CURRENT_BINARY_DIR}/build/patched-SLIC-Superpixels/slic.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencfg ${PROJECT_NAME}_gencpp)
 
