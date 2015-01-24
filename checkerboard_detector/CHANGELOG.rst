@@ -2,6 +2,9 @@
 Changelog for package checkerboard_detector
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.33 (2015-01-24)
+-------------------
+
 0.1.32 (2015-01-12)
 -------------------
 * [jsk_pcl_ros, checkerboard_detector] Fix offset from checker board
