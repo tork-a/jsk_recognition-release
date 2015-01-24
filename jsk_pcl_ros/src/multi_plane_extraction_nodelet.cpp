@@ -54,6 +54,7 @@ namespace jsk_pcl_ros
     ////////////////////////////////////////////////////////
     pub_ = advertise<sensor_msgs::PointCloud2>(*pnh_, "output", 1);
     nonplane_pub_ = advertise<pcl::PointCloud<pcl::PointXYZRGB> >(*pnh_, "output_nonplane_cloud", 1);
+    pub_indices_ = advertise<PCLIndicesMsg>(*pnh_, "output/indices", 1);
     if (!pnh_->getParam("max_queue_size", maximum_queue_size_)) {
       maximum_queue_size_ = 100;
     }
@@ -106,6 +107,7 @@ namespace jsk_pcl_ros
     boost::mutex::scoped_lock lock(mutex_);
     min_height_ = config.min_height;
     max_height_ = config.max_height;
+    maginify_ = config.maginify;
   }
 
   void MultiPlaneExtraction::updateDiagnostic(
@@ -175,12 +177,33 @@ namespace jsk_pcl_ros
       pcl::ExtractPolygonalPrismData<pcl::PointXYZRGB> prism_extract;
       pcl::PointCloud<pcl::PointXYZRGB>::Ptr hull_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
       geometry_msgs::Polygon the_polygon = polygons->polygons[plane_i].polygon;
+      if (the_polygon.points.size() <= 2) {
+        NODELET_WARN("too small polygon");
+        continue;
+      }
+      // compute centroid first
+      Eigen::Vector3f centroid(0, 0, 0);
       for (size_t i = 0; i < the_polygon.points.size(); i++) {
         pcl::PointXYZRGB p;
         pointFromXYZToXYZ<geometry_msgs::Point32, pcl::PointXYZRGB>(
           the_polygon.points[i], p);
+        centroid = centroid + p.getVector3fMap();
+      }
+      centroid = centroid / the_polygon.points.size();
+      
+      for (size_t i = 0; i < the_polygon.points.size(); i++) {
+        pcl::PointXYZRGB p;
+        pointFromXYZToXYZ<geometry_msgs::Point32, pcl::PointXYZRGB>(
+          the_polygon.points[i], p);
+        Eigen::Vector3f dir = (p.getVector3fMap() - centroid).normalized();
+        p.getVector3fMap() = dir * maginify_ + p.getVector3fMap();
         hull_cloud->points.push_back(p);
       }
+      
+      pcl::PointXYZRGB p_last;
+        pointFromXYZToXYZ<geometry_msgs::Point32, pcl::PointXYZRGB>(
+          the_polygon.points[0], p_last);
+      hull_cloud->points.push_back(p_last);
       
       prism_extract.setInputCloud(nonplane_cloud);
       prism_extract.setHeightLimits(min_height_, max_height_);
@@ -212,10 +235,12 @@ namespace jsk_pcl_ros
     pcl::toROSMsg(result_cloud, ros_result);
     ros_result.header = input->header;
     pub_.publish(ros_result);
-
+    PCLIndicesMsg ros_indices;
+    pcl_conversions::fromPCL(*all_result_indices, ros_indices);
+    ros_indices.header = input->header;
+    pub_indices_.publish(ros_indices);
     diagnostic_updater_->update();
   }
-  
 }
 
 PLUGINLIB_EXPORT_CLASS (jsk_pcl_ros::MultiPlaneExtraction, nodelet::Nodelet);
