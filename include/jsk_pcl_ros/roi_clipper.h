@@ -44,7 +44,8 @@
 #include <message_filters/synchronizer.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
-
+#include <sensor_msgs/PointCloud2.h>
+#include <pcl_conversions/pcl_conversions.h>
 namespace jsk_pcl_ros
 {
   class ROIClipper: public jsk_topic_tools::DiagnosticNodelet
@@ -63,10 +64,25 @@ namespace jsk_pcl_ros
     virtual void unsubscribe();
     virtual void updateDiagnostic(
       diagnostic_updater::DiagnosticStatusWrapper &stat);
+    virtual void imageCallback(
+      const sensor_msgs::Image::ConstPtr& image_msg);
+    virtual void infoCallback(
+      const sensor_msgs::CameraInfo::ConstPtr& info_msg);
+    virtual void cloudCallback(
+      const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
+    
+    boost::mutex mutex_;
+    bool not_sync_;
+    bool keep_organized_;
     ros::Publisher pub_image_;
+    ros::Publisher pub_cloud_;
     message_filters::Subscriber<sensor_msgs::Image> sub_image_;
     message_filters::Subscriber<sensor_msgs::CameraInfo> sub_info_;
     boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
+    ros::Subscriber sub_image_no_sync_;
+    ros::Subscriber sub_info_no_sync_;
+    ros::Subscriber sub_cloud_no_sync_;
+    sensor_msgs::CameraInfo::ConstPtr latest_camera_info_;
   private:
   };
 }
