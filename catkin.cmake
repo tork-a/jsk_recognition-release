@@ -64,6 +64,7 @@ add_service_files(FILES SwitchTopic.srv
 
 # generate the dynamic_reconfigure config file
 generate_dynamic_reconfigure_options(
+  cfg/HintedStickFinder.cfg
   cfg/HintedPlaneDetector.cfg
   cfg/TorusFinder.cfg
   cfg/PlaneConcatenator.cfg
@@ -287,6 +288,8 @@ jsk_pcl_nodelet(src/polygon_to_mask_image_nodelet.cpp
 jsk_pcl_nodelet(src/add_point_indices_nodelet.cpp
   "jsk_pcl/AddPointIndices" "add_point_indices")
 jsk_pcl_nodelet(src/find_object_on_plane_nodelet.cpp "jsk_pcl/FindObjectOnPlane" "find_object_on_plane")
+jsk_pcl_nodelet(src/hinted_stick_finder_nodelet.cpp
+  "jsk_pcl/HintedStickFinder" "hinted_stick_finder")
 add_library(jsk_pcl_ros SHARED ${jsk_pcl_nodelet_sources}
   src/grid_index.cpp src/grid_map.cpp src/grid_line.cpp src/geo_util.cpp
   src/pcl_conversion_util.cpp src/pcl_util.cpp
@@ -300,7 +303,7 @@ generate_messages(DEPENDENCIES ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recogni
 
 catkin_package(
     DEPENDS pcl
-    CATKIN_DEPENDS pcl_ros message_runtime ${PCL_MSGS} sensor_msgs geometry_msgs
+    CATKIN_DEPENDS pcl_ros message_runtime ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs
     INCLUDE_DIRS include
     LIBRARIES jsk_pcl_ros
 )
