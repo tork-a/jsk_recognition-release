@@ -33,57 +33,27 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-
-#ifndef JSK_PERCEPTION_SINGLE_CHANNEL_HISTOGRAM_H_
-#define JSK_PERCEPTION_SINGLE_CHANNEL_HISTOGRAM_H_
-
-#include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
-#include <jsk_recognition_msgs/ColorHistogram.h>
-
-#include <dynamic_reconfigure/server.h>
-#include <jsk_perception/SingleChannelHistogramConfig.h>
-
-#include <message_filters/subscriber.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/exact_time.h>
-#include <message_filters/sync_policies/approximate_time.h>
+#include "jsk_perception/image_utils.h"
 
 namespace jsk_perception
 {
-  class SingleChannelHistogram: public jsk_topic_tools::DiagnosticNodelet
+  cv::Rect boundingRectOfMaskImage(const cv::Mat& image)
   {
-  public:
-    typedef message_filters::sync_policies::ApproximateTime<
-    sensor_msgs::Image,
-    sensor_msgs::Image > SyncPolicy;
-    typedef SingleChannelHistogramConfig Config;
-    SingleChannelHistogram(): DiagnosticNodelet("SingleChannelHistogram") {}
-  protected:
-    virtual void onInit();
-    virtual void subscribe();
-    virtual void unsubscribe();
-    virtual void compute(
-      const sensor_msgs::Image::ConstPtr& msg);
-    virtual void compute(
-      const sensor_msgs::Image::ConstPtr& msg,
-      const sensor_msgs::Image::ConstPtr& mask_msg);
-    virtual void configCallback(Config &config, uint32_t level);
-
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> > sync_;
-    message_filters::Subscriber<sensor_msgs::Image> sub_image_;
-    message_filters::Subscriber<sensor_msgs::Image> sub_mask_;
-    boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
-    bool use_mask_;
-    ros::Subscriber sub_;
-    ros::Publisher pub_;
-    boost::mutex mutex_;
-    int hist_size_;
-    float min_value_;
-    float max_value_;
-  private:
+    int min_x = image.cols;
+    int min_y = image.rows;
+    int max_x = 0;
+    int max_y = 0;
+    for (int j = 0; j < image.rows; j++) {
+      for (int i = 0; i < image.cols; i++) {
+        if (image.at<uchar>(j, i) != 0) {
+          min_x = std::min(min_x, i);
+          min_y = std::min(min_y, j);
+          max_x = std::max(max_x, i);
+          max_y = std::max(max_y, j);
+        }
+      }
+    }
     
-  };
+    return cv::Rect(min_x, min_y, std::max(max_x - min_x, 0), std::max(max_y - min_y, 0));
+  }
 }
-
-#endif

@@ -34,56 +34,14 @@
  *********************************************************************/
 
 
-#ifndef JSK_PERCEPTION_SINGLE_CHANNEL_HISTOGRAM_H_
-#define JSK_PERCEPTION_SINGLE_CHANNEL_HISTOGRAM_H_
+#ifndef JSK_PERCEPTION_IMAGE_UTILS_
+#define JSK_PERCEPTION_IMAGE_UTILS_
 
-#include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
-#include <jsk_recognition_msgs/ColorHistogram.h>
-
-#include <dynamic_reconfigure/server.h>
-#include <jsk_perception/SingleChannelHistogramConfig.h>
-
-#include <message_filters/subscriber.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/exact_time.h>
-#include <message_filters/sync_policies/approximate_time.h>
+#include <opencv2/opencv.hpp>
 
 namespace jsk_perception
 {
-  class SingleChannelHistogram: public jsk_topic_tools::DiagnosticNodelet
-  {
-  public:
-    typedef message_filters::sync_policies::ApproximateTime<
-    sensor_msgs::Image,
-    sensor_msgs::Image > SyncPolicy;
-    typedef SingleChannelHistogramConfig Config;
-    SingleChannelHistogram(): DiagnosticNodelet("SingleChannelHistogram") {}
-  protected:
-    virtual void onInit();
-    virtual void subscribe();
-    virtual void unsubscribe();
-    virtual void compute(
-      const sensor_msgs::Image::ConstPtr& msg);
-    virtual void compute(
-      const sensor_msgs::Image::ConstPtr& msg,
-      const sensor_msgs::Image::ConstPtr& mask_msg);
-    virtual void configCallback(Config &config, uint32_t level);
-
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> > sync_;
-    message_filters::Subscriber<sensor_msgs::Image> sub_image_;
-    message_filters::Subscriber<sensor_msgs::Image> sub_mask_;
-    boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
-    bool use_mask_;
-    ros::Subscriber sub_;
-    ros::Publisher pub_;
-    boost::mutex mutex_;
-    int hist_size_;
-    float min_value_;
-    float max_value_;
-  private:
-    
-  };
+  cv::Rect boundingRectOfMaskImage(const cv::Mat& image);
 }
 
 #endif
