@@ -1,8 +1,8 @@
-// -*- mode: C++ -*-
+// -*- mode: c++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2013, Ryohei Ueda and JSK Lab
+ *  Copyright (c) 2015, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -33,26 +33,15 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_PCL_ROS_CLUSTER_POINT_INDICES_DECOMPOSER_Z_ORDER_H_
-#define JSK_PCL_ROS_CLUSTER_POINT_INDICES_DECOMPOSER_Z_ORDER_H_
 
-#include <ros/ros.h>
-#include <ros/names.h>
+#ifndef JSK_PERCEPTION_IMAGE_UTILS_
+#define JSK_PERCEPTION_IMAGE_UTILS_
 
-#include "jsk_recognition_msgs/ClusterPointIndices.h"
-#include "sensor_msgs/PointCloud2.h"
+#include <opencv2/opencv.hpp>
 
-#include "jsk_pcl_ros/cluster_point_indices_decomposer.h"
-
-namespace jsk_pcl_ros
+namespace jsk_perception
 {
-  class ClusterPointIndicesDecomposerZAxis: public ClusterPointIndicesDecomposer
-  {
-  public:
-    virtual void sortIndicesOrder(pcl::PointCloud<pcl::PointXYZ>::Ptr input,
-                                  std::vector<pcl::IndicesPtr> indices_array,
-                                  std::vector<pcl::IndicesPtr> &output_array);
-  };
+  cv::Rect boundingRectOfMaskImage(const cv::Mat& image);
 }
 
 #endif

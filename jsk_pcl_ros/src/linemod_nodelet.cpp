@@ -553,10 +553,11 @@ namespace jsk_pcl_ros
     pcl::PCDReader reader;
     reader.read(template_file_ + ".pcd", *template_cloud_);
     const std::string pose_yaml = template_file_ + "_poses.yaml";
+   YAML::Node doc;
+#ifdef USE_OLD_YAML
     std::ifstream pose_fin;
     pose_fin.open(pose_yaml.c_str(), std::ifstream::in);
     YAML::Parser parser(pose_fin);
-    YAML::Node doc;
     while (parser.GetNextDocument(doc)) {
       const YAML::Node& template_pose_yaml = doc["template_poses"];
       for (size_t i = 0; i < template_pose_yaml.size(); i++) {
@@ -570,12 +571,17 @@ namespace jsk_pcl_ros
         // compute size of bounding box
         Eigen::Vector4f minpt, maxpt;
         pcl::getMinMax3D<pcl::PointXYZRGBA>(transformed_cloud, minpt, maxpt);
-        BoundingBox bbox = boundingBoxFromPointCloud(transformed_cloud);
+        jsk_recognition_msgs::BoundingBox bbox = boundingBoxFromPointCloud(transformed_cloud);
         //ROS_INFO("bounding box size: [%f, %f, %f]", bbox.dimensions.x, bbox.dimensions.y, bbox.dimensions.z);
         template_bboxes_.push_back(bbox);
       }
     }
     pose_fin.close();
+#else
+     // yaml-cpp is greater than 0.5.0
+     doc = YAML::LoadFile(pose_yaml);
+#endif
+
     
     srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
     dynamic_reconfigure::Server<Config>::CallbackType f =
@@ -714,7 +720,7 @@ namespace jsk_pcl_ros
                                                   "8UC1",
                                                   detect_mask).toImageMsg());
       // compute translation
-      BoundingBox bbox = template_bboxes_[linemod_detection.template_id];
+      jsk_recognition_msgs::BoundingBox bbox = template_bboxes_[linemod_detection.template_id];
       pcl::PointCloud<pcl::PointXYZRGBA>::Ptr 
         result (new pcl::PointCloud<pcl::PointXYZRGBA>);
       pcl::transformPointCloud<pcl::PointXYZRGBA>(
