@@ -2,6 +2,14 @@
 Changelog for package checkerboard_detector
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.0 (2015-01-29)
+------------------
+
+0.1.34 (2015-01-29)
+-------------------
+* [jsk_perception, checkerboard_detector] Remove dependency to jsk_pcl_ros
+* Contributors: Ryohei Ueda
+
 0.1.33 (2015-01-24)
 -------------------
 
