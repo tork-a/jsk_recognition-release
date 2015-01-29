@@ -2,6 +2,14 @@
 Changelog for package jsk_recognition_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.0 (2015-01-29)
+------------------
+
+0.1.34 (2015-01-29)
+-------------------
+* [jsk_pcl_ros, jsk_perception] Use jsk_recognition_msgs
+* Contributors: Ryohei Ueda
+
 0.1.33 (2015-01-24)
 -------------------
 * [jsk_recognition_msgs] Add jsk_recognition_msgs

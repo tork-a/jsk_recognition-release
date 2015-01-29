@@ -59,6 +59,62 @@ time end
 Represent range of time.
 
 ## nodelets
+### jsk\_pcl/RGBColorFilter
+Filter pointcloud based on RGB range.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input pointcloud. rgb field is required.
+
+* `~indices` (`pcl_msgs/PointIndices`)
+
+  Indices of pointcloud. only available if `~use_indices` is true.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/PointCloud2`)
+
+  Filtered pointcloud.
+
+#### Parameters
+* `~r_max` (Integer, default: `255`)
+* `~r_min` (Integer, default: `0`)
+* `~g_max` (Integer, default: `255`)
+* `~g_min` (Integer, default: `0`)
+* `~b_max` (Integer, default: `255`)
+* `~b_min` (Integer, default: `0`)
+
+  Color range to filter.
+
+### jsk\_pcl/HSIColorFilter
+![](images/hsi_color_filter.png)
+
+Filter pointcloud based on HSI range.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input pointcloud. rgb field is required.
+
+* `~indices` (`pcl_msgs/PointIndices`)
+
+  Indices of pointcloud. only available if `~use_indices` is true.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/PointCloud2`)
+
+  Filtered pointcloud.
+
+#### Parameters
+* `~h_max` (Integer, default: `127`)
+* `~h_min` (Integer, default: `-128`)
+* `~s_max` (Integer, default: `255`)
+* `~s_min` (Integer, default: `0`)
+* `~i_max` (Integer, default: `255`)
+* `~i_min` (Integer, default: `0`)
+
+   Color range to filter.
+
 ### jsk\_pcl/AddPointIndices
 add two different `pcl_msgs/PointIndices` into one indices.
 
@@ -96,6 +152,7 @@ Convert polygon into mask image.
 * `~output` (`sensor_msgs/Image`)
 
   Mask image to fill `~input` polygon. Currently only convex polygon is supported.
+
 ### jsk\_pcl/MaskImageFilter
 ![](images/mask_image_filter.png)
 
@@ -124,10 +181,12 @@ Convert camera info with ROI to `geometry_msgs/PolygonStamped`.
 * `~input` (`sensor_msgs/CameraInfo`)
 
   Input camera info with ROI filled.
+
 #### Publishing Topic
 * `~output` (`geometry_msgs/PolygonStamped`)
 
   Output rectangle region.
+
 ### jsk\_pcl/ROIToMaskImage
 Convert camera info with ROI to mask image.
 
@@ -135,10 +194,12 @@ Convert camera info with ROI to mask image.
 * `~input` (`sensor_msgs/CameraInfo`)
 
   Input camera info with ROI filled.
+
 #### Publishing Topic
 * `~output` (`sensor_msgs/Image`)
 
   Output mask image.
+
 ### jsk\_pcl/MaskImageToROI
 Convert a mask image into camera info with roi.
 
@@ -181,7 +242,7 @@ Find a torus out of pointcloud based on RANSAC with 3-D circle model.
 
 #### Publishing Topic
 
-* `~output` (`jsk_pcl_ros/Torus`)
+* `~output` (`jsk_recognition_msgs/Torus`)
 
   Output of detection.
 
@@ -189,7 +250,7 @@ Find a torus out of pointcloud based on RANSAC with 3-D circle model.
 * `~output/coefficients` (`pcl_msgs/ModelCoefficients`)
 
   Inliers and coefficients which represents detection result.
-* `~output/array` (`jsk_pcl_ros/TorusArray`)
+* `~output/array` (`jsk_recognition_msgs/TorusArray`)
 
   Array of torus. It will be used for visualization.
 
@@ -244,7 +305,7 @@ We expect it will be used with image_view2.
   Mask image.
 
 ### jsk\_pcl/AddColorFromImage
-![](images/add_color_from_image)
+![](images/add_color_from_image.png)
 
 Add color to pointcloud (no need to be organized) from image and camera info.
 
@@ -273,15 +334,15 @@ Concatenate near planes and build new set of planes.
 * `~input` (`sensor_msgs/PointCloud2`)
 
   Input pointcloud.
-* `~input/indices` (`jsk_pcl_ros/ClusterPointIndices`)
-* `~input/polygons` (`jsk_pcl_ros/PolygonArray`)
-* `~input/coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`)
+* `~input/indices` (`jsk_recognition_msgs/ClusterPointIndices`)
+* `~input/polygons` (`jsk_recognition_msgs/PolygonArray`)
+* `~input/coefficients` (`jsk_recognition_msgs/ModelCoefficientsArray`)
   Input planes.
 
 #### Publishing Topics
-* `~output/indices` (`jsk_pcl_ros/ClusterPointIndices`)
-* `~output/polygons` (`jsk_pcl_ros/PolygonArray`)
-* `~output/coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`)
+* `~output/indices` (`jsk_recognition_msgs/ClusterPointIndices`)
+* `~output/polygons` (`jsk_recognition_msgs/PolygonArray`)
+* `~output/coefficients` (`jsk_recognition_msgs/ModelCoefficientsArray`)
   Concatenated planes. Coefficients parameters are refined by RANSAC.
 
 #### Parameters
@@ -315,7 +376,7 @@ see Voxel Cloud Connectivity Segmentation - Supervoxels for Point Clouds (J. Pap
 
   Output pointcloud downsampled by voxel grid.
 
-* `~output/indices` (`jsk_pcl_ros/ClusterPointIndices`)
+* `~output/indices` (`jsk_recognition_msgs/ClusterPointIndices`)
 
   Clustering result.
 
@@ -402,7 +463,7 @@ Build a full-model from sequential captured data.
 
   Direction of ROI as `PoseStamped`. z-axis directs the center of ROI.
 
-* `~output/roi` (`jsk_pcl_ros/PosedCameraInfo`)
+* `~output/roi` (`jsk_recognition_msgs/PosedCameraInfo`)
 
   Publish ROI of specified region as `PosedCameraInfo`.
 
@@ -643,12 +704,13 @@ to see the object.
 
   Original pointcloud.
 * `~input/pose` (`geometry_msgs/PoseStamped`)
-* `~input/box` (`jsk_pcl_ros/BoundingBox`)
+* `~input/box` (`jsk_recognition_msgs/BoundingBox`)
   Specify the pose of the bounding box. Timestamp will be ignored and camera info's timestamp will be used. If you use `~input/box`, you can change the size of attention region. There callbacks are only enabled if `~use_multiple_attention` is false.
 
 * `~input/pose_array` (`geometry_msgs/PoseArray`)
-* `~input/box_array` (`jsk_pcl_ros/BoundingBoxArray`)
+* `~input/box_array` (`jsk_recognition_msgs/BoundingBoxArray`)
   It's an array version of `~input/pose` and `~input/box`. There callbacks are only enabled if `~use_multiple_attention` is true.
+
 #### Publishing Topic
 * `~output` (`sensor_msgs/CameraInfo`)
 
@@ -720,6 +782,7 @@ We expect to use jsk\_pcl/ROIClipper with jsk\_pcl/AttentionClipper to get ROI i
 * `~input/cloud` (`sensor_msgs/PointCloud2`)
 
   This topic is only enabled if `~not_sync` is true.
+
 #### Publishing Topic
 * `~output` (`sensor_msgs/Image`)
 
@@ -780,11 +843,12 @@ Extract the points above the planes between `~min_height` and `~max_height`.
 * `~input` (`sensor_msgs/PointCloud2`):
 
    Input pointcloud.
-* `~indices` (`jsk_pcl_ros/ClusterPointIndices`)
-* `~input_polygons` (`jsk_pcl_ros/PolygonArray`)
-* `~input_coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`):
+* `~indices` (`jsk_recognition_msgs/ClusterPointIndices`)
+* `~input_polygons` (`jsk_recognition_msgs/PolygonArray`)
+* `~input_coefficients` (`jsk_recognition_msgs/ModelCoefficientsArray`):
 
    The input planes. If `~use_indices` parameter is false, `~indices` will not be used.
+
 #### Publishing Topics
 * `~output` (`sensor_msgs/PointCloud2`):
 
@@ -830,15 +894,16 @@ and evaluation function of connectivity if based on the following equation:
    normal pointcloud of `~input`
 
 #### Publishing Topics
-* `~output/inliers` (`jsk_pcl_ros/ClusterPointIndices`):
+* `~output/inliers` (`jsk_recognition_msgs/ClusterPointIndices`):
 
    Set of indices of the polygons.
-* `~output/coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`):
+* `~output/coefficients` (`jsk_recognition_msgs/ModelCoefficientsArray`):
 
    Array of coefficients of the polygons.
-* `~output/polygons` (`jsk_pcl_ros/PolygonArray`):
+* `~output/polygons` (`jsk_recognition_msgs/PolygonArray`):
 
    Polygons
+
 #### Parameters
 * `~angular_threshold` (Double, default: `0.04`)
 
@@ -864,8 +929,121 @@ and evaluation function of connectivity if based on the following equation:
 
 ### jsk\_pcl/ParticleFilterTracking
 #### What Is This
+![](images/particle_filter_tracking.png)
 
-This nodelet will track the target pointcloud which you set in rviz.
+This nodelet tracks the target pointcloud.
+
+##### Subscribing Topic
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input pointcloud
+
+* `~renew_model` (`sensor_msgs/PointCloud2`)
+
+  Reference pointcloud to tracke.
+
+* `~renew_box` (`jsk_recognition_msgs/BoundingBox`)
+
+  Bounding box information to align reference pointcloud model. Only if availabel `~align_box` parameter is true.
+
+##### Publishing Topic
+* `~track_result` (`sensor_msgs/PointCloud2`)
+
+  Reference pointcloud which is transformed by tracking result.
+
+* `~tracking_result_pose` (`geometry_msgs/PoseStamped`)
+
+  Tracking result as pose of reference pointcloud.
+
+* `~particle` (`sensor_msgs/PointCloud2`)
+
+  Particles during tracking. Only x, y and z are available.
+
+##### Advertising Servicies
+* `~renew_model` (`jsk_pcl_ros/SetPointCloud2`)
+
+  Service interface to set reference pointcloud.
+
+##### Parameters
+* `~thread_nr` (Integer, default: `cpu num`)
+
+  The number of thread used in tracking
+* `~particle_num` (Integer, default: `~max_particle_num`)
+
+  The number of initial particles
+* `~use_normal` (Boolean, default: `false`)
+
+  Use normal information to track or not.
+* `~use_hsv` (Boolean, default: `true`)
+
+  If it's true, tracker uses color information in HSV color space to
+  evaluate likelihood.
+* `~track_target_name` (Boolean, default: `track_result`)
+
+  The name of the target, it is used as frame_id of tf.
+* `~octree_resolution` (Double, default: `0.01`)
+
+  Octree resolution to search.
+* `~align_box` (Bool, default: `false`)
+
+  If it's true, tracker subscribes `~renew_box` topic and align reference model against the box.
+* `~BASE_FRAME_ID` (String, default: `NONE`)
+
+  Coordinate system of the tracker. `NONE` means "same to frame_id of input poiintcloud".
+* `~default_initial_mean` (Array of double, default: `[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]`)
+
+  Mean value of initial sampling.
+* `~initial_noise_covariance` (Array of double, default: `[0.00001, 0.00001, 0.00001, 0.00001, 0.00001, 0.00001]`)
+
+  Covariance value of initial sampling.
+
+* `~max_particle_num` (Integer, default: `1000`)
+
+  Maximum numebr of particles
+
+* `~iteration_num` (Integer, defeault: `1`)
+
+  The number of iteration per one frame.
+* `~resample_likelihood_thr` (Double, default: `0.0`)
+
+  Threshold of likelihood to resample (re-initialize) all the particles.
+* `~delta` (Double, default: `0.09`)
+
+  Delta value for KLD sampling.
+* `~epsilon` (Double, default: `0.2`)
+
+  epsilon parameter for KLD sampling.
+* `~bin_size_x` (Double, default: `0.01`)
+* `~bin_size_y` (Double, default: `0.01`)
+* `~bin_size_z` (Double, default: `0.01`)
+* `~bin_size_roll` (Double, default: `0.01`)
+* `~bin_size_pitch` (Double, default: `0.01`)
+* `~bin_size_yaw` (Double, default: `0.01`)
+
+  Size of bin for KLD sampling. Larger value means smaller number of particles.
+* `~default_step_covariance_x` (Double, default: 0.00001)
+* `~default_step_covariance_y` (Double, default: 0.00001)
+* `~default_step_covariance_z` (Double, default: 0.00001)
+* `~default_step_covariance_roll` (Double, default: 0.00001)
+* `~default_step_covariance_pitch` (Double, default: 0.00001)
+* `~default_step_covariance_yaw` (Double, default: 0.00001)
+
+  Covariance value of noise in resampling phase.
+
+* `~reversed` (Boolean, default: `false`)
+
+  Reverse relationship between reference and input. If this parameter is true,
+  tracker transforms input pointcloud instead of reference pointcloud.
+  It is useful when input pointcloud is smaller than reference pointcloud.
+
+  If this parameter is true, KLDSampling is disabled.
+* `~not_use_reference_centroid` (Boolean, default: `false`)
+
+  If this parameter is true, tracker des not use centroid of reference pointcloud as the origin of reference pointcloud.
+
+* `~not_publish_tf` (Boolean, default: `false`)
+
+  If this parameter is true, do not publish tf frame.
 
 #### Sample
 
@@ -886,6 +1064,7 @@ ResizePointsPublisher resizes PointCloud generated from depth images. It keeps *
 * `~input` (`sensor_msgs/PointCloud2`):
 
    Input PointCloud. The input should be organized pointcloud.
+
 #### Publishing Topics.
 * `~output` (`sensor_msgs/PointCloud2`):
 
@@ -936,6 +1115,7 @@ It retrieves 3-D environment as pointcloud.
 * `~output` (`sensor_msgs/PointCloud`):
 
    The topic to be used to publish series of points as a result of screenpoint.
+
 #### Advertising Servicies
 * `~screen_to_point` (`jsk_pcl_ros::TransformScreenpoint`)
 
@@ -984,6 +1164,8 @@ geometry_msgs/Vector3 vector
 
 ### jsk\_pcl/TiltLaserListener
 #### What is this
+![](images/tilt_laser_listener.png)
+
 Listen to the joint_states of tilt/spindle laser and publish time range to scane full 3-D space.
 You can choose several types of tilt/spindle lasers such as tilt-laser of PR2, infinite spindle laser of multisense.
 
@@ -993,7 +1175,7 @@ You can choose several types of tilt/spindle lasers such as tilt-laser of PR2, i
    Joint angles of laser actuator.
 
 #### Publishing Topics
-* `~output` (`jsk_pcl_ros/TimeRange`):
+* `~output` (`jsk_recognition_msgs/TimeRange`):
 
    Time range to scan 3-D space.
 * `~output_cloud` (`sensor_msgs/PointCloud2`):
@@ -1039,6 +1221,7 @@ You can choose several types of tilt/spindle lasers such as tilt-laser of PR2, i
 
    overwrap angle offset when detecting time range.
    Only available in `infinite_spindle` and `infinite_spindle_half`.
+
 ### jsk\_pcl/DepthImageCreator
 #### What is this
 Create *organized* pointcloud from non-organized pointcloud.
@@ -1050,6 +1233,7 @@ Create *organized* pointcloud from non-organized pointcloud.
 * `~info` (`sensor_msgs/CameraInfo`):
 
    Put a simulated camera according to `~info` and generate organized pointcloud.
+
 #### Publishing Topics
 * `~output` (`sensor_msgs/Image`):
 
@@ -1060,6 +1244,7 @@ Create *organized* pointcloud from non-organized pointcloud.
 * `~output_disp` (`sensor_msgs/DisparityImage`)
 
    Publish organized pointcloud as disparity image.
+
 #### Parameters
 * `~scale_depth` (Double, default: `1.0`)
 
@@ -1083,13 +1268,14 @@ Create *organized* pointcloud from non-organized pointcloud.
 * `~max_queue_size` (integer, default: `3`):
 
    Queue length of topics.
+
 ### jsk\_pcl/EuclideanClustering
 ![](images/euclidean_segmentation.png)
 #### What Is This
 Segment pointcloud based euclidean metrics, which is based on `pcl::EuclideanClusterExtraction`.
 This nodelet has topic interface and service interface.
 
-The result of clustering is published as `jsk_pcl_ros/ClusterPointIndices`.
+The result of clustering is published as `jsk_recognition_msgs/ClusterPointIndices`.
 
 If the number of the cluster is not changed across different frames, `EuclideanClustering`
 tries to track the segment.
@@ -1098,13 +1284,15 @@ tries to track the segment.
 * `~input` (`sensor_msgs/PointCloud2`):
 
    input pointcloud.
+
 #### Publishing Topics
-* `~output` (`jsk_pcl_ros/ClusterPointIndices`):
+* `~output` (`jsk_recognition_msgs/ClusterPointIndices`):
 
    Result of clustering.
-* `~cluster_num` (`jsk_pcl_ros/Int32Stamped`):
+* `~cluster_num` (`jsk_recognition_msgs/Int32Stamped`):
 
    The number of clusters.
+
 #### Advertising Services
 * `~euclidean_clustering` (`jsk_pcl_ros/EuclideanSegment`):
 
@@ -1141,20 +1329,21 @@ roslaunch jsk_pcl_ros euclidean_segmentation.launch
 ### jsk\_pcl/ClusterPointIndicesDecomposer
 ![](images/bounding_box.png)
 #### What is this
-Decompose `jsk_pcl_ros/ClusterPointIndices` into array of topics of `sensor_msgs/PointCloud` like `~output00`, `~output01` and so on.
+Decompose `jsk_recognition_msgs/ClusterPointIndices` into array of topics of `sensor_msgs/PointCloud` like `~output00`, `~output01` and so on.
 It also publishes tf of centroids of each cluster and oriented bounding box of them. The direction of the bounding box are aligned on to the nearest planes if available.
 
 #### Subscribing topics
 * `~input` (`sensor_msgs/PointCloud2`):
 
    Input pointcloud.
-* `~target` (`jsk_pcl_ros/ClusterPointIndices`):
+* `~target` (`jsk_recognition_msgs/ClusterPointIndices`):
 
    Input set of indices to represent clusters.
-* `~align_planes` (`jsk_pcl_ros/PolygonArray`):
-* `~align_planes_coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`):
+* `~align_planes` (`jsk_recognition_msgs/PolygonArray`):
+* `~align_planes_coefficients` (`jsk_recognition_msgs/ModelCoefficientsArray`):
 
    The planes for bounding box to be aligned on.
+
 #### Publishing topics
 * `~output%02d` (`sensor_msgs/PointCloud2`):
 
@@ -1162,7 +1351,7 @@ It also publishes tf of centroids of each cluster and oriented bounding box of t
 * `~debug_output` (`sensor_msgs/PointCloud2`):
 
    Concatenate all the clusters into one pointcloud and colorize each cluster to see the result of segmentation.
-* `~boxes` (`jsk_pcl_ros/BoundingBoxArray`):
+* `~boxes` (`jsk_recognition_msgs/BoundingBoxArray`):
 
    Array of oriented bounding box for each segmented cluster.
 
@@ -1198,6 +1387,7 @@ This nodelet will subscribe the sensor\_msgs::PointCloud2, calculate its centroi
 * `/tf`:
 
    Publish tf of the centroid of the input pointcloud.
+
 #### Parameters
 * `~frame` (String, required):
 
@@ -1234,24 +1424,25 @@ PCL and ROS.
    Input pointcloud. This should be **organized** pointcloud.
 
 #### Publishing topisc
-* `~output` (`jsk_pcl_ros/ClusterPointIndices`):
-* `~output_polygon` (`jsk_pcl_ros/PolygonArray`):
-* `~output_coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`)
+* `~output` (`jsk_recognition_msgs/ClusterPointIndices`):
+* `~output_polygon` (`jsk_recognition_msgs/PolygonArray`):
+* `~output_coefficients` (`jsk_recognition_msgs/ModelCoefficientsArray`)
 
    The inliers, coefficients and convex polygons of the connected polygons.
-* `~output_nonconnected` (`jsk_pcl_ros/ClusterPointIndices`):
-* `~output_nonconnected_polygon` (`jsk_pcl_ros/PolygonArray`):
-* `~output_nonconnected_coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`)
+* `~output_nonconnected` (`jsk_recognition_msgs/ClusterPointIndices`):
+* `~output_nonconnected_polygon` (`jsk_recognition_msgs/PolygonArray`):
+* `~output_nonconnected_coefficients` (`jsk_recognition_msgs/ModelCoefficientsArray`)
 
    The inliers, coefficients and polygons of the polygons of connected components analysis.
-* `~output_refined` (`jsk_pcl_ros/ClusterPointIndices`):
-* `~output_refined_polygon` (`jsk_pcl_ros/PolygonArray`):
-* `~output_refined_coefficients` (`jsk_pcl_ros/ModelCoefficientsArray`)
+* `~output_refined` (`jsk_recognition_msgs/ClusterPointIndices`):
+* `~output_refined_polygon` (`jsk_recognition_msgs/PolygonArray`):
+* `~output_refined_coefficients` (`jsk_recognition_msgs/ModelCoefficientsArray`)
 
    The inliers, coefficients and convex polygons of the refined polygons.
 * `~output_normal` (`sensor_msgs/PointCloud2`):
 
    The pointcloud of normal of `~input` pointcloud.
+
 #### Parameters
 * `~estimate_normal` (Boolean, default: `True`):
 
@@ -1361,20 +1552,20 @@ Algorithm is:
 #### Publishing Topic
 
 * `~output/polygon` (`geometry_msgs/PolygonStamped`)
-* `~output/polygon_array` (`jsk_pcl_ros/PolygonArray`)
+* `~output/polygon_array` (`jsk_recognition_msgs/PolygonArray`)
 * `~output/inliers` (`pcl_msgs/PointIndices`)
 * `~output/coefficients` (`pcl_msgs/ModelCoefficients`)
 
   Result of detection.
 
 * `~output/hint/polygon` (`geometry_msgs/PolygonStamped`)
-* `~output/hint/polygon_array` (`jsk_pcl_ros/PolygonArray`)
+* `~output/hint/polygon_array` (`jsk_recognition_msgs/PolygonArray`)
 * `~output/hint/inliers` (`pcl_msgs/PointIndices`)
 * `~output/hint/coefficients` (`pcl_msgs/ModelCoefficients`)
 
   Result of detection of hint pointcloud.
 * `~output/polygon_before_filtering` (`geometry_msgs/PolygonStamped`)
-* `~output/polygon_array_before_filtering` (`jsk_pcl_ros/PolygonArray`)
+* `~output/polygon_array_before_filtering` (`jsk_recognition_msgs/PolygonArray`)
 
   Result of detection before euclidean filtering.
 * `~output/hint_filtered_indices` (`pcl_msgs/PointIndices`)
