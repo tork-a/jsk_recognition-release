@@ -5,6 +5,7 @@ import urllib
 import urllib2
 import json
 import time
+import os
 
 from os import environ as env
 
@@ -75,20 +76,32 @@ class Jenkins2(jenkins.Jenkins):
 
 ## start from here
 j = Jenkins2('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/')
-next_build_number = j.get_job_info('trusty-travis')['nextBuildNumber']
-j.build_job('trusty-travis', {'TRAVIS_BRANCH': env['TRAVIS_BRANCH'], 'TRAVIS_COMMIT': env['TRAVIS_COMMIT'], 'TRAVIS_PULL_REQUEST': env['TRAVIS_PULL_REQUEST'], 'TRAVIS_REPO_SLUG': env['TRAVIS_REPO_SLUG'], 'ROS_DISTRO': env['ROS_DISTRO'], 'ROSWS': env['ROSWS'], 'BUILDER': env['BUILDER'], 'USE_DEB':env['USE_DEB']})
+pid = env['TRAVIS_JOB_ID']
+url = j.build_job('trusty-travis', {'TRAVIS_BRANCH': env['TRAVIS_BRANCH'], 'TRAVIS_COMMIT': env['TRAVIS_COMMIT'], 'TRAVIS_PULL_REQUEST': env['TRAVIS_PULL_REQUEST'], 'TRAVIS_REPO_SLUG': env['TRAVIS_REPO_SLUG'], 'ROS_DISTRO': env.get('ROS_DISTRO'), 'ROSWS': env.get('ROSWS'), 'BUILDER': env.get('BUILDER'), 'USE_DEB':env.get('USE_DEB'), 'EXTRA_DEB':env.get('EXTRA_DEB'), 'NOT_TEST_INSTALL':env.get('NOT_TEST_INSTALL'), 'BUILD_PKGS':env.get('BUILD_PKGS'), 'PID':pid})
+build_number = False
+while not build_number:
+    time.sleep(5)
+    numbers = []
+    for build in j.get_job_info('trusty-travis')['builds']:
+        build_info = j.get_build_info('trusty-travis', build['number'])
+        pid_info = [item for item in build_info['actions'][0]['parameters'] if item['name'] == 'PID']
+        if pid_info and pid_info[0]['value'] == pid:
+            build_number = build['number']
+        numbers.append((build['number'], pid_info and pid_info[0]['value']))
+    print("wait for {}, current build is {}".format(pid, numbers))
 
 building = True
 while building == True :
     try:
-        time.sleep(10)
-        info = j.get_build_info('trusty-travis',next_build_number)
+        time.sleep(300)
+        info = j.get_build_info('trusty-travis',build_number)
         building = info['building']
         result = info['result']
         print info['url'], "building..",building, "result...",result
     except Exception, e: 
         print(e)
 
+print j.get_build_console_output('trusty-travis', build_number)
 if result == "SUCCESS" :
     exit(0)
 else:
