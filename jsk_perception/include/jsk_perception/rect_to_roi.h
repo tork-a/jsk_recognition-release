@@ -34,36 +34,38 @@
  *********************************************************************/
 
 
-#ifndef JSK_PCL_ROS_MASK_IMAGE_TO_ROI_H_
-#define JSK_PCL_ROS_MASK_IMAGE_TO_ROI_H_
+#ifndef JSK_PERCEPTION_RECT_TO_ROI_H_
+#define JSK_PERCEPTION_RECT_TO_ROI_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
 #include <sensor_msgs/CameraInfo.h>
-#include <sensor_msgs/Image.h>
+#include <geometry_msgs/PolygonStamped.h>
 
-namespace jsk_pcl_ros
+namespace jsk_perception
 {
-  class MaskImageToROI: public jsk_topic_tools::DiagnosticNodelet
+  class RectToROI: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    MaskImageToROI(): DiagnosticNodelet("MaskImageToROI") {}
+    RectToROI(): DiagnosticNodelet("RectToROI") {}
   protected:
     virtual void onInit();
     virtual void subscribe();
     virtual void unsubscribe();
-    virtual void convert(const sensor_msgs::Image::ConstPtr& mask_msg);
+    virtual void rectCallback(
+      const geometry_msgs::PolygonStamped::ConstPtr& rect_msg);
     virtual void infoCallback(
       const sensor_msgs::CameraInfo::ConstPtr& info_msg);
 
-    ros::Subscriber sub_mask_;
+    boost::mutex mutex_;
+    ros::Subscriber sub_rect_;
     ros::Subscriber sub_info_;
     ros::Publisher pub_;
-    boost::mutex mutex_;
     sensor_msgs::CameraInfo::ConstPtr latest_camera_info_;
     
   private:
     
   };
 }
+
 
 #endif
