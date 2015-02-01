@@ -1,67 +1,128 @@
 #!/usr/bin/env python
 
+# need pip installed version of python-jenkins > 0.4.0
+
 import jenkins
 import urllib
 import urllib2
 import json
 import time
 import os
+import sys
 
 from os import environ as env
 
-print "TRAVIS_BRANCH",  env['TRAVIS_BRANCH']
-print "TRAVIS_BUILD_DIR",env['TRAVIS_BUILD_DIR']
-print "TRAVIS_BUILD_ID",env['TRAVIS_BUILD_ID']
-print "TRAVIS_BUILD_NUMBER",env['TRAVIS_BUILD_NUMBER']
-print "TRAVIS_COMMIT",env['TRAVIS_COMMIT']
-print "TRAVIS_COMMIT_RANGE",env['TRAVIS_COMMIT_RANGE']
-print "TRAVIS_JOB_ID",env['TRAVIS_JOB_ID']
-print "TRAVIS_JOB_NUMBER",env['TRAVIS_JOB_NUMBER']
-print "TRAVIS_PULL_REQUEST",env['TRAVIS_PULL_REQUEST']
-print "TRAVIS_SECURE_ENV_VARS",env['TRAVIS_SECURE_ENV_VARS']
-print "TRAVIS_REPO_SLUG",env['TRAVIS_REPO_SLUG']
-print "TRAVIS_SECURE_ENV_VARS",env['TRAVIS_SECURE_ENV_VARS']
-print "TRAVIS_PULL_REQUEST",env['TRAVIS_PULL_REQUEST']
+CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>
+     &lt;h4&gt;
+     This is jenkins buildfirm for &lt;a href=http://github.com/%(TRAVIS_REPO_SLUG)s&gt;http://github.com/%(TRAVIS_REPO_SLUG)s&lt;/a&gt;&lt;br/&gt;
+     see &lt;a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s&gt;http://travis-ci.org/%(TRAVIS_REPO_SLUG)s&lt;/a&gt; for travis page that execute this job.&lt;br&gt;
+     &lt;/h4&gt;
+     Parameters are&lt;br&gt;
+       ROS_DISTRO = %(ROS_DISTRO)s&lt;br&gt;
+       ROSWS      = %(ROSWS)s&lt;br&gt;
+       BUILDIER   = %(BUILDER)s&lt;br&gt;
+       USE_DEB    = %(USE_DEB)s&lt;br&gt;
+       EXTRA_DEB  = %(EXTRA_DEB)s&lt;br&gt;
+       NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s&lt;br&gt;
+       BUILDING_PKG = %(BUILD_PKGS)s&lt;br&gt;
+  </description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_JENKINS_UNIQUE_ID</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_PULL_REQUEST</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_COMMIT</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class='hudson.scm.NullSCM'/>
+  <assignedNode>master</assignedNode>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>
+set -x
+set -e
+env
+WORKSPACE=`pwd`
+[ "${BUILD_TAG}" = "" ] &amp;&amp; BUILD_TAG="build_tag" # jenkins usually has build_tag environment, note this is sh
+trap "pwd; sudo rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
 
-#u = urllib2.Request(j.build_job_url('trusty-travis') , "TRAVIS_BRANCH=%s&TRAVIS_COMMIT=%s&TRAVIS_REPO_SLUG=%s"%(env['TRAVIS_BRANCH'],env['TRAVIS_COMMIT'],env['TRAVIS_REPO_SLUG']))
-#print "TRAVIS_BRANCH=%s&TRAVIS_COMMIT=%s&TRAVIS_REPO_SLUG=%s&ROS_DISTRO=%s&ROSWS=%s&BUILDER=%s&USE_DEB=%s"%(env['TRAVIS_BRANCH'],env['TRAVIS_COMMIT'],env['TRAVIS_REPO_SLUG'],env['ROS_DISTRO'],env['ROSWS'],env['BUILDER'],env['USE_DEB'])
-#u = j.jenkins_open(urllib2.Request('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/job/trusty-travis/buildWithParameters',"TRAVIS_BRANCH=%s&TRAVIS_COMMIT=%s&TRAVIS_REPO_SLUG=%s&ROS_DISTRO=%s&ROSWS=%s&BUILDER=%s&USE_DEB=%s"%(env['TRAVIS_BRANCH'],env['TRAVIS_COMMIT'],env['TRAVIS_REPO_SLUG'],env['ROS_DISTRO'],env['ROSWS'],env['BUILDER'],env['USE_DEB'])))
-#print u
+git clone http://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
+cd ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
+#git fetch -q origin '+refs/pull/*:refs/remotes/pull/*'
+#git checkout -qf %(TRAVIS_COMMIT)s || git checkout -qf pull/${TRAVIS_PULL_REQUEST}/head
+if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+ git fetch origin +refs/pull/${TRAVIS_PULL_REQUEST}/merge
+ git checkout -qf FETCH_HEAD
+else
+ git checkout -qf ${TRAVIS_COMMIT}
+fi
 
-# this over rides existing methods
-BUILD_INFO = 'job/%(name)s/%(number)d/api/json?depth=0'
-class Jenkins2(jenkins.Jenkins):
 
-    def build_job(self, name, parameters=None, token=None):
-        if not self.job_exists(name):
-            raise jenkins.JenkinsException('no such job[%s]'%(name))
-        if token:
-            parameters['token'] = token
-        print self.build_job_url(name), urllib.urlencode(parameters)
-        return self.jenkins_open(urllib2.Request(self.build_job_url(name, {'foo':'bar'}), urllib.urlencode(parameters)))
+git submodule init
+git submodule update
 
-    def get_build_info(self, name, number):
-        '''
-        Get build information dictionary.
+sudo docker rm `sudo docker ps --no-trunc -a -q` || echo "ok"
+sudo docker rmi $(sudo docker images | awk '/^&lt;none&gt;/ { print $3 }') || echo "oK"
 
-        :param name: Job name, ``str``
-        :param name: Build number, ``int``
-        :returns: dictionary of build information, ``dict``
+sudo docker run -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGSS="%(BUILD_PKGS)s"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:14.04 /bin/bash -c "$(cat &lt;&lt;EOL
 
-        Example::
+cd %(TRAVIS_REPO_SLUG)s
+set -x
+trap 'exit 1' ERR
+env
 
-            >>> next_build_number = j.get_job_info('build_name')['next_build_number']
-            >>> output = j.build_job('build_'+kwargs['vcs_server_type'], params)
-            >>> sleep(10)
-            >>> build_info = j.get_build_info('build_name', next_build_number)
-            >>> print(build_info)
-            {u'building': False, u'changeSet': {u'items': [{u'date': u'2011-12-19T18:01:52.540557Z', u'msg': u'test', u'revision': 66, u'user': u'unknown', u'paths': [{u'editType': u'edit', u'file': u'/branches/demo/index.html'}]}], u'kind': u'svn', u'revisions': [{u'module': u'http://eaas-svn01.i3.level3.com/eaas', u'revision': 66}]}, u'builtOn': u'', u'description': None, u'artifacts': [{u'relativePath': u'dist/eaas-87-2011-12-19_18-01-57.war', u'displayPath': u'eaas-87-2011-12-19_18-01-57.war', u'fileName': u'eaas-87-2011-12-19_18-01-57.war'}, {u'relativePath': u'dist/eaas-87-2011-12-19_18-01-57.war.zip', u'displayPath': u'eaas-87-2011-12-19_18-01-57.war.zip', u'fileName': u'eaas-87-2011-12-19_18-01-57.war.zip'}], u'timestamp': 1324317717000, u'number': 87, u'actions': [{u'parameters': [{u'name': u'SERVICE_NAME', u'value': u'eaas'}, {u'name': u'PROJECT_NAME', u'value': u'demo'}]}, {u'causes': [{u'userName': u'anonymous', u'shortDescription': u'Started by user anonymous'}]}, {}, {}, {}], u'id': u'2011-12-19_18-01-57', u'keepLog': False, u'url': u'http://eaas-jenkins01.i3.level3.com:9080/job/build_war/87/', u'culprits': [{u'absoluteUrl': u'http://eaas-jenkins01.i3.level3.com:9080/user/unknown', u'fullName': u'unknown'}], u'result': u'SUCCESS', u'duration': 8826, u'fullDisplayName': u'build_war #87'}
-        '''
+apt-get install -qq -y git wget sudo lsb-release
+rosdep update || rosdep update || echo "OK"
+
+export SHELL=/bin/bash
+`cat .travis/travis.sh`
+
+EOL
+)"
+
+     </command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>'''
+
+BUILD_SET_CONFIG= 'job/%(name)s/%(number)d/configSubmit'
+
+class Jenkins(jenkins.Jenkins):
+    # http://blog.keshi.org/hogememo/2012/12/14/jenkins-setting-build-info
+    def set_build_config(self, name, number, display_name, description): # need to allow anonymous user to update build 
         try:
+            # print '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)
             response = self.jenkins_open(urllib2.Request(
-                self.server + BUILD_INFO % locals()))
+                self.server + BUILD_SET_CONFIG % locals(),
+                urllib.urlencode({'json': '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)})
+                ))
             if response:
-                return json.loads(response)
+                return response
             else:
                 raise jenkins.JenkinsException('job[%s] number[%d] does not exist'
                                        % (name, number))
@@ -74,34 +135,126 @@ class Jenkins2(jenkins.Jenkins):
                 % (name, number)
             )
 
-## start from here
-j = Jenkins2('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/')
-pid = env['TRAVIS_JOB_ID']
-url = j.build_job('trusty-travis', {'TRAVIS_BRANCH': env['TRAVIS_BRANCH'], 'TRAVIS_COMMIT': env['TRAVIS_COMMIT'], 'TRAVIS_PULL_REQUEST': env['TRAVIS_PULL_REQUEST'], 'TRAVIS_REPO_SLUG': env['TRAVIS_REPO_SLUG'], 'ROS_DISTRO': env.get('ROS_DISTRO'), 'ROSWS': env.get('ROSWS'), 'BUILDER': env.get('BUILDER'), 'USE_DEB':env.get('USE_DEB'), 'EXTRA_DEB':env.get('EXTRA_DEB'), 'NOT_TEST_INSTALL':env.get('NOT_TEST_INSTALL'), 'BUILD_PKGS':env.get('BUILD_PKGS'), 'PID':pid})
-build_number = False
-while not build_number:
-    time.sleep(5)
-    numbers = []
-    for build in j.get_job_info('trusty-travis')['builds']:
-        build_info = j.get_build_info('trusty-travis', build['number'])
-        pid_info = [item for item in build_info['actions'][0]['parameters'] if item['name'] == 'PID']
-        if pid_info and pid_info[0]['value'] == pid:
-            build_number = build['number']
-        numbers.append((build['number'], pid_info and pid_info[0]['value']))
-    print("wait for {}, current build is {}".format(pid, numbers))
+# set build configuration
+def set_build_configuration(name, number):
+    global j
 
-building = True
-while building == True :
-    try:
-        time.sleep(300)
-        info = j.get_build_info('trusty-travis',build_number)
-        building = info['building']
-        result = info['result']
-        print info['url'], "building..",building, "result...",result
-    except Exception, e: 
-        print(e)
+def wait_for_finished(name, number):
+    global j
+    sleep = 30
+    display = 300
+    loop = 0
+    while True :
+        try:
+            info = j.get_build_info(name, number)
+            if info['building'] is False: return info['result']
+        except Exception, e:
+            print(e)
+        if loop % (display/sleep) == 0:
+            print info['url'], "building..", info['building'], "result...", info['result']
+        time.sleep(sleep)
+        loop += 1
 
-print j.get_build_console_output('trusty-travis', build_number)
+def wait_for_building(name, number):
+    global j
+    sleep = 30
+    display = 300
+    loop = 0
+    start_building = None
+    while True:
+        try:
+            j.get_build_info(name,number)
+            start_building = True
+            return
+        except:
+            pass
+        if loop % (display/sleep) == 0:
+            print('wait for {} {}'.format(name, number))
+        time.sleep(sleep)
+        loop += 1
+
+##
+TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH')
+TRAVIS_COMMIT   = env.get('TRAVIS_COMMIT') or 'HEAD'
+TRAVIS_PULL_REQUEST     = env.get('TRAVIS_PULL_REQUEST') or 'false'
+TRAVIS_REPO_SLUG        = env.get('TRAVIS_REPO_SLUG') or 'jsk-ros-pkg/jsk_travis'
+TRAVIS_BUILD_ID         = env.get('TRAVIS_BUILD_ID')
+TRAVIS_BUILD_NUMBER     = env.get('TRAVIS_BUILD_NUMBER')
+TRAVIS_JOB_ID           = env.get('TRAVIS_JOB_ID')
+TRAVIS_JOB_NUMBER       = env.get('TRAVIS_JOB_NUMBER')
+ROS_DISTRO      = env.get('ROS_DISTRO') or 'indigo'
+ROSWS           = env.get('ROSWS') or 'wstool'
+BUILDER         = env.get('BUILDER') or 'catkin'
+USE_DEB         = env.get('USE_DEB') or 'true'
+EXTRA_DEB       = env.get('EXTRA_DEB') or ''
+NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL') or ''
+BUILD_PKGS       = env.get('BUILD_PKGS') or ''
+
+print('''
+TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
+TRAVIS_COMMIT        = %(TRAVIS_COMMIT)s
+TRAVIS_PULL_REQUEST  = %(TRAVIS_PULL_REQUEST)s
+TRAVIS_REPO_SLUG     = %(TRAVIS_REPO_SLUG)s
+TRAVIS_BUILD_ID      = %(TRAVIS_BUILD_ID)s
+TRAVIS_BUILD_NUMBER  = %(TRAVIS_BUILD_NUMBER)s
+TRAVIS_JOB_ID        = %(TRAVIS_JOB_ID)s
+TRAVIS_JOB_NUMBER    = %(TRAVIS_JOB_NUMBER)s
+TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
+ROS_DISTRO       = %(ROS_DISTRO)s
+ROSWS            = %(ROSWS)s
+BUILDER          = %(BUILDER)s
+USE_DEB          = %(USE_DEB)s
+EXTRA_DEB        = %(EXTRA_DEB)s
+NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s
+BUILD_PKGS       = %(BUILD_PKGS)s
+''' % locals())
+
+### start here
+j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
+job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 'deb', USE_DEB, EXTRA_DEB, NOT_TEST_INSTALL, BUILD_PKGS])).replace('/','-').replace(' ','-')
+if j.job_exists(job_name) is None:
+    j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
+
+## if reconfigure job is already in queue, wait for more seconds...
+while [item for item in j.get_queue_info() if item['task']['name'] == job_name]:
+    time.sleep(10)
+# reconfigure job
+j.reconfig_job(job_name, CONFIGURE_XML % locals())
+
+## get next number and run
+build_number = j.get_job_info(job_name)['nextBuildNumber']
+TRAVIS_JENKINS_UNIQUE_ID='{}.{}'.format(TRAVIS_JOB_ID,time.time())
+
+j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
+print('next build nuber is {}'.format(build_number))
+
+## wait for starting
+result = wait_for_building(job_name, build_number)
+print('start building, wait for result....')
+
+## configure description
+if TRAVIS_PULL_REQUEST != 'false':
+    github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s/pull/%(TRAVIS_PULL_REQUEST)s>PR #%(TRAVIS_PULL_REQUEST)s</a><br>'
+elif TRAVIS_BRANCH:
+    github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s/tree/%(TRAVIS_BRANCH)s>http://github.com/%(TRAVIS_REPO_SLUG)s</a><br>'
+else:
+    github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s>http://github.com/%(TRAVIS_REPO_SLUG)s</a><br>'
+
+if TRAVIS_BUILD_ID and TRAVIS_JOB_ID:
+    travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/builds/%(TRAVIS_BUILD_ID)s>Build #%(TRAVIS_BUILD_NUMBER)s</a> '+ '<a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/jobs/%(TRAVIS_JOB_ID)s>Job #%(TRAVIS_JOB_NUMBER)s</a><br>'
+else:
+    travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/>%(TRAVIS_REPO_SLUG)s</a><br>'
+j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG)s' % locals(),
+                   (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>USE_DEB=%(USE_DEB)s<br>') % locals())
+
+## wait for result
+result = wait_for_finished(job_name, build_number)
+
+## show console
+print j.get_build_console_output(job_name, build_number)
+print "======================================="
+print j.get_build_info(job_name, build_number)['url']
+print "======================================="
 if result == "SUCCESS" :
     exit(0)
 else:
