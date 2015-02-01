@@ -1,6 +1,167 @@
 # jsk_perception
 
 ## nodes and nodelets
+
+### jsk\_pcl/RectToROI
+Convert rectangle (`geometry_msgs/Polygon`) into ROI with camera info (`sensor_msgs/CameraInfo`).
+
+We expect it will be used with image_view2.
+
+#### Subscribing Topic
+* `~input` (`geometry_msgs/Polygon`)
+
+  Polygon to represent rectangle region of image.
+* `~input/camera_info` (`sensor_msgs/CameraInfo`)
+
+  Original camera info.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/CameraInfo`)
+
+  camera info with ROI filled by `~input`.
+
+### jsk\_pcl/ROIToRect
+Convert camera info with ROI to `geometry_msgs/PolygonStamped`.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/CameraInfo`)
+
+  Input camera info with ROI filled.
+
+#### Publishing Topic
+* `~output` (`geometry_msgs/PolygonStamped`)
+
+  Output rectangle region.
+
+### jsk\_pcl/RectToMaskImage
+Convert rectangle (`geometry_msgs/Polygon`) into mask image (`sensor_msgs/Image`)
+
+We expect it will be used with image_view2.
+
+#### Subscribing Topic
+* `~input` (`geometry_msgs/Polygon`)
+
+  Polygon to represent rectangle region of image.
+* `~input/camera_info` (`sensor_msgs/CameraInfo`)
+
+  Original camera info.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/Image`)
+
+  Mask image.
+
+
+### jsk\_perception/PolygonToMaskImage
+![](images/polygon_to_mask_image.png)
+
+Convert polygon into mask image.
+
+#### Subscribing Topic
+* `~input` (`geometry_msgs/PolygonStamped`)
+
+  Input 3-D polygon.
+* `~input/camera_info` (`sensor_msgs/CameraInfo`)
+
+  Input camera info to project 3-D polygon.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/Image`)
+
+  Mask image to fill `~input` polygon. Currently only convex polygon is supported.
+
+### jsk\_perception/ROIToMaskImage
+Convert camera info with ROI to mask image.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/CameraInfo`)
+
+  Input camera info with ROI filled.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/Image`)
+
+  Output mask image.
+
+### jsk\_perception/MaskImageToROI
+Convert a mask image into camera info with roi.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/Image`)
+
+  Input mask image.
+* `~input/camera_info` (`sensor_msgs/CameraInfo`)
+
+  Original camera info.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/CameraInfo`)
+
+  Camera info with ROI field filled.
+
+### jsk\_perception/MaskImageToRect
+Convert a mask image into geometry_msgs::PolygonStamped.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/Image`)
+
+  Input mask image.
+
+#### Publishing Topic
+* `~output` (`geometry_msgs/PolygonStamped`)
+
+  PolygonStamped message which only contains two points. Minimum point and Maximum point to represent bounding box in image.
+
+### jsk\_perception/ErodeMaskImage
+![](images/erode_mask_image.png)
+
+Erode binary image.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/Image`)
+
+  Input image
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/Image`)
+
+  Output eroded image.
+
+#### Parameters
+* `~erode_method` (`0`, `1` or `2`, default: `0`)
+
+  Method to erode image. 0 means rectangular box model,
+  1 meand cross model and 2 means ellipse.
+
+* `~erode_size` (Integer, default: `1`)
+
+  Size to erode
+
+### jsk\_perception/DilateMaskImage
+![](images/dilate_mask_image.png)
+
+Dilate binary image.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/Image`)
+
+  Input image
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/Image`)
+
+  Output dilated image.
+
+#### Parameters
+* `~dilate_method` (`0`, `1` or `2`, default: `0`)
+
+  Method to dilate image. 0 means rectangular box model,
+  1 meand cross model and 2 means ellipse.
+
+* `~dilate_size` (Integer, default: `1`)
+
+  Size to dilate
+
 ### jsk\_perception/GridLabel
 ![](images/grid_label.jpg)
 
@@ -144,7 +305,7 @@ Compute histogram of single channel image.
 
   Mask image. if `~use_mask` is true, histogram is computed with this mask image.
 #### Publishing Topic
-* `~output` (`jsk_pcl_ros/ColorHistogram`)
+* `~output` (`jsk_recognition_msgs/ColorHistogram`)
 
   Histogram of `~input` image.
 
