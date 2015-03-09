@@ -53,7 +53,9 @@ namespace jsk_pcl_ros
     typename dynamic_reconfigure::Server<Config>::CallbackType f =
       boost::bind (&HintedStickFinder::configCallback, this, _1, _2);
     srv_->setCallback (f);
-
+    pnh_->param("use_normal", use_normal_, false);
+    pnh_->param("not_synchronize", not_synchronize_, false);
+    
     pub_line_filtered_indices_ = advertise<PCLIndicesMsg>(
       *pnh_, "debug/line_filtered_indices", 1);
     pub_line_filtered_normal_ = advertise<sensor_msgs::PointCloud2>(
@@ -70,20 +72,68 @@ namespace jsk_pcl_ros
 
   void HintedStickFinder::subscribe()
   {
-    sub_polygon_.subscribe(*pnh_, "input/hint/line", 1);
-    sub_info_.subscribe(*pnh_, "input/camera_info", 1);
-    sub_cloud_.subscribe(*pnh_, "input", 1);
-    sync_ = boost::make_shared<message_filters::Synchronizer<ASyncPolicy> >(100);
-    sync_->connectInput(sub_polygon_, sub_info_, sub_cloud_);
-    sync_->registerCallback(boost::bind(&HintedStickFinder::detect, this,
-                                        _1, _2, _3));
+    if (!not_synchronize_) {
+      sub_polygon_.subscribe(*pnh_, "input/hint/line", 1);
+      sub_info_.subscribe(*pnh_, "input/camera_info", 1);
+      sub_cloud_.subscribe(*pnh_, "input", 1);
+      sync_ = boost::make_shared<message_filters::Synchronizer<ASyncPolicy> >(100);
+      sync_->connectInput(sub_polygon_, sub_info_, sub_cloud_);
+      sync_->registerCallback(boost::bind(&HintedStickFinder::detect, this,
+                                          _1, _2, _3));
+    }
+    else {
+      sub_no_sync_cloud_ = pnh_->subscribe(
+        "input", 1, &HintedStickFinder::cloudCallback, this);
+      sub_no_sync_camera_info_ = pnh_->subscribe(
+        "input/camera_info", 1, &HintedStickFinder::infoCallback, this);
+      sub_no_sync_polygon_ = pnh_->subscribe(
+        "input/hint/line", 1, &HintedStickFinder::hintCallback, this);
+    }
   }
 
+
+  void HintedStickFinder::cloudCallback(
+      const sensor_msgs::PointCloud2::ConstPtr& cloud_msg)
+  {
+    {
+      boost::mutex::scoped_lock lock(mutex_);
+      if (!latest_hint_ || !latest_camera_info_) {
+        // not yet ready
+        NODELET_WARN_THROTTLE(1, "~input/hint/lline or ~input/camera_info is not ready");
+        return;
+      }
+    }
+    detect(latest_hint_, latest_camera_info_, cloud_msg);
+  }
+
+
+  void HintedStickFinder::hintCallback(
+    const geometry_msgs::PolygonStamped::ConstPtr& hint_msg)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    latest_hint_ = hint_msg;
+  }
+
+  void HintedStickFinder::infoCallback(
+    const sensor_msgs::CameraInfo::ConstPtr& info_msg)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    latest_camera_info_ = info_msg;
+  }
+  
+  
   void HintedStickFinder::unsubscribe()
   {
-    sub_polygon_.unsubscribe();
-    sub_info_.unsubscribe();
-    sub_cloud_.unsubscribe();
+    if (!not_synchronize_) {
+      sub_polygon_.unsubscribe();
+      sub_info_.unsubscribe();
+      sub_cloud_.unsubscribe();
+    }
+    else {
+      sub_no_sync_cloud_.shutdown();
+      sub_no_sync_camera_info_.shutdown();
+      sub_no_sync_polygon_.shutdown();
+    }
   }
 
   void HintedStickFinder::detect(
@@ -92,6 +142,8 @@ namespace jsk_pcl_ros
     const sensor_msgs::PointCloud2::ConstPtr& cloud_msg)
   {
     boost::mutex::scoped_lock lock(mutex_);
+    NODELET_WARN("starting detection");
+    ros::Time start_time = ros::Time::now();
     image_geometry::PinholeCameraModel model;
     model.fromCameraInfo(camera_info_msg);
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud
@@ -108,8 +160,27 @@ namespace jsk_pcl_ros
       (new pcl::PointCloud<pcl::Normal>);
     pcl::PointCloud<pcl::PointXYZ>::Ptr normals_cloud
       (new pcl::PointCloud<pcl::PointXYZ>);
-    normalEstimate(cloud, candidate_indices, *normals, *normals_cloud);
-    fittingCylinder(normals_cloud, normals,  a, b);
+    if (!use_normal_) {
+      normalEstimate(cloud, candidate_indices, *normals, *normals_cloud);
+    }
+    else {
+      // we don't need to compute normal
+      pcl::PointCloud<pcl::Normal>::Ptr all_normals
+        (new pcl::PointCloud<pcl::Normal>);
+      pcl::fromROSMsg(*cloud_msg, *all_normals);
+      pcl::ExtractIndices<pcl::PointXYZ> xyz_extract;
+      xyz_extract.setInputCloud(cloud);
+      xyz_extract.setIndices(candidate_indices);
+      xyz_extract.filter(*normals_cloud);
+      
+      pcl::ExtractIndices<pcl::Normal> normal_extract;
+      normal_extract.setInputCloud(all_normals);
+      normal_extract.setIndices(candidate_indices);
+      normal_extract.filter(*normals);
+    }
+    fittingCylinder(normals_cloud, normals, a, b);
+    ros::Time end_time = ros::Time::now();
+    NODELET_WARN("detection time: %f", (end_time - start_time).toSec());
   }
 
   void HintedStickFinder::normalEstimate(
@@ -130,6 +201,22 @@ namespace jsk_pcl_ros
     ex.setInputCloud(cloud);
     ex.setIndices(indices);
     ex.filter(normals_cloud);
+  }
+
+  bool HintedStickFinder::rejected2DHint(
+    const Cylinder::Ptr& cylinder,
+    const Eigen::Vector3f& a,
+    const Eigen::Vector3f& b)
+  {
+    Eigen::Vector3f hint_dir((b - a));
+    hint_dir[2] = 0;
+    hint_dir.normalize();
+    Eigen::Vector3f cylinder_dir(cylinder->getDirection());
+    cylinder_dir[2] = 0;
+    cylinder_dir.normalize();
+    double ang = acos(cylinder_dir.dot(hint_dir));
+    NODELET_INFO("angle: %f", ang);
+    return !(ang < eps_2d_angle_ || (M_PI - ang) < eps_2d_angle_);
   }
   
   void HintedStickFinder::fittingCylinder(
@@ -157,14 +244,17 @@ namespace jsk_pcl_ros
     for (size_t i = 0; i < cylinder_fitting_trial_; i++) {
       seg.segment(*inliers, *coefficients);
       if (inliers->indices.size() > min_inliers_) {
+        Eigen::Vector3f dir(coefficients->values[3],
+                            coefficients->values[4],
+                            coefficients->values[5]);
+        if (dir.dot(Eigen::Vector3f(0, -1, 0)) < 0) {
+          dir = -dir;
+        }
         Cylinder::Ptr cylinder(new Cylinder(Eigen::Vector3f(
                                               coefficients->values[0],
                                               coefficients->values[1],
                                               coefficients->values[2]),
-                                            Eigen::Vector3f(
-                                              coefficients->values[3],
-                                              coefficients->values[4],
-                                              coefficients->values[5]),
+                                            dir,
                                             coefficients->values[6]));
         pcl::PointIndices::Ptr cylinder_indices
           (new pcl::PointIndices);
@@ -176,39 +266,37 @@ namespace jsk_pcl_ros
         cylinder->estimateCenterAndHeight(
           *filtered_cloud, *cylinder_indices,
           center, height);
-        Eigen::Vector3f uz = Eigen::Vector3f(
-          coefficients->values[3],
-          coefficients->values[4],
-          coefficients->values[5]).normalized();
-        // build maker
-        visualization_msgs::Marker marker;
-        cylinder->toMarker(marker, center, uz, height);
-        pcl_conversions::fromPCL(filtered_cloud->header, marker.header);
-        pub_cylinder_marker_.publish(marker);
-        geometry_msgs::PoseStamped pose;
-        pose.header = marker.header;
-        pose.pose = marker.pose;
-        pub_cylinder_pose_.publish(pose);
-
-        PCLIndicesMsg ros_inliers;
-        pcl_conversions::fromPCL(*inliers, ros_inliers);
-        pub_inliers_.publish(ros_inliers);
-        PCLModelCoefficientMsg ros_coefficients;
-        ros_coefficients.header = pcl_conversions::fromPCL(coefficients->header);
-        ros_coefficients.values.push_back(center[0]);
-        ros_coefficients.values.push_back(center[1]);
-        ros_coefficients.values.push_back(center[2]);
-        ros_coefficients.values.push_back(coefficients->values[3]);
-        ros_coefficients.values.push_back(coefficients->values[4]);
-        ros_coefficients.values.push_back(coefficients->values[5]);
-        ros_coefficients.values.push_back(coefficients->values[6]);
-        ros_coefficients.values.push_back(height);
-        pub_coefficients_.publish(ros_coefficients);
+        if (!rejected2DHint(cylinder, a, b)) {
+          Eigen::Vector3f uz = Eigen::Vector3f(
+            dir).normalized();
+          // build maker
+          visualization_msgs::Marker marker;
+          cylinder->toMarker(marker, center, uz, height);
+          pcl_conversions::fromPCL(filtered_cloud->header, marker.header);
+          pub_cylinder_marker_.publish(marker);
+          geometry_msgs::PoseStamped pose;
+          pose.header = marker.header;
+          pose.pose = marker.pose;
+          pub_cylinder_pose_.publish(pose);
+          
+          PCLIndicesMsg ros_inliers;
+          pcl_conversions::fromPCL(*inliers, ros_inliers);
+          pub_inliers_.publish(ros_inliers);
+          PCLModelCoefficientMsg ros_coefficients;
+          ros_coefficients.header = pcl_conversions::fromPCL(coefficients->header);
+          ros_coefficients.values.push_back(center[0]);
+          ros_coefficients.values.push_back(center[1]);
+          ros_coefficients.values.push_back(center[2]);
+          ros_coefficients.values.push_back(dir[0]);
+          ros_coefficients.values.push_back(dir[1]);
+          ros_coefficients.values.push_back(dir[2]);
+          ros_coefficients.values.push_back(coefficients->values[6]);
+          ros_coefficients.values.push_back(height);
+          pub_coefficients_.publish(ros_coefficients);
         return;
+        }
       }
-      else {
-        NODELET_WARN("failed to detect cylinder [%lu/%d]", i, cylinder_fitting_trial_);
-      }
+      NODELET_WARN("failed to detect cylinder [%lu/%d]", i, cylinder_fitting_trial_);
     }
   }
   
@@ -273,6 +361,7 @@ namespace jsk_pcl_ros
     min_probability_ = config.min_probability;
     cylinder_fitting_trial_ = config.cylinder_fitting_trial;
     min_inliers_ = config.min_inliers;
+    eps_2d_angle_ = config.eps_2d_angle;
   }
 }
 
