@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -592,7 +592,7 @@ namespace jsk_pcl_ros
     pub_cloud_ = advertise<sensor_msgs::PointCloud2>(*pnh_, "output", 1);
     pub_detect_mask_ = advertise<sensor_msgs::Image>(*pnh_, "output/mask", 1);
     pub_pose_ = advertise<geometry_msgs::PoseStamped>(*pnh_, "output/pose", 1);
-    pub_original_template_cloud_ = advertise<geometry_msgs::PoseStamped>(
+    pub_original_template_cloud_ = advertise<sensor_msgs::PointCloud2>(
       *pnh_, "output/template", 1);
   }
 

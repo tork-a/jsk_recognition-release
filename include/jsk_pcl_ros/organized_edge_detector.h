@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -42,11 +42,11 @@
 #include <jsk_pcl_ros/OrganizedEdgeDetectorConfig.h>
 #include <dynamic_reconfigure/server.h>
 #include <image_transport/image_transport.h>
-#include "jsk_pcl_ros/connection_based_nodelet.h"
+#include "jsk_topic_tools/connection_based_nodelet.h"
 
 namespace jsk_pcl_ros
 {
-  class OrganizedEdgeDetector: public ConnectionBasedNodelet
+  class OrganizedEdgeDetector: public jsk_topic_tools::ConnectionBasedNodelet
   {
   public:
     typedef pcl::PointXYZRGB PointT;
