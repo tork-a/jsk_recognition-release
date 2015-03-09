@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -48,17 +48,27 @@
 #include <pcl/common/centroid.h>
 #include <pcl/filters/extract_indices.h>
 
+#include <jsk_topic_tools/diagnostic_nodelet.h>
+
 namespace jsk_pcl_ros
 {
-  class CentroidPublisher: public pcl_ros::PCLNodelet
+  class CentroidPublisher: public jsk_topic_tools::DiagnosticNodelet
   {
+  public:
+    CentroidPublisher(): DiagnosticNodelet("CentroidPublisher") {}
   protected:
-    ros::Subscriber sub_input_;
-    tf::TransformBroadcaster br;
-    std::string frame;
-    virtual void extract(const sensor_msgs::PointCloud2ConstPtr &input);
-  private:
     virtual void onInit();
+    virtual void subscribe();
+    virtual void unsubscribe();
+    virtual void extract(const sensor_msgs::PointCloud2ConstPtr &input);
+    
+    ros::Subscriber sub_input_;
+    tf::TransformBroadcaster br_;
+    std::string frame_;
+    bool publish_tf_;
+    ros::Publisher pub_pose_;
+    ros::Publisher pub_point_;
+  private:
   };
 }
 
