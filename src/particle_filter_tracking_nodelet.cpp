@@ -14,7 +14,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -116,8 +116,21 @@ namespace jsk_pcl_ros
     tracker_set_use_normal(use_normal);
     
     //Setup coherence object for tracking
-    ApproxNearestPairPointCloudCoherence<PointT>::Ptr
-      coherence(new ApproxNearestPairPointCloudCoherence<PointT>);
+    bool enable_cache;
+    pnh_->param("enable_cache", enable_cache, false);
+    ApproxNearestPairPointCloudCoherence<PointT>::Ptr coherence;
+    if (enable_cache) {
+      double cache_bin_size_x, cache_bin_size_y, cache_bin_size_z;
+      pnh_->param("cache_size_x", cache_bin_size_x, 0.01);
+      pnh_->param("cache_size_y", cache_bin_size_y, 0.01);
+      pnh_->param("cache_size_z", cache_bin_size_z, 0.01);
+      coherence.reset(new CachedApproxNearestPairPointCloudCoherence<PointT>(
+                        cache_bin_size_x, cache_bin_size_y, cache_bin_size_z));
+    }
+    else {
+      coherence.reset(new ApproxNearestPairPointCloudCoherence<PointT>());
+    }
+    
 
     boost::shared_ptr<DistanceCoherence<PointT> >
       distance_coherence(new DistanceCoherence<PointT>);
@@ -134,7 +147,9 @@ namespace jsk_pcl_ros
        (new pcl::search::Octree<PointT>(octree_resolution));
     //boost::shared_ptr<pcl::search::KdTree<PointT> > search(new pcl::search::KdTree<PointT>());
     coherence->setSearchMethod(search);
-    coherence->setMaximumDistance(octree_resolution * 10);
+    double max_distance;
+    pnh_->param("max_distance", max_distance, 0.1);
+    coherence->setMaximumDistance(max_distance);
 
     tracker_set_cloud_coherence(coherence);
 
