@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -54,6 +54,7 @@ namespace jsk_pcl_ros
   protected:
     ros::Subscriber sub_input_;
     ros::Publisher pub_;
+    ros::Publisher pub_with_xyz_;
     boost::mutex mutex_;
     int estimation_method_;
     bool depth_dependent_smoothing_;
