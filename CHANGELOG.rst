@@ -2,6 +2,11 @@
 Changelog for package checkerboard_detector
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.4 (2015-03-08)
+------------------
+* Fix license: WillowGarage -> JSK Lab
+* Contributors: Ryohei Ueda
+
 0.2.3 (2015-02-02)
 ------------------
 * Remove rosbuild files
