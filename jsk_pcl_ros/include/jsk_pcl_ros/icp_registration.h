@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -57,7 +57,7 @@ namespace jsk_pcl_ros
   class ICPRegistration: public jsk_topic_tools::ConnectionBasedNodelet
   {
   public:
-    typedef pcl::PointXYZRGB PointT;
+    typedef pcl::PointXYZRGBNormal PointT;
     typedef jsk_pcl_ros::ICPRegistrationConfig Config;
     typedef message_filters::sync_policies::ExactTime<
       sensor_msgs::PointCloud2,
@@ -114,6 +114,7 @@ namespace jsk_pcl_ros
       const sensor_msgs::CameraInfo::ConstPtr& msg);
     virtual void subscribe();
     virtual void unsubscribe();
+    
     ////////////////////////////////////////////////////////
     // ROS variables
     ////////////////////////////////////////////////////////
@@ -143,6 +144,13 @@ namespace jsk_pcl_ros
     boost::shared_ptr<message_filters::Synchronizer<ReferenceSyncPolicy> > sync_reference_;
     tf::TransformListener* tf_listener_;
 
+    /** @brief
+     * Store value of ~use_normal.
+     * If this parameter is true, ICPRegistration nodelet expects reference and input
+     * pointcloud have normal_x, normal_y and normal_z fields. 
+     */
+    bool use_normal_;
+    
     ////////////////////////////////////////////////////////
     // parameters for ICP
     ////////////////////////////////////////////////////////
