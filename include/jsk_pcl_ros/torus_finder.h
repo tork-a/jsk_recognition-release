@@ -43,6 +43,9 @@
 #include <jsk_recognition_msgs/Torus.h>
 #include <jsk_pcl_ros/TorusFinderConfig.h>
 #include <dynamic_reconfigure/server.h>
+#include <geometry_msgs/PoseStamped.h>
+#include <Eigen/Core>
+
 namespace jsk_pcl_ros
 {
   class TorusFinder: public jsk_topic_tools::DiagnosticNodelet
@@ -66,7 +69,9 @@ namespace jsk_pcl_ros
     ros::Publisher pub_torus_array_;
     ros::Publisher pub_inliers_;
     ros::Publisher pub_coefficients_;
+    ros::Publisher pub_pose_stamped_;
     boost::mutex mutex_;
+    Eigen::Vector3f hint_axis_;
 
     ////////////////////////////////////////////////////////
     // Parameters
@@ -74,10 +79,12 @@ namespace jsk_pcl_ros
     double min_radius_;
     double max_radius_;
     double outlier_threshold_;
+    double eps_hint_angle_;
+    bool use_hint_;
+    bool use_normal_;
     int max_iterations_;
     int min_size_;
   private:
-    
   };
 }
 
