@@ -40,6 +40,8 @@
 #include <cfloat>
 #include <pcl/surface/ear_clipping.h>
 #include <pcl/conversions.h>
+#include <boost/tuple/tuple_comparison.hpp>
+#include <pcl/segmentation/extract_polygonal_prism_data.h>
 // #define DEBUG_GEO_UTIL
 namespace jsk_pcl_ros
 {
@@ -264,18 +266,27 @@ namespace jsk_pcl_ros
     normal_ = Eigen::Vector3f(coefficients[0], coefficients[1], coefficients[2]);
     d_ = coefficients[3] / normal_.norm();
     normal_.normalize();
+    initializeCoordinates();
+  }
+
+  Plane::Plane(const boost::array<float, 4>& coefficients)
+  {
+    normal_ = Eigen::Vector3f(coefficients[0], coefficients[1], coefficients[2]);
+    d_ = coefficients[3] / normal_.norm();
+    normal_.normalize();
+    initializeCoordinates();
   }
 
   Plane::Plane(Eigen::Vector3f normal, double d) :
     normal_(normal.normalized()), d_(d / normal.norm())
   {
-    
+    initializeCoordinates();
   }
   
   Plane::Plane(Eigen::Vector3f normal, Eigen::Vector3f p) :
     normal_(normal.normalized()), d_(- normal.dot(p) / normal.norm())
   {
-    
+    initializeCoordinates();
   }
           
   
@@ -441,9 +452,22 @@ namespace jsk_pcl_ros
 
   double Plane::getD() 
   {
-  return d_;
+    return d_;
   }
 
+  void Plane::initializeCoordinates()
+  {
+    Eigen::Quaternionf rot;
+    rot.setFromTwoVectors(Eigen::Vector3f::UnitZ(), getNormal());
+    plane_coordinates_
+      = Eigen::Affine3f::Identity() * rot * Eigen::Translation3f(0, 0, d_);
+  }
+  
+  Eigen::Affine3f Plane::coordinates()
+  {
+    return plane_coordinates_;
+  }
+  
   Polygon Polygon::createPolygonWithSkip(const Vertices& vertices)
   {
     const double thr = 0.01;
@@ -948,6 +972,23 @@ namespace jsk_pcl_ros
     return true;
   }
 
+  ConvexPolygon::Ptr ConvexPolygon::magnifyByDistance(const double distance)
+  {
+    // compute centroid
+    Eigen::Vector3f centroid(0, 0, 0);
+    for (size_t i = 0; i < vertices_.size(); i++) {
+      centroid = centroid + vertices_[i];
+    }
+    centroid = centroid / vertices_.size();
+
+    Vertices new_vertices;
+    for (size_t i = 0; i < vertices_.size(); i++) {
+      new_vertices.push_back((vertices_[i] - centroid).normalized() * distance + vertices_[i]);
+    }
+    ConvexPolygon::Ptr ret (new ConvexPolygon(new_vertices));
+    return ret;
+  }
+  
   ConvexPolygon::Ptr ConvexPolygon::magnify(const double scale_factor)
   {
     // compute centroid
@@ -984,6 +1025,96 @@ namespace jsk_pcl_ros
     Eigen::Vector3f foot_point;
     Plane::project(p, foot_point);
     return isInside(foot_point);
+  }
+
+  GridPlane::GridPlane(ConvexPolygon::Ptr plane, const double resolution):
+    convex_(plane), resolution_(resolution)
+  {
+
+  }
+
+  GridPlane::~GridPlane()
+  {
+
+  }
+
+  GridPlane::IndexPair GridPlane::projectLocalPointAsIndexPair(
+    const Eigen::Vector3f& p)
+  {
+    double offset_x = p[0] + 0.5 * resolution_;
+    double offset_y = p[1] + 0.5 * resolution_;
+    return boost::make_tuple<int, int>(std::ceil(offset_x / resolution_),
+                                       std::ceil(offset_y / resolution_));
+  }
+
+  void GridPlane::addIndexPair(IndexPair pair)
+  {
+    cells_.insert(pair);
+  }
+
+  Eigen::Vector3f GridPlane::unprojectIndexPairAsLocalPoint(
+    const IndexPair& pair)
+  {
+    return Eigen::Vector3f(pair.get<0>() * resolution_,
+                           pair.get<1>() * resolution_,
+                           0);
+  }
+
+  Eigen::Vector3f GridPlane::unprojectIndexPairAsGlobalPoint(
+    const IndexPair& pair)
+  {
+    Eigen::Vector3f local_point = unprojectIndexPairAsLocalPoint(pair);
+    return convex_->coordinates() * local_point;
+  }
+  
+  void GridPlane::fillCellsFromPointCloud(
+    const pcl::PointCloud<pcl::PointNormal>::Ptr& cloud,
+    double distance_threshold)
+  {
+    Eigen::Affine3f local_coordinates = convex_->coordinates();
+    Eigen::Affine3f inv_local_coordinates = local_coordinates.inverse();
+    
+    pcl::ExtractPolygonalPrismData<pcl::PointNormal> prism_extract;
+    pcl::PointCloud<pcl::PointNormal>::Ptr
+      hull_cloud (new pcl::PointCloud<pcl::PointNormal>);
+    convex_->boundariesToPointCloud<pcl::PointNormal>(*hull_cloud);
+    prism_extract.setInputCloud(cloud);
+    prism_extract.setHeightLimits(-distance_threshold, distance_threshold);
+    prism_extract.setInputPlanarHull(hull_cloud);
+    pcl::PointIndices output_indices;
+    prism_extract.segment(output_indices);
+    
+    for (size_t i = 0; i < output_indices.indices.size(); i++) {
+      int point_index = output_indices.indices[i];
+      pcl::PointNormal p = cloud->points[point_index];
+      Eigen::Vector3f ep = p.getVector3fMap();
+      Eigen::Vector3f local_ep = inv_local_coordinates * ep;
+      IndexPair pair = projectLocalPointAsIndexPair(local_ep);
+      addIndexPair(pair);
+    }
+  }
+  
+  jsk_recognition_msgs::SimpleOccupancyGrid GridPlane::toROSMsg()
+  {
+    jsk_recognition_msgs::SimpleOccupancyGrid ros_msg;
+    std::vector<float> coeff;
+    convex_->toCoefficients(coeff);
+    ros_msg.coefficients[0] = coeff[0];
+    ros_msg.coefficients[1] = coeff[1];
+    ros_msg.coefficients[2] = coeff[2];
+    ros_msg.coefficients[3] = -coeff[3]; // is it correct...??
+    ros_msg.resolution = resolution_;
+    for (std::set<IndexPair>::iterator it = cells_.begin();
+         it != cells_.end();
+         ++it) {
+      IndexPair pair = *it;
+      Eigen::Vector3f c = unprojectIndexPairAsLocalPoint(pair);
+      geometry_msgs::Point p;
+      pointFromVectorToXYZ<Eigen::Vector3f, geometry_msgs::Point>(
+        c, p);
+      ros_msg.cells.push_back(p);
+    }
+    return ros_msg;
   }
   
   Cube::Cube(const Eigen::Vector3f& pos, const Eigen::Quaternionf& rot):
