@@ -47,6 +47,7 @@
 #include <boost/thread.hpp>
 #include <geometry_msgs/Polygon.h>
 #include <jsk_recognition_msgs/BoundingBox.h>
+#include <jsk_recognition_msgs/SimpleOccupancyGrid.h>
 #include <boost/tuple/tuple.hpp>
 
 ////////////////////////////////////////////////////////
@@ -132,6 +133,7 @@ namespace jsk_pcl_ros
   public:
     typedef boost::shared_ptr<Plane> Ptr;
     Plane(const std::vector<float>& coefficients);
+    Plane(const boost::array<float, 4>& coefficients);
     Plane(Eigen::Vector3f normal, double d);
     Plane(Eigen::Vector3f normal, Eigen::Vector3f p);
     virtual ~Plane();
@@ -156,9 +158,12 @@ namespace jsk_pcl_ros
     virtual void toCoefficients(std::vector<float>& output);
     virtual std::vector<float> toCoefficients();
     virtual double getD();
+    virtual Eigen::Affine3f coordinates();
   protected:
+    virtual void initializeCoordinates();
     Eigen::Vector3f normal_;
     double d_;
+    Eigen::Affine3f plane_coordinates_;
   private:
   };
 
@@ -234,6 +239,7 @@ namespace jsk_pcl_ros
     virtual ConvexPolygon flipConvex();
     virtual Eigen::Vector3f getCentroid();
     virtual Ptr magnify(const double scale_factor);
+    virtual Ptr magnifyByDistance(const double distance);
         
     static ConvexPolygon fromROSMsg(const geometry_msgs::Polygon& polygon);
     bool distanceSmallerThan(
@@ -288,6 +294,71 @@ namespace jsk_pcl_ros
       }
     }
   }
+
+  /**
+   * @brief
+   * Grid based representation of planar region.
+   *
+   * Each cell represents a square region as belows:
+   *        +--------+
+   *        |        |
+   *        |   +    |
+   *        |        |
+   *        +--------+
+   *
+   * The width and height of the cell is equivalent to resolution_,
+   * and the value of cells_ represents a center point.
+   * (i, j) means rectanglar region of (x, y) which satisfies followings:
+   * i * resolution - 0.5 * resolution < x <= i * resolution + 0.5 * resolution
+   * j * resolution - 0.5 * resolution < y <= j * resolution + 0.5 * resolution
+   * 
+   *
+   */
+  class GridPlane
+  {
+  public:
+    typedef boost::shared_ptr<GridPlane> Ptr;
+    typedef boost::tuple<int, int> IndexPair;
+    GridPlane(ConvexPolygon::Ptr plane, const double resolution);
+    virtual ~GridPlane();
+    virtual void fillCellsFromPointCloud(
+      const pcl::PointCloud<pcl::PointNormal>::Ptr& cloud,
+      double distance_threshold);
+    virtual double getResolution() { return resolution_; }
+    virtual jsk_recognition_msgs::SimpleOccupancyGrid toROSMsg();
+    
+    /**
+     * @brief
+     * Project 3-D point to GridPlane::IndexPair.
+     * p should be represented in local coordinates.
+     */
+    virtual IndexPair projectLocalPointAsIndexPair(const Eigen::Vector3f& p);
+
+    /**
+     * @brief
+     * Unproject GridPlane::IndexPair to 3-D local point.
+     */
+    virtual Eigen::Vector3f unprojectIndexPairAsLocalPoint(const IndexPair& pair);
+
+    /**
+     * @brief
+     * Unproject GridPlane::IndexPair to 3-D global point.
+     */
+    virtual Eigen::Vector3f unprojectIndexPairAsGlobalPoint(const IndexPair& pair);
+
+    /**
+     * @brief
+     * Add IndexPair to this instance.
+     */
+    virtual void addIndexPair(IndexPair pair);
+  protected:
+    ConvexPolygon::Ptr convex_;
+    std::set<IndexPair> cells_;
+    double resolution_;
+  private:
+    
+  };
+
   
   class Cube
   {
