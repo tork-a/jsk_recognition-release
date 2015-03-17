@@ -2,6 +2,12 @@
 Changelog for package resized_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.5 (2015-03-17)
+------------------
+* [resized_image_transport] Fix ordert to read rosparam and set
+  dynamic_reconfigure to use initial value of dynamic_reconfigure correctly
+* Contributors: Ryohei Ueda
+
 0.2.4 (2015-03-08)
 ------------------
 * [resized_image_transport] Publish scale information
