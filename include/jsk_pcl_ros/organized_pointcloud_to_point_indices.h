@@ -34,30 +34,19 @@
  *********************************************************************/
 
 
-#ifndef JSK_PCL_ROS_POINT_INDICES_TO_MASK_IMAGE_H_
-#define JSK_PCL_ROS_POINT_INDICES_TO_MASK_IMAGE_H_
+#ifndef JSK_PCL_ROS_ORGANIZED_POINTCLOUD_TO_POINT_INDICES_H_
+#define JSK_PCL_ROS_ORGANIZED_POINTCLOUD_TO_POINT_INDICES_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
+#include <sensor_msgs/PointCloud2.h>
 #include "jsk_pcl_ros/pcl_conversion_util.h"
-#include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
 
 namespace jsk_pcl_ros
 {
-  class PointIndicesToMaskImage: public jsk_topic_tools::DiagnosticNodelet
+  class OrganizedPointCloudToPointIndices: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    typedef message_filters::sync_policies::ApproximateTime<
-    PCLIndicesMsg,
-    sensor_msgs::Image > ApproximateSyncPolicy;
-    typedef message_filters::sync_policies::ExactTime<
-      PCLIndicesMsg,
-      sensor_msgs::Image > SyncPolicy;
-
-    PointIndicesToMaskImage(): DiagnosticNodelet("PointIndicesToMaskImage") { }
+    OrganizedPointCloudToPointIndices(): DiagnosticNodelet("OrganizedPointCloudToPointIndices") { }
   protected:
     ////////////////////////////////////////////////////////
     // methods
@@ -67,21 +56,16 @@ namespace jsk_pcl_ros
     virtual void unsubscribe();
     virtual void updateDiagnostic(
       diagnostic_updater::DiagnosticStatusWrapper &stat);
-    virtual void mask(
-      const PCLIndicesMsg::ConstPtr& indices_msg,
-      const sensor_msgs::Image::ConstPtr& image_msg);
-  
+    virtual void indices(
+      const sensor_msgs::PointCloud2::ConstPtr& point_msg);
+
     ////////////////////////////////////////////////////////
     // ROS variables
     ////////////////////////////////////////////////////////
-    bool approximate_sync_;
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
-    boost::shared_ptr<message_filters::Synchronizer<ApproximateSyncPolicy> >async_; 
-   message_filters::Subscriber<PCLIndicesMsg> sub_input_;
-    message_filters::Subscriber<sensor_msgs::Image> sub_image_;
+    ros::Subscriber sub_;
     ros::Publisher pub_;
   private:
-  
+
   };
 }
 
