@@ -493,7 +493,7 @@ Extract indices of pointcloud which is masked by mask image. The pointcloud is n
   Indices of the points masked by `~input/mask`.
 
 
-### jsk\_pcl/MaskImageClusterIndicesConcatenator
+### jsk\_pcl/MaskImageClusterFilter
 ![](images/mask_image_cluster_indices_concatenator.png)
 
 Segment Clouds with mask_image and Clustering Methods(example. SuperVoxel).
@@ -916,6 +916,20 @@ organized pointcloud.
 * `~output` (`pcl_msgs/PointIndices`)
 
   Output indices converted from the mask image.
+
+### jsk\_pcl/OrganizedPointCloudToPointIndices
+A nodelet to convert organized PointCloud (`sensor_msgs::PointCloud2`) to `pcl_msgs/PointIndices` for
+organized pointcloud.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input organized pointcloud.
+
+#### Publishing Topic
+* `~output` (`pcl_msgs/PointIndices`)
+
+  Output indices converted from the organized pointcloud.
 
 ### jsk\_pcl/PointIndicesToMaskImage
 #### What Is This
