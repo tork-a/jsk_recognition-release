@@ -32,57 +32,62 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
-
-
-#ifndef JSK_PCL_ROS_POINT_INDICES_TO_MASK_IMAGE_H_
-#define JSK_PCL_ROS_POINT_INDICES_TO_MASK_IMAGE_H_
-
-#include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
+#define BOOST_PARAMETER_MAX_ARITY 7
+#include "jsk_pcl_ros/organized_pointcloud_to_point_indices.h"
 #include "jsk_pcl_ros/pcl_conversion_util.h"
-#include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 
 namespace jsk_pcl_ros
 {
-  class PointIndicesToMaskImage: public jsk_topic_tools::DiagnosticNodelet
+  void OrganizedPointCloudToPointIndices::onInit()
   {
-  public:
-    typedef message_filters::sync_policies::ApproximateTime<
-    PCLIndicesMsg,
-    sensor_msgs::Image > ApproximateSyncPolicy;
-    typedef message_filters::sync_policies::ExactTime<
-      PCLIndicesMsg,
-      sensor_msgs::Image > SyncPolicy;
+    DiagnosticNodelet::onInit();
+    pub_ = advertise<PCLIndicesMsg>(*pnh_, "output", 1);
+  }
 
-    PointIndicesToMaskImage(): DiagnosticNodelet("PointIndicesToMaskImage") { }
-  protected:
-    ////////////////////////////////////////////////////////
-    // methods
-    ////////////////////////////////////////////////////////
-    virtual void onInit();
-    virtual void subscribe();
-    virtual void unsubscribe();
-    virtual void updateDiagnostic(
-      diagnostic_updater::DiagnosticStatusWrapper &stat);
-    virtual void mask(
-      const PCLIndicesMsg::ConstPtr& indices_msg,
-      const sensor_msgs::Image::ConstPtr& image_msg);
-  
-    ////////////////////////////////////////////////////////
-    // ROS variables
-    ////////////////////////////////////////////////////////
-    bool approximate_sync_;
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
-    boost::shared_ptr<message_filters::Synchronizer<ApproximateSyncPolicy> >async_; 
-   message_filters::Subscriber<PCLIndicesMsg> sub_input_;
-    message_filters::Subscriber<sensor_msgs::Image> sub_image_;
-    ros::Publisher pub_;
-  private:
-  
-  };
+  void OrganizedPointCloudToPointIndices::subscribe()
+  {
+    sub_ = pnh_->subscribe("input", 1,
+                           &OrganizedPointCloudToPointIndices::indices,
+                           this);
+  }
+
+  void OrganizedPointCloudToPointIndices::unsubscribe()
+  {
+    sub_.shutdown();
+  }
+
+  void OrganizedPointCloudToPointIndices::updateDiagnostic(
+    diagnostic_updater::DiagnosticStatusWrapper &stat)
+  {
+    if (vital_checker_->isAlive()) {
+      stat.summary(diagnostic_msgs::DiagnosticStatus::OK,
+                   "OrganizedPointCloudToPointIndices running");
+    }
+    else {
+      jsk_topic_tools::addDiagnosticErrorSummary(
+        "OrganizedPointCloudToPointIndices", vital_checker_, stat);
+    }
+  }
+
+  void OrganizedPointCloudToPointIndices::indices(
+    const sensor_msgs::PointCloud2::ConstPtr& point_msg)
+  {
+    pcl::PointCloud<pcl::PointXYZ>::Ptr pc(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::fromROSMsg(*point_msg, *pc);
+    if(pc->isOrganized()){
+      PCLIndicesMsg indices_msg;
+      indices_msg.header = point_msg->header;
+      for (size_t i = 0; i < pc->points.size(); i++)
+        if (!isnan(pc->points[i].x) && !isnan(pc->points[i].y) && !isnan(pc->points[i].z))
+          indices_msg.indices.push_back(i);
+      pub_.publish(indices_msg);
+    }else{
+      ROS_ERROR("Input Pointcloud is not organized");
+    }
+  }
 }
 
-#endif
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS (jsk_pcl_ros::OrganizedPointCloudToPointIndices, nodelet::Nodelet);
