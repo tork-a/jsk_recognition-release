@@ -63,8 +63,10 @@
 
 #include "jsk_pcl_ros/pcl_util.h"
 #include <jsk_recognition_msgs/SimpleOccupancyGridArray.h>
+#include <jsk_recognition_msgs/BoundingBoxArray.h>
 #include <jsk_topic_tools/diagnostic_nodelet.h>
 #include "jsk_pcl_ros/geo_util.h"
+#include "jsk_pcl_ros/tf_listener_singleton.h"
 
 namespace jsk_pcl_ros
 {
@@ -81,6 +83,7 @@ namespace jsk_pcl_ros
     typedef EnvironmentPlaneModelingConfig Config;
     
     typedef message_filters::sync_policies::ExactTime<
+      sensor_msgs::PointCloud2,
       sensor_msgs::PointCloud2,
       jsk_recognition_msgs::PolygonArray,
       jsk_recognition_msgs::ModelCoefficientsArray,
@@ -109,12 +112,14 @@ namespace jsk_pcl_ros
      */
     virtual void inputCallback(
       const sensor_msgs::PointCloud2::ConstPtr& cloud_msg,
+      const sensor_msgs::PointCloud2::ConstPtr& full_cloud_msg,
       const jsk_recognition_msgs::PolygonArray::ConstPtr& polygon_msg,
       const jsk_recognition_msgs::ModelCoefficientsArray::ConstPtr& coefficients_msg,
       const jsk_recognition_msgs::ClusterPointIndices::ConstPtr& indices_msg);
 
     virtual void printInputData(
       const sensor_msgs::PointCloud2::ConstPtr& cloud_msg,
+      const sensor_msgs::PointCloud2::ConstPtr& full_cloud_msg,
       const jsk_recognition_msgs::PolygonArray::ConstPtr& polygon_msg,
       const jsk_recognition_msgs::ModelCoefficientsArray::ConstPtr& coefficients_msg,
       const jsk_recognition_msgs::ClusterPointIndices::ConstPtr& indices_msg);
@@ -122,6 +127,7 @@ namespace jsk_pcl_ros
 
     virtual bool isValidFrameIds(
       const sensor_msgs::PointCloud2::ConstPtr& cloud_msg,
+      const sensor_msgs::PointCloud2::ConstPtr& full_cloud_msg,
       const jsk_recognition_msgs::PolygonArray::ConstPtr& polygon_msg,
       const jsk_recognition_msgs::ModelCoefficientsArray::ConstPtr& coefficients_msg,
       const jsk_recognition_msgs::ClusterPointIndices::ConstPtr& indices_msg);
@@ -131,6 +137,15 @@ namespace jsk_pcl_ros
       const jsk_recognition_msgs::ClusterPointIndices::ConstPtr& indices_msg,
       const jsk_recognition_msgs::ModelCoefficientsArray::ConstPtr& coefficients_msg);
 
+    virtual void publishConvexPolygonsBoundaries(
+      ros::Publisher& pub,
+      const std_msgs::Header& header,
+      std::vector<ConvexPolygon::Ptr>& convexes);
+    
+    /**
+     * @brief
+     * Callback method of dynamic reconfigure
+     */
     virtual void configCallback(Config &config, uint32_t level);
 
     /**
@@ -163,27 +178,64 @@ namespace jsk_pcl_ros
      * make GridPlane from ConvexPolygon and PointCloud
      */
     virtual std::vector<GridPlane::Ptr> buildGridPlanes(
-      const pcl::PointCloud<pcl::PointNormal>::Ptr& cloud,
+      pcl::PointCloud<pcl::PointNormal>::Ptr& cloud,
       std::vector<ConvexPolygon::Ptr> convexes);
+
+    virtual std::vector<GridPlane::Ptr> morphologicalFiltering(
+      std::vector<GridPlane::Ptr>& raw_grid_maps);
+
+    virtual void boundingBoxCallback(
+      const jsk_recognition_msgs::BoundingBox::ConstPtr& box_array);
+
+    virtual std::vector<GridPlane::Ptr> completeFootprintRegion(
+      const std_msgs::Header& header,
+      std::vector<GridPlane::Ptr>& grid_maps);
+
+    virtual int lookupGroundPlaneForFootprint(
+      const std::string& footprint_frame_id, const std_msgs::Header& header,
+      const std::vector<GridPlane::Ptr>& grid_maps);
+    
+    virtual int lookupGroundPlaneForFootprint(
+      const Eigen::Affine3f& pose, const std::vector<GridPlane::Ptr>& grid_maps);
+
+    virtual GridPlane::Ptr completeGridMapByBoundingBox(
+      const jsk_recognition_msgs::BoundingBox::ConstPtr& box,
+      const std_msgs::Header& header,
+      GridPlane::Ptr grid_map);
+
+    virtual void moveBaseSimpleGoalCallback(
+      const geometry_msgs::PoseStamped::ConstPtr& msg);
     
     boost::mutex mutex_;
     boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> > sync_;
     message_filters::Subscriber<sensor_msgs::PointCloud2> sub_cloud_;
+    message_filters::Subscriber<sensor_msgs::PointCloud2> sub_full_cloud_;
     message_filters::Subscriber<jsk_recognition_msgs::ClusterPointIndices> sub_indices_;
     message_filters::Subscriber<jsk_recognition_msgs::PolygonArray> sub_polygons_;
     message_filters::Subscriber<jsk_recognition_msgs::ModelCoefficientsArray> sub_coefficients_;
-    ros::Publisher debug_magnified_polygons_;
+    ros::Subscriber sub_leg_bbox_;
+    ros::Subscriber sub_move_base_simple_goal_;
+    ros::Publisher pub_debug_magnified_polygons_;
+    ros::Publisher pub_debug_convex_point_cloud_;
+    ros::Publisher pub_debug_raw_grid_map_;
     ros::Publisher pub_grid_map_;
+    ros::Publisher pub_snapped_move_base_simple_goal_;
     boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
-    
-    
+    tf::TransformListener* tf_listener_;
+    jsk_recognition_msgs::BoundingBox::ConstPtr latest_leg_bounding_box_;
+    std::vector<std::string> footprint_frames_;
+    std::vector<GridPlane::Ptr> latest_grid_maps_;
+    std_msgs::Header latest_global_header_;
     ////////////////////////////////////////////////////////
-    // Parametersp
+    // Parameters
     ////////////////////////////////////////////////////////
-    
     double magnify_distance_;
     double distance_threshold_;
     double resolution_;
+    int morphological_filter_size_;
+    bool complete_footprint_region_;
+    double footprint_plane_distance_threshold_;
+    double footprint_plane_angular_threshold_;
   private:
   };
 }
