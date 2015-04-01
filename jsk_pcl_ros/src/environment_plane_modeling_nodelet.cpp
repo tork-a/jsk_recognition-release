@@ -70,12 +70,16 @@ namespace jsk_pcl_ros
     pub_debug_raw_grid_map_
       = pnh_->advertise<jsk_recognition_msgs::SimpleOccupancyGridArray>(
         "debug/raw_grid_map", 1);
+    pub_debug_noeroded_grid_map_
+      = pnh_->advertise<jsk_recognition_msgs::SimpleOccupancyGridArray>(
+        "debug/noeroded_grid_map", 1);
     pub_grid_map_
       = pnh_->advertise<jsk_recognition_msgs::SimpleOccupancyGridArray>(
-        "output", 1);
+        "output", 1, true);
     pub_snapped_move_base_simple_goal_ = pnh_->advertise<geometry_msgs::PoseStamped>(
       "/footstep_simple/goal", 1);
-    
+    pub_non_plane_indices_ = pnh_->advertise<PCLIndicesMsg>(
+      "output/non_plane_indices_", 1);
     if (complete_footprint_region_) {
       tf_listener_ = TfListenerSingleton::getInstance();
           
@@ -110,6 +114,7 @@ namespace jsk_pcl_ros
     distance_threshold_ = config.distance_threshold;
     resolution_ = config.resolution;
     morphological_filter_size_ = config.morphological_filter_size;
+    erode_filter_size_ = config.erode_filter_size;
     footprint_plane_angular_threshold_ = config.footprint_plane_angular_threshold;
     footprint_plane_distance_threshold_ = config.footprint_plane_distance_threshold;
   }
@@ -263,32 +268,54 @@ namespace jsk_pcl_ros
       publishConvexPolygons(pub_debug_magnified_polygons_, cloud_msg->header, magnified_convexes);
 
       // build GridMaps
-      std::vector<GridPlane::Ptr> raw_grid_planes = buildGridPlanes(full_cloud, magnified_convexes);
-    
+      std::set<int> non_plane_indices;
+      std::vector<GridPlane::Ptr> raw_grid_planes = buildGridPlanes(full_cloud, magnified_convexes, non_plane_indices);
+      
       publishGridMaps(pub_debug_raw_grid_map_, cloud_msg->header, raw_grid_planes);
-
+      PCLIndicesMsg ros_non_plane_indices;
+      ros_non_plane_indices.indices = std::vector<int>(non_plane_indices.begin(),
+                                                       non_plane_indices.end());
+      ros_non_plane_indices.header = cloud_msg->header;
+      pub_non_plane_indices_.publish(ros_non_plane_indices);
       std::vector<GridPlane::Ptr> morphological_filtered_grid_planes
         = morphologicalFiltering(raw_grid_planes);
+      
+      publishGridMaps(pub_debug_noeroded_grid_map_, cloud_msg->header,
+                      morphological_filtered_grid_planes);
+      
+      std::vector<GridPlane::Ptr> eroded_grid_planes
+        = erodeFiltering(morphological_filtered_grid_planes);
       std::vector<GridPlane::Ptr> result_grid_planes;
-    
-    
+      
       if (complete_footprint_region_) { // complete footprint region if needed
         result_grid_planes
           = completeFootprintRegion(cloud_msg->header,
-                                    morphological_filtered_grid_planes);
+                                    eroded_grid_planes);
       }
       else {
-        result_grid_planes = morphological_filtered_grid_planes;
-      }
-    
+        result_grid_planes = eroded_grid_planes;
+     }
+
       publishGridMaps(pub_grid_map_, cloud_msg->header,
                       result_grid_planes);
+      
       latest_global_header_ = cloud_msg->header;
       latest_grid_maps_ = result_grid_planes;
     }
     catch (tf2::TransformException& e) {
       NODELET_ERROR("Failed to lookup transformation: %s", e.what());
     }
+  }
+
+  std::vector<GridPlane::Ptr> EnvironmentPlaneModeling::erodeFiltering(
+      std::vector<GridPlane::Ptr>& grid_maps)
+  {
+    std::vector<GridPlane::Ptr> ret;
+    for (size_t i = 0; i < grid_maps.size(); i++) {
+      GridPlane::Ptr eroded_grid_map = grid_maps[i]->erode(erode_filter_size_);
+      ret.push_back(eroded_grid_map);
+    }
+    return ret;
   }
   
   int EnvironmentPlaneModeling::lookupGroundPlaneForFootprint(
@@ -410,9 +437,9 @@ namespace jsk_pcl_ros
   {
     std::vector<GridPlane::Ptr> ret;
     for (size_t i = 0; i < raw_grid_maps.size(); i++) {
-      GridPlane::Ptr eroded_grid_map = raw_grid_maps[i]->erode(morphological_filter_size_);
-      GridPlane::Ptr dilated_grid_map = eroded_grid_map->dilate(morphological_filter_size_);
-      ret.push_back(dilated_grid_map);
+      GridPlane::Ptr dilated_grid_map = raw_grid_maps[i]->dilate(morphological_filter_size_);
+      GridPlane::Ptr eroded_grid_map = dilated_grid_map->erode(morphological_filter_size_);
+      ret.push_back(eroded_grid_map);
     }
     return ret;
   }
@@ -456,13 +483,15 @@ namespace jsk_pcl_ros
   
   std::vector<GridPlane::Ptr> EnvironmentPlaneModeling::buildGridPlanes(
     pcl::PointCloud<pcl::PointNormal>::Ptr& cloud,
-    std::vector<ConvexPolygon::Ptr> convexes)
+    std::vector<ConvexPolygon::Ptr> convexes,
+    std::set<int>& non_plane_indices)
   {
     std::vector<GridPlane::Ptr> ret(convexes.size());
 //#pragma omp parallel for
     for (size_t i = 0; i < convexes.size(); i++) {
       GridPlane::Ptr grid(new GridPlane(convexes[i], resolution_));
-      grid->fillCellsFromPointCloud(cloud, distance_threshold_);
+      grid->fillCellsFromPointCloud(cloud, distance_threshold_,
+                                    non_plane_indices);
       ret[i] = grid;
     }
     return ret;
