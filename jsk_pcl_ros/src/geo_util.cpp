@@ -42,6 +42,10 @@
 #include <pcl/conversions.h>
 #include <boost/tuple/tuple_comparison.hpp>
 #include <pcl/segmentation/extract_polygonal_prism_data.h>
+#include <boost/foreach.hpp>
+#include <boost/range/irange.hpp>
+
+
 // #define DEBUG_GEO_UTIL
 namespace jsk_pcl_ros
 {
@@ -428,6 +432,13 @@ namespace jsk_pcl_ros
     rot.setFromTwoVectors(pose.rotation() * Eigen::Vector3f::UnitZ(),
                           coordinates().rotation() * Eigen::Vector3f::UnitZ());
     output = Eigen::Affine3f::Identity() * Eigen::Translation3f(output_p) * rot;
+  }
+
+  Plane Plane::transform(const Eigen::Affine3f& transform)
+  {
+    Eigen::Affine3d transform_d;
+    convertEigenAffine3(transform, transform_d);
+    return this->transform(transform_d);
   }
   
   Plane Plane::transform(const Eigen::Affine3d& transform)
@@ -1094,7 +1105,7 @@ namespace jsk_pcl_ros
     cells_.insert(pair);
   }
 
-  GridPlane::Ptr GridPlane::erode(int num)
+  GridPlane::Ptr GridPlane::dilate(int num)
   {
     GridPlane::Ptr ret (new GridPlane(convex_, resolution_));
     for (std::set<IndexPair>::iterator it = cells_.begin();
@@ -1115,7 +1126,7 @@ namespace jsk_pcl_ros
     return ret;
   }
 
-  GridPlane::Ptr GridPlane::dilate(int num)
+  GridPlane::Ptr GridPlane::erode(int num)
   {
     GridPlane::Ptr ret (new GridPlane(convex_, resolution_));
     for (std::set<IndexPair>::iterator it = cells_.begin();
@@ -1232,10 +1243,11 @@ namespace jsk_pcl_ros
       }
     }
   }
-  
+
   void GridPlane::fillCellsFromPointCloud(
     pcl::PointCloud<pcl::PointNormal>::Ptr& cloud,
-    double distance_threshold)
+    double distance_threshold,
+    std::set<int>& non_plane_indices)
   {
     Eigen::Affine3f local_coordinates = convex_->coordinates();
     Eigen::Affine3f inv_local_coordinates = local_coordinates.inverse();
@@ -1256,18 +1268,35 @@ namespace jsk_pcl_ros
     prism_extract.setInputCloud(cloud);
     prism_extract.setHeightLimits(-distance_threshold, distance_threshold);
     prism_extract.setInputPlanarHull(hull_cloud);
+    // output_indices is set of indices which are on plane
     pcl::PointIndices output_indices;
     prism_extract.segment(output_indices);
+    std::set<int> output_set(output_indices.indices.begin(),
+                             output_indices.indices.end());
+    for (size_t i = 0; i < cloud->points.size(); i++) {
+      if (output_set.find(i) != output_set.end()) {
+        non_plane_indices.insert(i);
+      }
+    }
+
     
     for (size_t i = 0; i < output_indices.indices.size(); i++) {
       //for (size_t i = 0; i < cloud->points.size(); i++) {
       int point_index = output_indices.indices[i];
       pcl::PointNormal p = cloud->points[point_index];
       Eigen::Vector3f ep = p.getVector3fMap();
-        Eigen::Vector3f local_ep = inv_local_coordinates * ep;
-        IndexPair pair = projectLocalPointAsIndexPair(local_ep);
-        addIndexPair(pair);
+      Eigen::Vector3f local_ep = inv_local_coordinates * ep;
+      IndexPair pair = projectLocalPointAsIndexPair(local_ep);
+      addIndexPair(pair);
     }
+  }
+  
+  void GridPlane::fillCellsFromPointCloud(
+    pcl::PointCloud<pcl::PointNormal>::Ptr& cloud,
+    double distance_threshold)
+  {
+    std::set<int> dummy;
+    fillCellsFromPointCloud(cloud, distance_threshold, dummy);
   }
   
   jsk_recognition_msgs::SimpleOccupancyGrid GridPlane::toROSMsg()
@@ -1299,12 +1328,12 @@ namespace jsk_pcl_ros
     const Eigen::Affine3f& offset = Eigen::Affine3f::Identity())
   {
     boost::mutex::scoped_lock lock(global_chull_mutex);
-    Plane plane(rosmsg.coefficients);
+    Plane plane = Plane(rosmsg.coefficients).transform(offset);
     pcl::PointCloud<pcl::PointNormal>::Ptr
       vertices (new pcl::PointCloud<pcl::PointNormal>);
     for (size_t i = 0; i < rosmsg.cells.size(); i++) {
       Eigen::Vector3f local_p(rosmsg.cells[i].x, rosmsg.cells[i].y, 0);
-      Eigen::Vector3f global_p = offset * plane.coordinates() * local_p;
+      Eigen::Vector3f global_p = plane.coordinates() * local_p;
       pcl::PointNormal p;
       p.x = global_p[0];
       p.y = global_p[1];
@@ -1321,6 +1350,10 @@ namespace jsk_pcl_ros
     Vertices convex_vertices
       = pointCloudToVertices<pcl::PointNormal>(*convex_vertices_cloud);
     ConvexPolygon::Ptr convex(new ConvexPolygon(convex_vertices));
+    // Check orientation
+    if (!convex->isSameDirection(plane)) {
+      convex = boost::make_shared<ConvexPolygon>(convex->flipConvex());
+    }
     GridPlane ret(convex, rosmsg.resolution);
     ret.fillCellsFromPointCloud(vertices, rosmsg.resolution);
     return ret;
