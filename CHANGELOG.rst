@@ -2,6 +2,26 @@
 Changelog for package jsk_pcl_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.8 (2015-03-29)
+------------------
+* [jsk_pcl_ros] Publish point indices which do not belong to any polygons
+  in EnvironmentPlaneModeling
+* [jsk_pcl_ros] Erode grid maps as c-space padding in EnvironmentPlaneModeling
+* [jsk_pcl_ros] Latch output topic of EnvironmentPlaneModeling
+* [jsk_pcl_ros] Check orientation of plane in GridPlane::fromROSMsg
+* Contributors: Ryohei Ueda
+
+0.2.9 (2015-03-29)
+------------------
+* 0.2.8
+* Update Changelog
+* [jsk_pcl_ros] Publish point indices which do not belong to any polygons
+  in EnvironmentPlaneModeling
+* [jsk_pcl_ros] Erode grid maps as c-space padding in EnvironmentPlaneModeling
+* [jsk_pcl_ros] Latch output topic of EnvironmentPlaneModeling
+* [jsk_pcl_ros] Check orientation of plane in GridPlane::fromROSMsg
+* Contributors: Ryohei Ueda
+
 0.2.7 (2015-03-26)
 ------------------
 * [jsk_pcl_ros] Longer queue size for NormalDirectionFilter
@@ -867,7 +887,7 @@ Changelog for package jsk_pcl_ros
 * make paritcal_filter_tracking_nodelet publish tracked object tf trasnformation
 * add two launch files to run openni on remote machine
 * add octree_change_detector
-* Contributors: Chan Wesley, Shunichi Nozawa, Yuto Inagaki, Masaki Murooka, Yohei Kakiuchi, Ryohei Ueda, Ryo Terasawa, Yusuke Furuta, Kei Okada
+* Contributors: Ryo Terasawa, Shunichi Nozawa, Yuto Inagaki, Masaki Murooka, Yohei Kakiuchi, Ryohei Ueda, Chan Wesley, Yusuke Furuta, Kei Okada
 
 0.1.4 (2014-04-25)
 ------------------
