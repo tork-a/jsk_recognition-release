@@ -34,60 +34,45 @@
  *********************************************************************/
 
 
-#ifndef JSK_PCL_ROS_TORUS_FINDER_H_
-#define JSK_PCL_ROS_TORUS_FINDER_H_
+#ifndef JSK_PERCEPTION_FISHEYE_TO_PANORAMA_H_
+#define JSK_PERCEPTION_FISHEYE_TO_PANORAMA_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/PointCloud2.h>
-#include <jsk_recognition_msgs/TorusArray.h>
-#include <jsk_recognition_msgs/Torus.h>
-#include <jsk_pcl_ros/TorusFinderConfig.h>
-#include <dynamic_reconfigure/server.h>
-#include <geometry_msgs/PoseStamped.h>
-#include <Eigen/Core>
-#include <geometry_msgs/PolygonStamped.h>
+#include <sensor_msgs/Image.h>
+#include <sensor_msgs/CameraInfo.h>
 
-namespace jsk_pcl_ros
+#include <message_filters/subscriber.h>
+#include <message_filters/synchronizer.h>
+#include <message_filters/sync_policies/approximate_time.h>
+#include <message_filters/pass_through.h>
+#include <dynamic_reconfigure/server.h>
+
+#include <opencv2/opencv.hpp>
+
+namespace jsk_perception
 {
-  class TorusFinder: public jsk_topic_tools::DiagnosticNodelet
+  class FisheyeToPanorama: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    typedef TorusFinderConfig Config;
-    TorusFinder(): DiagnosticNodelet("TorusFinder") {}
+    typedef message_filters::sync_policies::ApproximateTime<
+      sensor_msgs::Image,         // image
+      sensor_msgs::CameraInfo        // camera info
+      > SyncPolicy;
+
+    FisheyeToPanorama(): DiagnosticNodelet("FisheyeToPanorama") {}
   protected:
     virtual void onInit();
     virtual void subscribe();
     virtual void unsubscribe();
-    virtual void segment(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
-    virtual void segmentFromPoints(const geometry_msgs::PolygonStamped::ConstPtr& polygon_msg);
-    virtual void configCallback(Config &config, uint32_t level);
+    inline double interpolate(double rate, double first, double second){return (1.0 - rate) * first + rate * second;};
+    virtual void rectify(const sensor_msgs::Image::ConstPtr& image_msg);
     
-    ////////////////////////////////////////////////////////
-    // ROS variables
-    ////////////////////////////////////////////////////////
-    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
-    ros::Subscriber sub_;
-    ros::Subscriber sub_points_;
-    ros::Publisher pub_torus_;
-    ros::Publisher pub_torus_array_;
-    ros::Publisher pub_inliers_;
-    ros::Publisher pub_coefficients_;
-    ros::Publisher pub_pose_stamped_;
-    boost::mutex mutex_;
-    Eigen::Vector3f hint_axis_;
-
-    ////////////////////////////////////////////////////////
-    // Parameters
-    ////////////////////////////////////////////////////////
-    double min_radius_;
-    double max_radius_;
-    double outlier_threshold_;
-    double eps_hint_angle_;
-    bool use_hint_;
-    bool use_normal_;
-    int max_iterations_;
-    int min_size_;
+    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> > sync_;
+    ros::Subscriber sub_image_;
+    ros::Publisher pub_undistorted_image_;
+    ros::Publisher pub_undistorted_bilinear_image_;
   private:
+    
   };
 }
 
