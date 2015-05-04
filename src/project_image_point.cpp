@@ -33,86 +33,87 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include "jsk_perception/dilate_erode_mask_image.h"
-#include <cv_bridge/cv_bridge.h>
-#include <opencv2/opencv.hpp>
-#include <sensor_msgs/image_encodings.h>
+#include "jsk_perception/project_image_point.h"
 
 namespace jsk_perception
 {
-  void MorphologicalImageOperatorNodelet::onInit()
+  void ProjectImagePoint::onInit()
   {
     DiagnosticNodelet::onInit();
     srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
     dynamic_reconfigure::Server<Config>::CallbackType f =
-      boost::bind (
-        &MorphologicalImageOperatorNodelet::configCallback, this, _1, _2);
+      boost::bind (&ProjectImagePoint::configCallback, this, _1, _2);
     srv_->setCallback (f);
 
-    pub_ = advertise<sensor_msgs::Image>(*pnh_, "output", 1);
+    pub_ = advertise<geometry_msgs::PointStamped>(*pnh_, "output", 1);
+    pub_vector_ = advertise<geometry_msgs::Vector3Stamped>(
+      *pnh_, "output/ray", 1);
   }
 
-  void MorphologicalImageOperatorNodelet::subscribe()
+  void ProjectImagePoint::subscribe()
   {
-    sub_ = pnh_->subscribe(
-      "input", 1, &MorphologicalImageOperatorNodelet::imageCallback, this);
+    sub_ = pnh_->subscribe("input", 1, &ProjectImagePoint::project, this);
+    sub_camera_info_ = pnh_->subscribe("input/camera_info", 1,
+                                       &ProjectImagePoint::cameraInfoCallback,
+                                       this);
   }
 
-  void MorphologicalImageOperatorNodelet::unsubscribe()
+  void ProjectImagePoint::unsubscribe()
   {
     sub_.shutdown();
+    sub_camera_info_.shutdown();
   }
 
-  void MorphologicalImageOperatorNodelet::configCallback(
-    Config &config, uint32_t level)
+  void ProjectImagePoint::configCallback(Config& config, uint32_t level)
   {
     boost::mutex::scoped_lock lock(mutex_);
-    method_ = config.method;
-    size_ = config.size;
-    iterations_ = config.iterations;
+    z_ = config.z;
   }
-  
-  void MorphologicalImageOperatorNodelet::imageCallback(
-    const sensor_msgs::Image::ConstPtr& image_msg)
+
+  void ProjectImagePoint::cameraInfoCallback(
+    const sensor_msgs::CameraInfo::ConstPtr& msg)
   {
     boost::mutex::scoped_lock lock(mutex_);
-    cv::Mat image = cv_bridge::toCvShare(image_msg, sensor_msgs::image_encodings::MONO8)->image;
-    int type;
-    if (method_ == 0) {
-      type = cv::MORPH_RECT;
+    camera_info_ = msg;
+  }
+
+  void ProjectImagePoint::project(
+    const geometry_msgs::PointStamped::ConstPtr& msg)
+  {
+    vital_checker_->poke();
+    boost::mutex::scoped_lock lock(mutex_);
+    if (!camera_info_) {
+      NODELET_WARN(
+        "[ProjectImagePoint::project] camera info is not yet available");
+      return;
     }
-    else if (method_ == 1) {
-      type = cv::MORPH_CROSS;
+    image_geometry::PinholeCameraModel model;
+    model.fromCameraInfo(camera_info_);
+    cv::Point3d ray = model.projectPixelTo3dRay(
+      cv::Point2d(msg->point.x, msg->point.y));
+    geometry_msgs::Vector3Stamped vector;
+    vector.header.frame_id = camera_info_->header.frame_id;
+    vector.header = msg->header;
+    vector.vector.x = ray.x;
+    vector.vector.y = ray.y;
+    vector.vector.z = ray.z;
+    pub_vector_.publish(vector);
+    if (ray.z == 0.0) {
+      NODELET_ERROR("Z value of projected ray is 0");
+      return;
     }
-    else if (method_ == 2) {
-      type = cv::MORPH_ELLIPSE;
-    }
-    cv::Mat output_image;
+    double alpha = z_ / ray.z;
+    geometry_msgs::PointStamped point;
+    point.header = msg->header;
+    point.header.frame_id = camera_info_->header.frame_id;
+    point.point.x = ray.x * alpha;
+    point.point.y = ray.y * alpha;
+    point.point.z = ray.z * alpha;
+    pub_.publish(point);
     
-    cv::Mat element = cv::getStructuringElement(
-      type,
-      cv::Size(2 * size_ + 1, 2 * size_+1),
-      cv::Point(size_, size_));
-    apply(image, output_image, element);
-    pub_.publish(
-      cv_bridge::CvImage(image_msg->header,
-                         sensor_msgs::image_encodings::MONO8,
-                         output_image).toImageMsg());
   }
 
-  void DilateMaskImage::apply(
-    const cv::Mat& input, cv::Mat& output, const cv::Mat& element)
-  {
-    cv::dilate(input, output, element, /*anchor=*/cv::Point(-1,-1), iterations_);
-  }
-
-  void ErodeMaskImage::apply(
-    const cv::Mat& input, cv::Mat& output, const cv::Mat& element)
-  {
-    cv::erode(input, output, element, /*anchor=*/cv::Point(-1,-1), iterations_);
-  }
 }
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS (jsk_perception::DilateMaskImage, nodelet::Nodelet);
-PLUGINLIB_EXPORT_CLASS (jsk_perception::ErodeMaskImage, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS (jsk_perception::ProjectImagePoint, nodelet::Nodelet);
