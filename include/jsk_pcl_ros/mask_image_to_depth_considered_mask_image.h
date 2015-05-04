@@ -34,38 +34,33 @@
  *********************************************************************/
 
 
-#ifndef JSK_PCL_ROS_TILT_LASER_LISTENER_H_
-#define JSK_PCL_ROS_TILT_LASER_LISTENER_H_
+#ifndef JSK_PCL_ROS_POINT_INDICES_TO_MASK_IMAGE_H_
+#define JSK_PCL_ROS_POINT_INDICES_TO_MASK_IMAGE_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/JointState.h>
-#include <jsk_recognition_msgs/TimeRange.h>
-#include "jsk_pcl_ros/line_segment_collector.h"
-#include <std_srvs/Empty.h>
+#include <sensor_msgs/Image.h>
+#include <dynamic_reconfigure/server.h>
+#include "jsk_pcl_ros/pcl_conversion_util.h"
+#include <message_filters/subscriber.h>
+#include <message_filters/time_synchronizer.h>
+#include <message_filters/synchronizer.h>
+#include <message_filters/sync_policies/approximate_time.h>
+#include <jsk_pcl_ros/MaskImageToDepthConsideredMaskImageConfig.h>
 
 namespace jsk_pcl_ros
 {
-  class StampedJointAngle
+  class MaskImageToDepthConsideredMaskImage: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    typedef boost::shared_ptr<StampedJointAngle> Ptr;
-    StampedJointAngle(const std_msgs::Header& header_arg, const double& value);
-    virtual ~StampedJointAngle() {}
-    std_msgs::Header header;
-    virtual double getValue() { return value_; }
-  protected:
-    double value_;
-  private:
-    
-  };
-  
-  class TiltLaserListener: public jsk_topic_tools::DiagnosticNodelet
-  {
-  public:
-    TiltLaserListener(): DiagnosticNodelet("TiltLaserListener") { };
-    enum LaserType {
-      INFINITE_SPINDLE, INFINITE_SPINDLE_HALF, TILT, TILT_HALF_UP, TILT_HALF_DOWN
-    };
+    typedef message_filters::sync_policies::ApproximateTime<
+    sensor_msgs::PointCloud2,
+    sensor_msgs::Image > ApproximateSyncPolicy;
+    typedef message_filters::sync_policies::ExactTime<
+      sensor_msgs::PointCloud2,
+      sensor_msgs::Image > SyncPolicy;
+    typedef jsk_pcl_ros::MaskImageToDepthConsideredMaskImageConfig Config;
+
+    MaskImageToDepthConsideredMaskImage(): DiagnosticNodelet("MaskImageToDepthConsideredMaskImage") { }
   protected:
     ////////////////////////////////////////////////////////
     // methods
@@ -73,46 +68,43 @@ namespace jsk_pcl_ros
     virtual void onInit();
     virtual void subscribe();
     virtual void unsubscribe();
-    virtual void jointCallback(const sensor_msgs::JointState::ConstPtr& msg);
     virtual void updateDiagnostic(
       diagnostic_updater::DiagnosticStatusWrapper &stat);
-    virtual void processTiltHalfUp(const ros::Time& stamp, const double& value);
-    virtual void processTiltHalfDown(const ros::Time& stamp, const double& value);
-    virtual void processTilt(const ros::Time& stamp, const double& value);
-    virtual void processInfiniteSpindle(
-      const ros::Time& stamp, const double& joint_angle, const double& velocity,
-      const double& threshold);
-    virtual void publishTimeRange(const ros::Time& stamp,
-                                  const ros::Time& start,
-                                  const ros::Time& end);
-    virtual bool clearCacheCallback(
-      std_srvs::Empty::Request& req,
-      std_srvs::Empty::Response& res);
+    virtual void extractmask
+    (
+     const sensor_msgs::PointCloud2::ConstPtr& point_cloud2_msg,
+     const sensor_msgs::Image::ConstPtr& image_msg);
+    virtual void configCallback(Config &config, uint32_t level);
+    virtual void mask_region_callback(const sensor_msgs::Image::ConstPtr& msg);
+  
     ////////////////////////////////////////////////////////
     // ROS variables
     ////////////////////////////////////////////////////////
-    ros::Subscriber sub_;
-    ros::Publisher trigger_pub_;
-    ros::Publisher cloud_pub_;
-    ros::ServiceServer clear_cache_service_;
-    ros::ServiceClient assemble_cloud_srv_;
-    
-    ////////////////////////////////////////////////////////
-    // parameters
-    ////////////////////////////////////////////////////////
-    LaserType laser_type_;
-    std::string joint_name_;
-    double prev_angle_;
-    double prev_velocity_;
-    double overwrap_angle_;
-    ros::Time start_time_;
-    bool use_laser_assembler_;
+    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
+    bool approximate_sync_;
+    int extract_num_;
     boost::mutex mutex_;
-    TimeStampedVector<StampedJointAngle::Ptr> buffer_;
-    int skip_number_;
-    int skip_counter_;
+    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
+    boost::shared_ptr<message_filters::Synchronizer<ApproximateSyncPolicy> >async_; 
+    message_filters::Subscriber<sensor_msgs::PointCloud2> sub_input_;
+    message_filters::Subscriber<sensor_msgs::Image> sub_image_;
+    ros::Publisher pub_;
+    ros::Publisher applypub_;
+    ros::Subscriber sub_;
+    int region_width_;
+    int region_height_;
+    int region_x_off_;
+    int region_y_off_;
+    double region_width_ratio_;
+    double region_height_ratio_;
+    double region_x_off_ratio_;
+    double region_y_off_ratio_;
+    bool use_region_ratio_;
+    bool use_mask_region_;
+    bool in_the_order_of_depth_;
+
   private:
-    
+  
   };
 }
 
