@@ -1022,6 +1022,42 @@ of organized pointcloud and original `sensor_msgs/Image`.
 
    Mask image to get `~input` indices from the origina limage.
 
+### jsk\_pcl/MaskImageToDepthConsideredMaskImage
+#### What Is This
+![](images/mask_image_to_depth_considered_mask_image.png)
+
+jsk_pcl/MaskImageToDepthConsideredMaskImage extracts directed area of mask image in the order of depth from `sensor_msgs/PointCloud2` and `sensor_msgs/Image` of mask image. Example is at jsk_pcl_ros/launch/extract_only_directed_region_of_close_mask_image.launch .
+
+#### Subscribing Topic
+
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Depth information of image. Width and height of this data must be same with ~input/image.
+
+* `~input/image` (`sensor_msgs/Image`)
+
+  Input mask image.
+
+* `~input/maskregion` (`sensor_msgs/Image`)
+
+  Input mask region.(To use interactively, use interaction_mode:grabcut_rect of image_view2.)
+
+#### Publishing Topic
+
+* `~output `(`sensor_msg/Image`)
+
+  Output mask Image.  Points at close range is extracted.
+
+#### Parameter
+
+* `~extract_num (Int, default: `500`)
+
+  Num of extract points in mask image.
+
+* `~use_mask_region (Bool, default: True)
+
+  Whether use msk region option or not. If true, only selected region of mask image is extracted.
+
 ### jsk\_pcl/AttentionClipper
 #### What Is This
 ![](images/attention_clipper.png)
@@ -1089,11 +1125,13 @@ to see the object.
 * `~initial_rot_list` (Array of array of double, default: `None`)
 * `~frame_id_list` (Array of string, default: `None`)
 * `~dimensions` (Array of array of double, default: `None`)
+* `~prefixes` (Array of string, default: `None`)
 
-  Position, Rotation, frame id and Dimensions of multiple attention regions respectively.
+  Position, Rotation, frame id ,prefix and Dimensions of multiple attention regions respectively.
   `~iniital_pos_list` should follow `[[x, y, z], ...]`,
   `~initial_rot_list` should follow `[[rx, ry, rz], ...]` and
   `~dimensions` should follow `[[x, y, z], ...]`.
+  `~prefixes` `[prefix1, prefix2, ...]`. These prefixes will add to the /point_indices and advertise
   Available only if `~use_multiple_attention` is true.
 * `~negative` (Boolean, default: `False`)
 
@@ -1581,6 +1619,9 @@ You can choose several types of tilt/spindle lasers such as tilt-laser of PR2, i
    Clear cache and restart collecting data.
 
 #### Parameters
+* `~skip_number` (Integer, default: `1`):
+
+   Skip publishing and calling laser assembler per `~skip_number`.
 * `~use_laser_assembler` (Boolean, default: `False`):
 
    Enable `~output_cloud` and `~assemble_scans2`.
@@ -2043,6 +2084,10 @@ This nodelet will republish the pointcloud which is transformed with the designa
 * `~duration` (Double, default: `1.0`)
 
   Second to wait for transformation
+* `~use_latest_tf` (Bool, default: `false`)
+
+  If this parameter is true, ignore timestamp of tf to transform pointcloud.
+
 #### Sample
 Plug the depth sensor which can be launched by openni.launch and run the below command.
 
@@ -2140,6 +2185,23 @@ spherical laser.
   Fps of laser sensor.
   The default value is same to hokuyo's parameter.
 
+### jsk\_pcl/FisheyeSpherePublisher
+![](images/fisheye_rviz.h)
+
+Show the sphere generated from fisheye image.
+This was tested with Prosilica GC 2450C + nm30 lens
+
+#### Subscribing Topics
+* `~input` (`sensor_msgs/Image`)
+  Fisheye Image
+
+#### Publishing Topics
+* `~output` (`sensor_msgs/PointCloud2`)
+
+  Sphere pointcloud.
+
+
+
 ### jsk\_pcl/PlanarlPointCloudSimulator
 ![](images/planar_pointcloud_simulator.h)
 
@@ -2160,6 +2222,24 @@ Sensor model is pinhole camera model.
 * `~distance` (Double, default: `1.0`)
 
   Distance to pointcloud from origin along z-axis.
+
+
+### jsk\_pcl/ConvexConnectedVoxels
+![](images/convex_connected_voxels.png)
+
+Merges the voxels initially segmented using SuperVoxel Segmentation into high level object representations by merging the voxels based on convexity measurements.
+
+#### Subscribing Topics
+* `~input` (`jsk_recognition_msgs/ClusterPointIndices`)
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input is set of voxel indices and point cloud from the supervoxel_segmentation nodelet
+
+#### Publishing Topics
+* `~output/indices` (`jsk_recognition_msgs/ClusterPointIndices`)
+
+  Output is set of merged voxel indices
+
 
 
 ## To Test Some Samples

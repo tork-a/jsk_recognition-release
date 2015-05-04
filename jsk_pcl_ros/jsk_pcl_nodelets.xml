@@ -139,6 +139,11 @@
          base_class_type="nodelet::Nodelet">
     Generate mask image out of point indices
   </class>
+  <class name="jsk_pcl/MaskImageToDepthConsideredMaskImage"
+         type="jsk_pcl_ros::MaskImageToDepthConsideredMaskImage"
+         base_class_type="nodelet::Nodelet">
+    Generate depth considered mask image out of mask image
+  </class>
   
   <class name="jsk_pcl/ROIClipper"
          type="jsk_pcl_ros::ROIClipper"
@@ -313,6 +318,14 @@
          base_class_type="nodelet::Nodelet">
     <description>Nodelet to rotate sensor_msgs/Image</description>
   </class>
+    <class name="jsk_pcl/ConvexConnectedVoxels"
+         type="jsk_pcl_ros::ConvexConnectedVoxels"
+         base_class_type="nodelet::Nodelet">
+      <description>
+	Nodelet to auto segment using supervoxel and integer label the unknown voxel using convexity
+      </description>
+  </class>
+  
   <!-- <class name="jsk_pcl/NodeletPointCloudThrottle" type="NodeletPointCloudThrottle" -->
   <!--        base_class_type="nodelet::Nodelet"> -->
   <!--   <description> -->
@@ -402,6 +415,13 @@
          base_class_type="nodelet::Nodelet">
     <description>
       publish the centroid of the pointcloud to /tf
+    </description>
+  </class>
+  <class name="jsk_pcl/FisheyeSpherePublisher"
+         type="jsk_pcl_ros::FisheyeSpherePublisher"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      publish sphere pointcloud generated from fisheye
     </description>
   </class>
   <class name="jsk_pcl/VoxelGridDownsampleManager" type="jsk_pcl_ros::VoxelGridDownsampleManager"
