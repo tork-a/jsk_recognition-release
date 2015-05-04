@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2013, Yuto Inagaki and JSK Lab
+ *  Copyright (c) 2013, Ryohei Ueda and JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,40 +33,46 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_PCL_ROS_TF_TRANSFORMCLOUD_H_
-#define JSK_PCL_ROS_TF_TRANSFORMCLOUD_H_
+#ifndef JSK_PCL_ROS_FISHEYE_SHPHERE_PUBLISHER_H_
+#define JSK_PCL_ROS_FISHEYE_SHPHERE_PUBLISHER_H_
 
 // ros
 #include <ros/ros.h>
 #include <ros/names.h>
+#include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <tf/transform_broadcaster.h>
-#include <pcl_ros/transforms.h>
 
 // pcl
 #include <pcl_ros/pcl_nodelet.h>
 #include <pcl/point_types.h>
+#include <pcl/common/centroid.h>
+#include <pcl/filters/extract_indices.h>
 
-#include <jsk_topic_tools/connection_based_nodelet.h>
-#include "jsk_pcl_ros/tf_listener_singleton.h"
+#include <jsk_pcl_ros/FisheyeSphereConfig.h>
+#include <jsk_topic_tools/diagnostic_nodelet.h>
+#include <dynamic_reconfigure/server.h>
 
 namespace jsk_pcl_ros
 {
-  class TfTransformCloud: public jsk_topic_tools::ConnectionBasedNodelet
+  class FisheyeSpherePublisher: public jsk_topic_tools::DiagnosticNodelet
   {
+  public:
+    typedef FisheyeSphereConfig Config;
+    FisheyeSpherePublisher(): DiagnosticNodelet("FisheyeSpherePublisher") {}
   protected:
-    ros::Subscriber sub_cloud_;
-    ros::Publisher  pub_cloud_;
-    std::string target_frame_id_;
-    tf::TransformListener* tf_listener_;
-    virtual void transform(const sensor_msgs::PointCloud2ConstPtr &input);
+    virtual void onInit();
     virtual void subscribe();
     virtual void unsubscribe();
-    
-    double duration_;
-    bool use_latest_tf_;
+    virtual void extract(const sensor_msgs::ImageConstPtr &input);
+    virtual void configCallback(Config &config, uint32_t level);
+
+    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
+    ros::Subscriber sub_image_;
+    ros::Publisher pub_sphere_;
+    float downsample_rate_;
+    float sphere_radius_;
   private:
-    virtual void onInit();
   };
 }
 
