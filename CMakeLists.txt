@@ -106,9 +106,12 @@ generate_dynamic_reconfigure_options(
   cfg/EdgebasedCubeFinder.cfg
   cfg/MultiPlaneSACSegmentation.cfg
   cfg/BoundingBoxFilter.cfg
+  cfg/MaskImageToDepthConsideredMaskImage.cfg
+  cfg/ResizePointsPublisher.cfg
   cfg/LINEMODDetector.cfg
   cfg/SupervoxelSegmentation.cfg
   cfg/FeatureRegistration.cfg
+  cfg/FisheyeSphere.cfg
   )
 
 find_package(OpenCV REQUIRED core imgproc)
@@ -142,6 +145,7 @@ jsk_pcl_nodelet(src/keypoints_publisher_nodelet.cpp "jsk_pcl/KeypointsPublisher"
 jsk_pcl_nodelet(src/hinted_plane_detector_nodelet.cpp "jsk_pcl/HintedPlaneDetector" "hinted_plane_detector")
 # jsk_pcl_nodelet(src/pointcloud_throttle_nodelet.cpp "jsk_pcl/NodeletPointCloudThrottle" "point_cloud_throttle")
 jsk_pcl_nodelet(src/centroid_publisher_nodelet.cpp "jsk_pcl/CentroidPublisher" "centroid_publisher")
+jsk_pcl_nodelet(src/fisheye_sphere_publisher_nodelet.cpp "jsk_pcl/FisheyeSpherePublisher" "fisheye_sphere_publisher")
 # jsk_pcl_nodelet(src/image_throttle_nodelet.cpp
 #   "jsk_pcl/NodeletImageThrottle" "image_throttle")
 # jsk_pcl_nodelet(src/image_mux_nodelet.cpp
@@ -281,6 +285,8 @@ jsk_pcl_nodelet(src/roi_clipper_nodelet.cpp
   "jsk_pcl/ROIClipper" "roi_clipper")
 jsk_pcl_nodelet(src/point_indices_to_mask_image_nodelet.cpp
   "jsk_pcl/PointIndicesToMaskImage" "point_indices_to_mask_image")
+jsk_pcl_nodelet(src/mask_image_to_depth_considered_mask_image_nodelet.cpp
+  "jsk_pcl/MaskImageToDepthConsideredMaskImage" "mask_image_to_depth_considered_mask_image")
 jsk_pcl_nodelet(src/mask_image_to_point_indices_nodelet.cpp
   "jsk_pcl/MaskImageToPointIndices" "mask_image_to_point_indices")
 jsk_pcl_nodelet(src/organized_pointcloud_to_point_indices_nodelet.cpp
@@ -321,9 +327,13 @@ jsk_pcl_nodelet(src/pointcloud_localization_nodelet.cpp
   "jsk_pcl/PointCloudLocalization" "pointcloud_localization")
 jsk_pcl_nodelet(src/geometric_consistency_grouping_nodelet.cpp
   "jsk_pcl/GeometricConsistencyGrouping" "geometric_consistency_grouping")
+jsk_pcl_nodelet(src/convex_connected_voxels_nodelet.cpp
+  "jsk_pcl/ConvexConnectedVoxels" "convex_connected_voxels")
+
 add_library(jsk_pcl_ros_base SHARED
   src/grid_index.cpp src/grid_map.cpp src/grid_line.cpp src/geo_util.cpp
   src/pcl_conversion_util.cpp src/pcl_util.cpp
+  src/region_adjacency_graph.cpp
 
   src/tf_listener_singleton.cpp
   src/viewpoint_sampler.cpp)
