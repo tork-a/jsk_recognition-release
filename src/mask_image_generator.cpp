@@ -33,64 +33,61 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-
-#ifndef JSK_PERCEPTION_DILATE_ERODE_MASK_IMAGE_H_
-#define JSK_PERCEPTION_DILATE_ERODE_MASK_IMAGE_H_
-
-#include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
-#include <dynamic_reconfigure/server.h>
-#include <jsk_perception/MorphologicalMaskImageOperatorConfig.h>
+#include "jsk_perception/mask_image_generator.h"
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 #include <opencv2/opencv.hpp>
+
 
 namespace jsk_perception
 {
-  
-  class MorphologicalImageOperatorNodelet:
-    public jsk_topic_tools::DiagnosticNodelet
+  void MaskImageGenerator::onInit()
   {
-  public:
-    typedef jsk_perception::MorphologicalMaskImageOperatorConfig Config;
-    MorphologicalImageOperatorNodelet(const std::string& name):
-      DiagnosticNodelet(name) {}
-  protected:
-    virtual void onInit();
-    virtual void subscribe();
-    virtual void unsubscribe();
-    virtual void configCallback(Config &config, uint32_t level);
-    virtual void imageCallback(const sensor_msgs::Image::ConstPtr& image_msg);
-    virtual void apply(const cv::Mat& input, cv::Mat& output, const cv::Mat& element) = 0;
-    
-    boost::mutex mutex_;
-    ros::Subscriber sub_;
-    ros::Publisher pub_;
-    boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
-    int method_;
-    int size_;
-    int iterations_;
-  private:
+    DiagnosticNodelet::onInit();
+    srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
+    dynamic_reconfigure::Server<Config>::CallbackType f =
+      boost::bind (&MaskImageGenerator::configCallback, this, _1, _2);
+    srv_->setCallback (f);
 
-  };
-  
-  class DilateMaskImage: public MorphologicalImageOperatorNodelet
-  {
-  public:
-    DilateMaskImage():
-      MorphologicalImageOperatorNodelet("DilateMaskImage") {}
-  protected:
-    virtual void apply(
-      const cv::Mat& input, cv::Mat& output, const cv::Mat& element);
-  };
+    pub_ = advertise<sensor_msgs::Image>(*pnh_, "output", 1);
+  }
 
-  class ErodeMaskImage: public MorphologicalImageOperatorNodelet
+  void MaskImageGenerator::subscribe()
   {
-  public:
-    ErodeMaskImage():
-      MorphologicalImageOperatorNodelet("ErodeMaskImage") {}
-  protected:
-    virtual void apply(
-      const cv::Mat& input, cv::Mat& output, const cv::Mat& element);
-  };
+    sub_ = pnh_->subscribe("input", 1, &MaskImageGenerator::generate, this);
+  }
+
+  void MaskImageGenerator::unsubscribe()
+  {
+    sub_.shutdown();
+  }
+
+  void MaskImageGenerator::configCallback(Config &config, uint32_t level)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    offset_x_ = config.offset_x;
+    offset_y_ = config.offset_y;
+    width_ = config.width;
+    height_ = config.height;
+  }
+
+  void MaskImageGenerator::generate(const sensor_msgs::Image::ConstPtr& msg)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    int offset_x = std::min(offset_x_, (int)msg->width);
+    int offset_y = std::min(offset_y_, (int)msg->height);
+    int width = std::min(offset_x + width_, (int)msg->width);
+    int height = std::min(offset_y + height_, (int)msg->height);
+    cv::Mat mask_image = cv::Mat::zeros(msg->height, msg->width, CV_8UC1);
+    cv::rectangle(mask_image,
+                  cv::Point(offset_x, offset_y),
+                  cv::Point(offset_x + width, offset_y + height),
+                  cv::Scalar(255), CV_FILLED);
+    pub_.publish(cv_bridge::CvImage(msg->header,
+                                    sensor_msgs::image_encodings::MONO8,
+                                    mask_image).toImageMsg());
+  }
 }
 
-#endif
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS (jsk_perception::MaskImageGenerator, nodelet::Nodelet);
