@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_geometry image_transport image_view2 driver_base dynamic_reconfigure cmake_modules
   roscpp nodelet rostest tf rospack
   jsk_topic_tools pcl_ros)
+
 find_package(OpenCV REQUIRED)
 find_package(Boost REQUIRED COMPONENTS filesystem system signals)
 
@@ -24,6 +25,8 @@ endif()
 
 # Dynamic reconfigure support
 generate_dynamic_reconfigure_options(
+  cfg/ProjectImagePoint.cfg
+  cfg/MaskImageGenerator.cfg
   cfg/MorphologicalMaskImageOperator.cfg
   cfg/BlobDetector.cfg
   cfg/SingleChannelHistogram.cfg
@@ -41,9 +44,11 @@ generate_dynamic_reconfigure_options(
   cfg/HoughCircles.cfg
   cfg/ColorHistogramSlidingMatcher.cfg
   cfg/BackgroundSubstraction.cfg
-  cfg/GrabCut.cfg)
+  cfg/GrabCut.cfg
+  cfg/Fisheye.cfg
+  cfg/SlidingWindowObjectDetector.cfg)
 
-add_service_files(FILES EuclideanSegment.srv  SetTemplate.srv  WhiteBalancePoints.srv  WhiteBalance.srv)
+add_service_files(FILES EuclideanSegment.srv  SetTemplate.srv  WhiteBalancePoints.srv  WhiteBalance.srv NonMaximumSuppression.srv)
 
 generate_messages(
   DEPENDENCIES std_msgs sensor_msgs geometry_msgs jsk_recognition_msgs
@@ -110,14 +115,19 @@ jsk_perception_nodelet(src/rect_to_mask_image.cpp "jsk_perception/RectToMaskImag
 jsk_perception_nodelet(src/mask_image_to_roi.cpp "jsk_perception/MaskImageToROI" "mask_image_to_roi")
 jsk_perception_nodelet(src/mask_image_to_rect.cpp "jsk_perception/MaskImageToRect" "mask_image_to_rect")
 jsk_perception_nodelet(src/roi_to_rect.cpp "jsk_perception/ROIToRect" "roi_to_rect")
-jsk_perception_nodelet(src/roi_to_mask_image.cpp "jsk_pcl/ROIToMaskImage" "roi_to_mask_image")
+jsk_perception_nodelet(src/roi_to_mask_image.cpp "jsk_perception/ROIToMaskImage" "roi_to_mask_image")
 jsk_perception_nodelet(src/polygon_to_mask_image.cpp "jsk_perception/PolygonToMaskImage" "polygon_to_mask_image")
 jsk_perception_nodelet(src/rect_to_roi.cpp "jsk_perception/RectToROI" "rect_to_roi")
+jsk_perception_nodelet(src/mask_image_generator.cpp "jsk_perception/MaskImageGenerator" "mask_image_generator")
+jsk_perception_nodelet(src/project_image_point.cpp "jsk_perception/ProjectImagePoint" "project_image_point")
+jsk_perception_nodelet(src/skeletonization_nodelet.cpp "jsk_perception/Skeletonization" "skeletonization")
+jsk_perception_nodelet(src/sliding_window_object_detector.cpp "jsk_perception/SlidingWindowObjectDetector" "sliding_window_object_detector")
 
 # compiling jsk_perception library for nodelet
 add_library(${PROJECT_NAME} SHARED ${jsk_perception_nodelet_sources}
   ${CMAKE_CURRENT_BINARY_DIR}/build/patched-SLIC-Superpixels/slic.cpp
-  src/image_utils.cpp)
+  src/image_utils.cpp
+  src/histogram_of_oriented_gradients.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencfg ${PROJECT_NAME}_gencpp)
 
@@ -148,6 +158,12 @@ add_dependencies(color_histogram_sliding_matcher       ${PROJECT_NAME}_gencfg ${
 #  DEPENDS ${PROJECT_SOURCE_DIR}/src/eusmodel_template_gen.l
 #  COMMAND ${PROJECT_SOURCE_DIR}/src/eusmodel_template_gen.sh)
 #add_custom_target(eusmodel_template ALL DEPENDS ${PROJECT_SOURCE_DIR}/template)
+
+# Download model data
+execute_process(
+  COMMAND mkdir -p ${PROJECT_SOURCE_DIR}/trained_data)
+execute_process(
+  COMMAND wget -q --timestamping "https://drive.google.com/uc?id=0B5hRAGKTOm_KWW11R0FTX0xjTDg&export=download" -O ${PROJECT_SOURCE_DIR}/trained_data/drill_svm.xml)
 
 install(TARGETS camshiftdemo virtual_camera_mono point_pose_extractor white_balance_converter hough_lines rectangle_detector calc_flow color_histogram_sliding_matcher ${PROJECT_NAME}
   ${jsk_perception_nodelet_executables}
