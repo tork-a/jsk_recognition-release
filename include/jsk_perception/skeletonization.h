@@ -1,4 +1,4 @@
-// -*- mode: c++ -*-
+// -*- mode: c++ -*- 
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
@@ -33,57 +33,46 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
+#ifndef JSK_PERCEPTION_SKELETONIZATION_H
+#define JSK_PERCEPTION_SKELETONIZATION_H
 
-#ifndef JSK_PERCEPTION_FISHEYE_TO_PANORAMA_H_
-#define JSK_PERCEPTION_FISHEYE_TO_PANORAMA_H_
+// ROS Header Directives
+#include <ros/ros.h>
+#include <ros/console.h>
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
 #include <sensor_msgs/Image.h>
-#include <sensor_msgs/CameraInfo.h>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 
-#include <message_filters/subscriber.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
-#include <message_filters/pass_through.h>
-#include <dynamic_reconfigure/server.h>
-#include <jsk_perception/FisheyeConfig.h>
-
-#include <opencv2/opencv.hpp>
+// OpenCV Header Directives
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 namespace jsk_perception
 {
-  class FisheyeToPanorama: public jsk_topic_tools::DiagnosticNodelet
-  {
-  public:
-    typedef message_filters::sync_policies::ApproximateTime<
-      sensor_msgs::Image,         // image
-      sensor_msgs::CameraInfo        // camera info
-      > SyncPolicy;
-    typedef jsk_perception::FisheyeConfig Config;
+   class Skeletonization: public jsk_topic_tools::DiagnosticNodelet
+   {
+    public:
+      Skeletonization(): DiagnosticNodelet("Skeletonization") {}
 
-    FisheyeToPanorama(): DiagnosticNodelet("FisheyeToPanorama") {}
-  protected:
-    boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
-    void configCallback(Config &new_config, uint32_t level);
-    virtual void onInit();
-    virtual void subscribe();
-    virtual void unsubscribe();
-    inline double interpolate(double rate, double first, double second){return (1.0 - rate) * first + rate * second;};
-    virtual void rectify(const sensor_msgs::Image::ConstPtr& image_msg);
-    
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> > sync_;
-    ros::Subscriber sub_image_;
-    ros::Publisher pub_undistorted_image_;
-    ros::Publisher pub_undistorted_bilinear_image_;
-    bool use_panorama_;
-    bool simple_panorama_;
-    float max_degree_;
-    float scale_;
-    float upside_down_;
-    double offset_degree_;
-  private:
-    
-  };
+    protected:
+      virtual void onInit();
+      virtual void subscribe();
+      virtual void unsubscribe();
+      virtual void imageCallback(const sensor_msgs::Image::ConstPtr&);
+      virtual void skeletonization(cv::Mat &);
+      virtual void iterativeThinning(
+         cv::Mat&, int);
+         
+      boost::mutex mutex_;
+      ros::Subscriber sub_;
+      ros::Publisher pub_image_;
+      
+    private:
+      enum { EVEN, ODD };
+   };
 }
 
-#endif
+#endif  // JSK_PERCEPTION_SKELETONIZATION_H
+
