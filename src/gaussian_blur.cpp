@@ -33,86 +33,69 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include "jsk_perception/dilate_erode_mask_image.h"
+
+#include "jsk_perception/gaussian_blur.h"
+#include <sensor_msgs/image_encodings.h>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/opencv.hpp>
-#include <sensor_msgs/image_encodings.h>
 
 namespace jsk_perception
 {
-  void MorphologicalImageOperatorNodelet::onInit()
+  void GaussianBlur::onInit()
   {
     DiagnosticNodelet::onInit();
     srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
     dynamic_reconfigure::Server<Config>::CallbackType f =
-      boost::bind (
-        &MorphologicalImageOperatorNodelet::configCallback, this, _1, _2);
+      boost::bind (&GaussianBlur::configCallback, this, _1, _2);
     srv_->setCallback (f);
 
     pub_ = advertise<sensor_msgs::Image>(*pnh_, "output", 1);
   }
 
-  void MorphologicalImageOperatorNodelet::subscribe()
+  void GaussianBlur::subscribe()
   {
-    sub_ = pnh_->subscribe(
-      "input", 1, &MorphologicalImageOperatorNodelet::imageCallback, this);
+    sub_ = pnh_->subscribe("input", 1, &GaussianBlur::apply, this);
   }
 
-  void MorphologicalImageOperatorNodelet::unsubscribe()
+  void GaussianBlur::unsubscribe()
   {
     sub_.shutdown();
   }
 
-  void MorphologicalImageOperatorNodelet::configCallback(
+  void GaussianBlur::configCallback(
     Config &config, uint32_t level)
   {
     boost::mutex::scoped_lock lock(mutex_);
-    method_ = config.method;
-    size_ = config.size;
-    iterations_ = config.iterations;
+    kernel_size_ = config.kernel_size;
+    sigma_x_ = config.sigma_x;
+    sigma_y_ = config.sigma_y;
   }
-  
-  void MorphologicalImageOperatorNodelet::imageCallback(
+
+  void GaussianBlur::apply(
     const sensor_msgs::Image::ConstPtr& image_msg)
   {
-    boost::mutex::scoped_lock lock(mutex_);
-    cv::Mat image = cv_bridge::toCvShare(image_msg, sensor_msgs::image_encodings::MONO8)->image;
-    int type;
-    if (method_ == 0) {
-      type = cv::MORPH_RECT;
+    if ((image_msg->width == 0) && (image_msg->height == 0)) {
+        JSK_ROS_WARN("invalid image input");
+        return;
     }
-    else if (method_ == 1) {
-      type = cv::MORPH_CROSS;
+    cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(
+      image_msg, image_msg->encoding);
+    cv::Mat image = cv_ptr->image;
+    if (image_msg->encoding == sensor_msgs::image_encodings::RGB8) {
+      cv::cvtColor(image, image, CV_RGB2BGR);
     }
-    else if (method_ == 2) {
-      type = cv::MORPH_ELLIPSE;
+    cv::Mat applied_image;
+    if (kernel_size_ % 2 == 1) {
+      cv::GaussianBlur(image, applied_image, cv::Size(kernel_size_, kernel_size_), sigma_x_, sigma_y_);
+    } else {
+      cv::GaussianBlur(image, applied_image, cv::Size(kernel_size_+1, kernel_size_+1), sigma_x_, sigma_y_);
     }
-    cv::Mat output_image;
-    
-    cv::Mat element = cv::getStructuringElement(
-      type,
-      cv::Size(2 * size_ + 1, 2 * size_+1),
-      cv::Point(size_, size_));
-    apply(image, output_image, element);
-    pub_.publish(
-      cv_bridge::CvImage(image_msg->header,
-                         sensor_msgs::image_encodings::MONO8,
-                         output_image).toImageMsg());
-  }
-
-  void DilateMaskImage::apply(
-    const cv::Mat& input, cv::Mat& output, const cv::Mat& element)
-  {
-    cv::dilate(input, output, element, /*anchor=*/cv::Point(-1,-1), iterations_);
-  }
-
-  void ErodeMaskImage::apply(
-    const cv::Mat& input, cv::Mat& output, const cv::Mat& element)
-  {
-    cv::erode(input, output, element, /*anchor=*/cv::Point(-1,-1), iterations_);
+    pub_.publish(cv_bridge::CvImage(
+                     image_msg->header,
+                     image_msg->encoding,
+                     applied_image).toImageMsg());
   }
 }
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS (jsk_perception::DilateMaskImage, nodelet::Nodelet);
-PLUGINLIB_EXPORT_CLASS (jsk_perception::ErodeMaskImage, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS (jsk_perception::GaussianBlur, nodelet::Nodelet);
