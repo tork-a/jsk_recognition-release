@@ -40,6 +40,7 @@ add_message_files(
   ColorHistogramArray.msg
   Line.msg
   ICPResult.msg
+  ImageDifferenceValue.msg
   )
 
 generate_messages(
