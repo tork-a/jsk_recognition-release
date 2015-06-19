@@ -59,7 +59,7 @@ namespace jsk_pcl_ros
   void SnapIt::onInit()
   {
     DiagnosticNodelet::onInit();
-    tf_listener_.reset(new tf::TransformListener());
+    tf_listener_ = TfListenerSingleton::getInstance();
     pnh_->param("use_service", use_service_, false);
     polygon_aligned_pub_ = advertise<geometry_msgs::PoseStamped>(
       *pnh_, "output/plane_aligned", 1);
@@ -100,6 +100,7 @@ namespace jsk_pcl_ros
       polygon_align_sub_.shutdown();
       convex_align_sub_.shutdown();
     }
+    polygons_.reset();
   }
   
   void SnapIt::polygonCallback(
@@ -116,7 +117,7 @@ namespace jsk_pcl_ros
   {
     boost::mutex::scoped_lock lock(mutex_);
     if (!polygons_) {
-      NODELET_ERROR("no polygon is ready");
+      JSK_NODELET_ERROR("no polygon is ready");
       polygon_aligned_pub_.publish(pose_msg);
       return;
     }
@@ -139,6 +140,7 @@ namespace jsk_pcl_ros
         min_distance = d;
       }
     }
+    
     if (min_convex) {
       geometry_msgs::PoseStamped aligned_pose = alignPose(pose_eigen, min_convex);
       aligned_pose.header = pose_msg->header;
@@ -193,7 +195,7 @@ namespace jsk_pcl_ros
     geometry_msgs::PoseArray pose_array;
     pose_array.header = poly_msg->header;
     if (!polygons_) {
-      NODELET_ERROR("no polygon is ready");
+      JSK_NODELET_ERROR("no polygon is ready");
       return;
     }
     std::vector<ConvexPolygon::Ptr> convexes
@@ -205,7 +207,7 @@ namespace jsk_pcl_ros
       Eigen::Vector3f pose_point(p.x, p.y, p.z);
       int min_index = findNearestConvex(pose_point, convexes);
       if (min_index == -1) {
-        NODELET_ERROR("cannot project onto convex");
+        JSK_NODELET_ERROR("cannot project onto convex");
         return;
       }
       else {
@@ -246,7 +248,7 @@ namespace jsk_pcl_ros
   {
     boost::mutex::scoped_lock lock(mutex_);
     if (!polygons_) {
-      NODELET_ERROR("no polygon is ready");
+      JSK_NODELET_ERROR("no polygon is ready");
       convex_aligned_pub_.publish(pose_msg);
       return;
     }
@@ -308,14 +310,16 @@ namespace jsk_pcl_ros
       for (size_t i = 0; i < polygons->polygons.size(); i++) {
         geometry_msgs::PolygonStamped polygon = polygons->polygons[i];
         Vertices vertices;
+        
+        tf::StampedTransform transform = lookupTransformWithDuration(
+          tf_listener_,
+          polygon.header.frame_id, frame_id, stamp, ros::Duration(5.0));
         for (size_t j = 0; j < polygon.polygon.points.size(); j++) {
           Eigen::Vector4d p;
           p[0] = polygon.polygon.points[j].x;
           p[1] = polygon.polygon.points[j].y;
           p[2] = polygon.polygon.points[j].z;
           p[3] = 1;
-          tf::StampedTransform transform;
-          tf_listener_->lookupTransform(polygon.header.frame_id, frame_id, stamp, transform);
           Eigen::Affine3d eigen_transform;
           tf::transformTFToEigen(transform, eigen_transform);
           Eigen::Vector4d transformed_pointd = eigen_transform.inverse() * p;
@@ -332,15 +336,15 @@ namespace jsk_pcl_ros
     }
     catch (tf2::ConnectivityException &e)
     {
-      NODELET_ERROR("Transform error: %s", e.what());
+      JSK_NODELET_ERROR("Transform error: %s", e.what());
     }
     catch (tf2::InvalidArgumentException &e)
     {
-      NODELET_ERROR("Transform error: %s", e.what());
+      JSK_NODELET_ERROR("Transform error: %s", e.what());
     }
     catch (tf2::ExtrapolationException &e)
     {
-      NODELET_ERROR("Transform error: %s", e.what());
+      JSK_NODELET_ERROR("Transform error: %s", e.what());
     }
     return result;
   }
