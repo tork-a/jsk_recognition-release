@@ -231,6 +231,10 @@ namespace jsk_pcl_ros
             const std::vector<float>& coefficients);
     virtual ~Polygon();
     virtual std::vector<Polygon::Ptr> decomposeToTriangles();
+    virtual void clearTriangleDecompositionCache() {
+      cached_triangles_.clear();
+    }
+    virtual Eigen::Vector3f getNormalFromVertices();
     virtual bool isTriangle();
     template <class PointT>
     typename pcl::PointCloud<PointT>::Ptr samplePoints(double grid_size)
@@ -257,6 +261,7 @@ namespace jsk_pcl_ros
       // ROS_INFO("max_y: %f", max_y);
       // Decompose into triangle first for optimization
       std::vector<Polygon::Ptr> triangles = decomposeToTriangles();
+
       for (double x = min_x; x < max_x; x += grid_size) {
         for (double y = min_y; y < max_y; y += grid_size) {
           Eigen::Vector3f candidate(x, y, 0);
@@ -311,9 +316,10 @@ namespace jsk_pcl_ros
         output.points[i] = p;
       }
     }
-
+    
   protected:
     Vertices vertices_;
+    std::vector<Polygon::Ptr> cached_triangles_;
   private:
     
   };
@@ -356,7 +362,7 @@ namespace jsk_pcl_ros
     double distanceFromVertices(const Eigen::Vector3f& p);
     geometry_msgs::Polygon toROSMsg();
   protected:
-    
+
   private:
   };
 
@@ -429,12 +435,17 @@ namespace jsk_pcl_ros
     GridPlane(ConvexPolygon::Ptr plane, const double resolution);
     virtual ~GridPlane();
     virtual GridPlane::Ptr clone(); // shallow copy
-    virtual void fillCellsFromPointCloud(
+    virtual size_t fillCellsFromPointCloud(
       pcl::PointCloud<pcl::PointNormal>::Ptr& cloud,
       double distance_threshold);
-    virtual void fillCellsFromPointCloud(
+    virtual size_t fillCellsFromPointCloud(
       pcl::PointCloud<pcl::PointNormal>::Ptr& cloud,
       double distance_threshold,
+      std::set<int>& non_plane_indices);
+    virtual size_t fillCellsFromPointCloud(
+      pcl::PointCloud<pcl::PointNormal>::Ptr& cloud,
+      double distance_threshold,
+      double normal_threshold,
       std::set<int>& non_plane_indices);
     virtual void fillCellsFromCube(Cube& cube);
     virtual double getResolution() { return resolution_; }
