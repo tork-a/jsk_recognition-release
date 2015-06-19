@@ -2,6 +2,12 @@
 Changelog for package imagesift
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.13 (2015-06-11)
+-------------------
+* [imagesift] Add header file of imagesift
+* [imagesift] Add Feature0D as output
+* Contributors: Kentaro Wada
+
 0.2.12 (2015-05-04)
 -------------------
 

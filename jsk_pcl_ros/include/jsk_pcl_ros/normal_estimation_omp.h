@@ -34,62 +34,43 @@
  *********************************************************************/
 
 
-#ifndef JSK_PERCEPTION_DILATE_ERODE_MASK_IMAGE_H_
-#define JSK_PERCEPTION_DILATE_ERODE_MASK_IMAGE_H_
+#ifndef JSK_PCL_ROS_NORMAL_ESTIMATION_OMP_H_
+#define JSK_PCL_ROS_NORMAL_ESTIMATION_OMP_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <pcl_ros/FeatureConfig.h>
 #include <dynamic_reconfigure/server.h>
-#include <jsk_perception/MorphologicalMaskImageOperatorConfig.h>
-#include <opencv2/opencv.hpp>
-
-namespace jsk_perception
+#include <pcl_conversions/pcl_conversions.h>
+namespace jsk_pcl_ros
 {
-  
-  class MorphologicalImageOperatorNodelet:
-    public jsk_topic_tools::DiagnosticNodelet
+  class NormalEstimationOMP: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    typedef jsk_perception::MorphologicalMaskImageOperatorConfig Config;
-    MorphologicalImageOperatorNodelet(const std::string& name):
-      DiagnosticNodelet(name) {}
+    typedef boost::shared_ptr<NormalEstimationOMP> Ptr;
+    typedef pcl_ros::FeatureConfig Config;
+    NormalEstimationOMP(): DiagnosticNodelet("NormalEstimationOMP") {}
+    
   protected:
+
     virtual void onInit();
     virtual void subscribe();
     virtual void unsubscribe();
-    virtual void configCallback(Config &config, uint32_t level);
-    virtual void imageCallback(const sensor_msgs::Image::ConstPtr& image_msg);
-    virtual void apply(const cv::Mat& input, cv::Mat& output, const cv::Mat& element) = 0;
+    virtual void estimate(
+      const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
+    virtual void configCallback(
+      Config& config, uint32_t level);
     
     boost::mutex mutex_;
-    ros::Subscriber sub_;
     ros::Publisher pub_;
-    boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
-    int method_;
-    int size_;
-    int iterations_;
+    ros::Publisher pub_with_xyz_;
+    ros::Subscriber sub_;
+    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
+    int k_;
+    double search_radius_;
+    
   private:
-
-  };
-  
-  class DilateMaskImage: public MorphologicalImageOperatorNodelet
-  {
-  public:
-    DilateMaskImage():
-      MorphologicalImageOperatorNodelet("DilateMaskImage") {}
-  protected:
-    virtual void apply(
-      const cv::Mat& input, cv::Mat& output, const cv::Mat& element);
-  };
-
-  class ErodeMaskImage: public MorphologicalImageOperatorNodelet
-  {
-  public:
-    ErodeMaskImage():
-      MorphologicalImageOperatorNodelet("ErodeMaskImage") {}
-  protected:
-    virtual void apply(
-      const cv::Mat& input, cv::Mat& output, const cv::Mat& element);
+    
   };
 }
 
