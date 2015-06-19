@@ -34,32 +34,43 @@
  *********************************************************************/
 
 
-#include "jsk_perception/rgb_decomposer.h"
+#include "jsk_perception/kmeans.h"
+#include "jsk_perception/image_utils.h"
 #include <sensor_msgs/image_encodings.h>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/opencv.hpp>
 
 namespace jsk_perception
 {
-  void RGBDecomposer::onInit()
+  void KMeans::onInit()
   {
     DiagnosticNodelet::onInit();
-    pub_r_ = advertise<sensor_msgs::Image>(*pnh_, "output/red", 1);
-    pub_g_ = advertise<sensor_msgs::Image>(*pnh_, "output/green", 1);
-    pub_b_ = advertise<sensor_msgs::Image>(*pnh_, "output/blue", 1);
+    srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
+    dynamic_reconfigure::Server<Config>::CallbackType f =
+      boost::bind (&KMeans::configCallback, this, _1, _2);
+    srv_->setCallback (f);
+
+    pub_ = advertise<sensor_msgs::Image>(*pnh_, "output", 1);
   }
 
-  void RGBDecomposer::subscribe()
+  void KMeans::subscribe()
   {
-    sub_ = pnh_->subscribe("input", 1, &RGBDecomposer::decompose, this);
+    sub_ = pnh_->subscribe("input", 1, &KMeans::apply, this);
   }
 
-  void RGBDecomposer::unsubscribe()
+  void KMeans::unsubscribe()
   {
     sub_.shutdown();
   }
 
-  void RGBDecomposer::decompose(
+  void KMeans::configCallback(
+    Config &config, uint32_t level)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    n_clusters_ = config.n_clusters;
+  }
+
+  void KMeans::apply(
     const sensor_msgs::Image::ConstPtr& image_msg)
   {
     if ((image_msg->width == 0) && (image_msg->height == 0)) {
@@ -69,28 +80,41 @@ namespace jsk_perception
     cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(
       image_msg, image_msg->encoding);
     cv::Mat image = cv_ptr->image;
-    if (image_msg->encoding == sensor_msgs::image_encodings::RGB8) {
+    if (isRGB(image_msg->encoding)) {
       cv::cvtColor(image, image, CV_RGB2BGR);
     }
-    std::vector<cv::Mat> bgr_planes;
-    cv::split(image, bgr_planes);
-    cv::Mat red = bgr_planes[2];
-    cv::Mat blue = bgr_planes[0];
-    cv::Mat green = bgr_planes[1];
-    pub_r_.publish(cv_bridge::CvImage(
-                     image_msg->header,
-                     sensor_msgs::image_encodings::MONO8,
-                     red).toImageMsg());
-    pub_g_.publish(cv_bridge::CvImage(
-                     image_msg->header,
-                     sensor_msgs::image_encodings::MONO8,
-                     green).toImageMsg());
-    pub_b_.publish(cv_bridge::CvImage(
-                     image_msg->header,
-                     sensor_msgs::image_encodings::MONO8,
-                     blue).toImageMsg());
+
+    cv::Mat reshaped_img = image.reshape(1, image.cols * image.rows);
+    cv::Mat reshaped_img32f;
+    reshaped_img.convertTo(reshaped_img32f, CV_32FC1, 1.0 / 255.0);
+    cv::Mat labels;
+    cv::TermCriteria criteria = cv::TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0);
+    cv::Mat centers;
+    cv::kmeans(reshaped_img32f, n_clusters_, labels, criteria, /*attempts=*/1, /*flags=*/cv::KMEANS_PP_CENTERS, centers);
+
+    cv::Mat rgb_image(image.rows, image.cols, CV_8UC3);
+    cv::MatIterator_<cv::Vec3b> rgb_first = rgb_image.begin<cv::Vec3b>();
+    cv::MatIterator_<cv::Vec3b> rgb_last = rgb_image.end<cv::Vec3b>();
+    cv::MatConstIterator_<int> label_first = labels.begin<int>();
+
+    cv::Mat centers_u8;
+    centers.convertTo(centers_u8, CV_8UC1, 255.0);
+    cv::Mat centers_u8c3 = centers_u8.reshape(3);
+
+    while ( rgb_first != rgb_last ) {
+      const cv::Vec3b& rgb = centers_u8c3.ptr<cv::Vec3b>(*label_first)[0];
+      *rgb_first = rgb;
+      ++rgb_first;
+      ++label_first;
+    }
+
+    pub_.publish(cv_bridge::CvImage(
+                  image_msg->header,
+                  image_msg->encoding,
+                  rgb_image).toImageMsg());
   }
+
 }
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS (jsk_perception::RGBDecomposer, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS (jsk_perception::KMeans, nodelet::Nodelet);
