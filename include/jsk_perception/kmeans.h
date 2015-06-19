@@ -34,48 +34,36 @@
  *********************************************************************/
 
 
-#ifndef JSK_PERCEPTION_APPLY_MASK_IMAGE_H_
-#define JSK_PERCEPTION_APPLY_MASK_IMAGE_H_
+#ifndef JSK_PERCEPTION_KMEANS_H_
+#define JSK_PERCEPTION_KMEANS_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
 #include <sensor_msgs/Image.h>
-#include <message_filters/subscriber.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/exact_time.h>
-#include <message_filters/sync_policies/approximate_time.h>
+#include <dynamic_reconfigure/server.h>
+#include <jsk_perception/KMeansConfig.h>
+#include <opencv2/opencv.hpp>
 
 namespace jsk_perception
 {
-  class ApplyMaskImage: public jsk_topic_tools::DiagnosticNodelet
+  class KMeans: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    typedef message_filters::sync_policies::ApproximateTime<
-    sensor_msgs::Image,
-    sensor_msgs::Image > ApproximateSyncPolicy;
-    typedef message_filters::sync_policies::ExactTime<
-    sensor_msgs::Image,
-    sensor_msgs::Image > SyncPolicy;
-    ApplyMaskImage(): DiagnosticNodelet("ApplyMaskImage") {}
+    typedef jsk_perception::KMeansConfig Config;
+    KMeans(): DiagnosticNodelet("KMeans") {}
   protected:
-
     virtual void onInit();
     virtual void subscribe();
     virtual void unsubscribe();
-    virtual void apply(
-      const sensor_msgs::Image::ConstPtr& image_msg,
-      const sensor_msgs::Image::ConstPtr& mask_msg);
+    virtual void configCallback(Config &config, uint32_t level);
+    virtual void apply(const sensor_msgs::Image::ConstPtr& image_msg);
 
-    bool approximate_sync_;
-    bool mask_black_to_transparent_;
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> > sync_;
-    boost::shared_ptr<message_filters::Synchronizer<ApproximateSyncPolicy> > async_;
-    message_filters::Subscriber<sensor_msgs::Image> sub_image_;
-    message_filters::Subscriber<sensor_msgs::Image> sub_mask_;
-    ros::Publisher pub_image_;
-    ros::Publisher pub_mask_;
-    
+    boost::mutex mutex_;
+    ros::Subscriber sub_;
+    ros::Publisher pub_;
+    boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
+    int n_clusters_;
   private:
-    
+
   };
 }
 
