@@ -1,7 +1,8 @@
+// -*- mode: c++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2013, Ryohei Ueda and JSK Lab
+ *  Copyright (c) 2015, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,53 +33,35 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include "jsk_pcl_ros/cluster_point_indices_decomposer_z_axis.h"
-#include <pluginlib/class_list_macros.h>
-#include <pcl/filters/extract_indices.h>
 
-#include <pcl/common/centroid.h>
+#ifndef JSK_PCL_ROS_NORMAL_FLIP_TO_FRAME_H_
+#define JSK_PCL_ROS_NORMAL_FLIP_TO_FRAME_H_
+
+#include <jsk_topic_tools/diagnostic_nodelet.h>
+#include <sensor_msgs/PointCloud2.h>
+#include "jsk_pcl_ros/tf_listener_singleton.h"
 
 namespace jsk_pcl_ros
 {
-  void ClusterPointIndicesDecomposerZAxis::sortIndicesOrder
-  (pcl::PointCloud<pcl::PointXYZ>::Ptr input,
-   std::vector<pcl::IndicesPtr> indices_array,
-   std::vector<pcl::IndicesPtr> &output_array)
+  class NormalFlipToFrame: public jsk_topic_tools::DiagnosticNodelet
   {
-    output_array.resize(indices_array.size());
-    std::vector<double> z_values;
-    pcl::ExtractIndices<pcl::PointXYZ> ex;
-    ex.setInputCloud(input);
-    for (size_t i = 0; i < indices_array.size(); i++)
-    {
-      Eigen::Vector4f center;
-      ex.setIndices(indices_array[i]);
-      pcl::PointCloud<pcl::PointXYZ>::Ptr tmp(new pcl::PointCloud<pcl::PointXYZ>);
-      ex.filter(*tmp);
-      pcl::compute3DCentroid(*tmp, center);
-      z_values.push_back(center[2]); // only focus on z value
-    }
+  public:
+    typedef boost::shared_ptr<NormalFlipToFrame> Ptr;
+    NormalFlipToFrame(): DiagnosticNodelet("NormalFlipToFrame") {}
+  protected:
+    virtual void onInit();
+    virtual void subscribe();
+    virtual void unsubscribe();
+    virtual void flip(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
+
+    ros::Publisher pub_;
+    ros::Subscriber sub_;
+    std::string frame_id_;
+    tf::TransformListener* tf_listener_;
+    bool strict_tf_;
+  private:
     
-    // sort centroids
-    for (size_t i = 0; i < indices_array.size(); i++)
-    {
-      size_t minimum_index = 0;
-      double minimum_value = DBL_MAX;
-      for (size_t j = 0; j < indices_array.size(); j++)
-      {
-        if (z_values[j] < minimum_value)
-        {
-          minimum_value = z_values[j];
-          minimum_index = j;
-        }
-      }
-      // JSK_ROS_INFO("%lu => %lu", i, minimum_index);
-      output_array[i] = indices_array[minimum_index];
-      z_values[minimum_index] = DBL_MAX;
-    }
-  }
+  };
 }
 
-
-PLUGINLIB_EXPORT_CLASS (jsk_pcl_ros::ClusterPointIndicesDecomposerZAxis,
-                         nodelet::Nodelet);
+#endif
