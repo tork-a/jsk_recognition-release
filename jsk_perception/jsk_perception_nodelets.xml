@@ -36,11 +36,31 @@
          base_class_type="nodelet::Nodelet">
   </class>
   <class name="jsk_perception/ErodeMaskImage"
-         type="jsk_perception::ErodeMaskImage"
+         type="jsk_perception::Erode"
          base_class_type="nodelet::Nodelet">
   </class>
   <class name="jsk_perception/DilateMaskImage"
-         type="jsk_perception::DilateMaskImage"
+         type="jsk_perception::Dilate"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/Opening"
+         type="jsk_perception::Opening"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/Closing"
+         type="jsk_perception::Closing"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/MorphologicalGradient"
+         type="jsk_perception::MorphologicalGradient"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/TopHat"
+         type="jsk_perception::TopHat"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/BlackHat"
+         type="jsk_perception::BlackHat"
          base_class_type="nodelet::Nodelet">
   </class>
   <class name="jsk_perception/BlobDetector"
@@ -167,5 +187,13 @@
     <description>
       Base class for object detection via supervised learning
     </description>
+  </class>
+  <class name="jsk_perception/GaussianBlur"
+         type="jsk_perception::GaussianBlur"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/KMeans"
+         type="jsk_perception::KMeans"
+         base_class_type="nodelet::Nodelet">
   </class>
 </library>
