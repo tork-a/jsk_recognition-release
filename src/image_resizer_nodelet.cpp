@@ -91,7 +91,7 @@ namespace resized_image_transport
 
   
   void ImageResizer::process(const sensor_msgs::ImageConstPtr &src_img, const sensor_msgs::CameraInfoConstPtr &src_info,
-			 sensor_msgs::ImagePtr &dst_img, sensor_msgs::CameraInfo &dst_info){
+       sensor_msgs::ImagePtr &dst_img, sensor_msgs::CameraInfo &dst_info){
     int image_width, image_height;
     if(use_camera_info_) {
       image_width = src_info->width;
@@ -116,7 +116,7 @@ namespace resized_image_transport
       raw_height_ = tmpmat.rows;
     }
     cv::resize(cv_img->image, tmpmat, cv::Size(width, height), 0, 0, interpolation_);
-    ROS_INFO("mat rows:%d cols:%d", tmpmat.rows, tmpmat.cols);
+    NODELET_DEBUG("mat rows:%d cols:%d", tmpmat.rows, tmpmat.cols);
     cv_img->image = tmpmat;
 
     dst_img = cv_img->toImageMsg();
