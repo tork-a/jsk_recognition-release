@@ -59,6 +59,31 @@ time end
 Represent range of time.
 
 ## nodelets
+### jsk\_pcl/NormalEstimationOMP
+This nodelet is almost same to `pcl/NormalEstimationOMP` of `pcl_ros` package,
+but it can handle timestamp correctly.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input pointcloud.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/PointCloud2`)
+
+  Output pointcloud, point type is `pcl::Normal`.
+* `~output_with_xyz` (`sensor_msgs/PointCloud2`)
+
+  Output pointcloud, point type is `pcl::XYZRGBNormal`.
+
+#### Parameters
+* `~k_search`
+
+  K search parameter for normal estimation
+* `~radius_search`
+
+  Radius search parameter for normal estimation
+
 ### jsk\_pcl/PointCloudLocalization
 ![](images/pointcloud_localization.png)
 
@@ -1211,6 +1236,9 @@ It can filters pointcloud based on **static** direction and direction based on i
 * `~direction` (Double Array, required):
 
    if `~use_imu` is false, the direction should be specified with this parmaeter.
+* `~queue_size` (Integer, default: `200`):
+
+   The length of input queue.
 
 ### jsk\_pcl/MultiPlaneExtraction
 ![MultiPlaneExtraction](images/multi_plane_extraction.png)
@@ -1257,6 +1285,12 @@ Extract the points above the planes between `~min_height` and `~max_height`.
 * `~use_async` (Boolean, default: `False`)
 
   Approximate sync input topics.
+* `~use_sensor_frame` (Boolean, default: `False`)
+
+  Use sensor viewpoint
+* `~sensor_frame` (String, default: `head_root`)
+
+  Specify frame_id of sensor origin.
 
 ### jsk\_pcl/RegionGrowingMultiplePlaneSegmentation
 ![jsk_pcl/RegionGrowingMultiplePlaneSegmentation](images/region_growing_multiple_plane_segmentation.png).
@@ -2240,7 +2274,26 @@ Merges the voxels initially segmented using SuperVoxel Segmentation into high le
 
   Output is set of merged voxel indices
 
+### jsk\_pcl/NormalFlipToFrame
+Flip normal direction towards specified frame.
 
+#### Subscribing Topics
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input pointcloud. It should have normal fields.
+
+#### Publishing Topics
+* `~output` (`sensor_msgs/PointCloud2`)
+
+  Output pointcloud whose normal vector orients toward specified frame by `~frame_id`.
+
+#### Parameters
+* `~frame_id` (String, **required**)
+
+  Frame ID which to be oriented by normal vectors.
+* `~strict_tf` (Bool, default: `false`)
+
+  Do not take into account timestamp if this parameter is false.
 
 ## To Test Some Samples
 

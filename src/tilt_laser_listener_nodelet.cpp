@@ -52,7 +52,7 @@ namespace jsk_pcl_ros
       pnh_->getParam("joint_name", joint_name_);
     }
     else {
-      NODELET_ERROR("no ~joint_state is specified");
+      JSK_NODELET_ERROR("no ~joint_state is specified");
       return;
     }
     pnh_->param("overwrap_angle", overwrap_angle_, 0.0);
@@ -75,7 +75,7 @@ namespace jsk_pcl_ros
       laser_type_ = INFINITE_SPINDLE_HALF;
     }
     else {
-      NODELET_ERROR("unknown ~laser_type: %s", laser_type.c_str());
+      JSK_NODELET_ERROR("unknown ~laser_type: %s", laser_type.c_str());
       return;
     }
     pnh_->param("use_laser_assembler", use_laser_assembler_, false);
@@ -83,7 +83,7 @@ namespace jsk_pcl_ros
       assemble_cloud_srv_
         = pnh_->serviceClient<laser_assembler::AssembleScans2>("assemble_scans2");
       cloud_pub_
-        = advertise<sensor_msgs::PointCloud2>(*pnh_, "output_cloud", 1);
+        = pnh_->advertise<sensor_msgs::PointCloud2>("output_cloud", 1);
     }
     prev_angle_ = 0;
     prev_velocity_ = 0;
@@ -92,17 +92,17 @@ namespace jsk_pcl_ros
       "clear_cache", &TiltLaserListener::clearCacheCallback,
       this);
     trigger_pub_ = advertise<jsk_recognition_msgs::TimeRange>(*pnh_, "output", 1);
-    
+    sub_ = pnh_->subscribe("input", 1, &TiltLaserListener::jointCallback, this);
   }
 
   void TiltLaserListener::subscribe()
   {
-    sub_ = pnh_->subscribe("input", 1, &TiltLaserListener::jointCallback, this);
+    
   }
 
   void TiltLaserListener::unsubscribe()
   {
-    sub_.shutdown();
+
   }
 
   void TiltLaserListener::updateDiagnostic(
@@ -119,7 +119,7 @@ namespace jsk_pcl_ros
     buffer_.clear();
     return true;
   }
-  
+
   void TiltLaserListener::publishTimeRange(
     const ros::Time& stamp,
     const ros::Time& start,
@@ -135,14 +135,23 @@ namespace jsk_pcl_ros
         laser_assembler::AssembleScans2 srv;
         srv.request.begin = start;
         srv.request.end = end;
-        assemble_cloud_srv_.call(srv);
-        sensor_msgs::PointCloud2 output_cloud = srv.response.cloud;
-        output_cloud.header.stamp = stamp;
-        cloud_pub_.publish(output_cloud);
+        try {
+          if (assemble_cloud_srv_.call(srv)) {
+            sensor_msgs::PointCloud2 output_cloud = srv.response.cloud;
+            output_cloud.header.stamp = stamp;
+            cloud_pub_.publish(output_cloud);
+          }
+          else {
+            JSK_NODELET_ERROR("Failed to call assemble cloud service");
+          }
+        }
+        catch (...) {
+          JSK_NODELET_ERROR("Exception in calling assemble cloud service");
+        }
       }
     }
   }
-  
+
   void TiltLaserListener::processTiltHalfUp(
     const ros::Time& stamp, const double& joint_angle)
   {
