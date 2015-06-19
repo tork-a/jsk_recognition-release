@@ -50,6 +50,7 @@
 namespace jsk_pcl_ros {
   
   void HintedPlaneDetector::onInit() {
+    pcl::console::setVerbosityLevel(pcl::console::L_ERROR);
     DiagnosticNodelet::onInit();
     srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
     typename dynamic_reconfigure::Server<Config>::CallbackType f =
@@ -137,12 +138,12 @@ namespace jsk_pcl_ros {
     
     ConvexPolygon::Ptr convex;
     
-    if (detectHintPlane(hint_cloud, convex)) {
+    if (detectHintPlane(hint_cloud, convex) && convex) {
       if (detectLargerPlane(input_cloud, convex)) {
-        NODELET_INFO("success to detect!");
+        JSK_NODELET_INFO("success to detect!");
       }
       else {
-        NODELET_ERROR("failed to detect larger plane");
+        JSK_NODELET_ERROR("failed to detect larger plane");
       }
     }
   }
@@ -224,7 +225,7 @@ namespace jsk_pcl_ros {
       if (cluster_indices.size() == 0) {
         return;
       }
-      NODELET_INFO("%lu clusters", cluster_indices.size());
+      JSK_NODELET_INFO("%lu clusters", cluster_indices.size());
       pcl::PointIndices::Ptr filtered_indices
         = getBestCluster(cloud, cluster_indices, hint_convex);
       output = *filtered_indices;
@@ -300,7 +301,7 @@ namespace jsk_pcl_ros {
                 hint_convex->getNormal(),
                 *plane_inliers, *plane_coefficients);
     if (plane_inliers->indices.size() < min_size_) { // good!
-      NODELET_ERROR("failed to detect by plane fitting filtering");
+      JSK_NODELET_ERROR("failed to detect by plane fitting filtering");
       return false;
     }
     // Check direction of plane_coefficients
@@ -317,7 +318,7 @@ namespace jsk_pcl_ros {
     euclideanFilter(input_cloud, plane_inliers, hint_convex,
                     *euclidean_filtered_indices);
     if (euclidean_filtered_indices->indices.size() < min_size_) {
-      NODELET_ERROR("failed to detect by euclidean filtering");
+      JSK_NODELET_ERROR("failed to detect by euclidean filtering");
       return false;
     }
     pcl::PointIndices::Ptr density_filtered_indices (new pcl::PointIndices);
@@ -325,7 +326,7 @@ namespace jsk_pcl_ros {
       input_cloud, euclidean_filtered_indices, *density_filtered_indices);
       
     if (density_filtered_indices->indices.size() < min_size_) {
-      NODELET_ERROR("failed to detect by density filtering");
+      JSK_NODELET_ERROR("failed to detect by density filtering");
       return false;
     }
     ConvexPolygon::Ptr convex
@@ -390,7 +391,7 @@ namespace jsk_pcl_ros {
       return true;
     }
     else {
-      NODELET_ERROR("Failed to find hint plane");
+      JSK_NODELET_ERROR("Failed to find hint plane");
       return false;
     }
   }
