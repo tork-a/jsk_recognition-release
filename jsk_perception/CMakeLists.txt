@@ -46,7 +46,12 @@ generate_dynamic_reconfigure_options(
   cfg/BackgroundSubstraction.cfg
   cfg/GrabCut.cfg
   cfg/Fisheye.cfg
-  cfg/SlidingWindowObjectDetector.cfg)
+  cfg/SlidingWindowObjectDetector.cfg
+  cfg/ImagePublisher.cfg
+  cfg/GaussianBlur.cfg
+  cfg/KMeans.cfg
+  cfg/ImageTimeDiff.cfg
+)
 
 add_service_files(FILES EuclideanSegment.srv  SetTemplate.srv  WhiteBalancePoints.srv  WhiteBalance.srv NonMaximumSuppression.srv)
 
@@ -80,6 +85,7 @@ add_executable(calc_flow src/calc_flow.cpp)
 add_executable(color_histogram_sliding_matcher src/color_histogram_sliding_matcher.cpp)
 add_library(oriented_gradient src/oriented_gradient.cpp)
 add_executable(oriented_gradient_node src/oriented_gradient_node.cpp)
+add_executable(sliding_window_object_detector_trainer_node  src/sliding_window_object_detector_trainer_node.cpp)
 
 macro(jsk_perception_nodelet _nodelet_cpp _nodelet_class _single_nodelet_exec_name)
   jsk_nodelet(${_nodelet_cpp} ${_nodelet_class} ${_single_nodelet_exec_name}
@@ -109,8 +115,13 @@ jsk_perception_nodelet(src/single_channel_histogram.cpp "jsk_perception/SingleCh
 jsk_perception_nodelet(src/blob_detector.cpp "jsk_perception/BlobDetector" "blob_detector")
 jsk_perception_nodelet(src/add_mask_image.cpp "jsk_perception/AddMaskImage" "add_mask_image")
 jsk_perception_nodelet(src/multiply_mask_image.cpp "jsk_perception/MultiplyMaskImage" "multiply_mask_image")
-jsk_perception_nodelet(src/dilate_erode_mask_image.cpp "jsk_perception/DilateMaskImage" "dilate_mask_image")
-jsk_perception_nodelet(src/dilate_erode_mask_image.cpp "jsk_perception/ErodeMaskImage" "erode_mask_image")
+jsk_perception_nodelet(src/morphological_operator.cpp "jsk_perception/ErodeMaskImage" "erode_mask_image")
+jsk_perception_nodelet(src/morphological_operator.cpp "jsk_perception/DilateMaskImage" "dilate_mask_image")
+jsk_perception_nodelet(src/morphological_operator.cpp "jsk_perception/Opening" "opening")
+jsk_perception_nodelet(src/morphological_operator.cpp "jsk_perception/Closing" "closing")
+jsk_perception_nodelet(src/morphological_operator.cpp "jsk_perception/MorphologicalGradient" "morphological_gradient")
+jsk_perception_nodelet(src/morphological_operator.cpp "jsk_perception/TopHat" "top_hat")
+jsk_perception_nodelet(src/morphological_operator.cpp "jsk_perception/BlackHat" "black_hat")
 jsk_perception_nodelet(src/rect_to_mask_image.cpp "jsk_perception/RectToMaskImage" "rect_to_mask_image")
 jsk_perception_nodelet(src/mask_image_to_roi.cpp "jsk_perception/MaskImageToROI" "mask_image_to_roi")
 jsk_perception_nodelet(src/mask_image_to_rect.cpp "jsk_perception/MaskImageToRect" "mask_image_to_rect")
@@ -122,12 +133,15 @@ jsk_perception_nodelet(src/mask_image_generator.cpp "jsk_perception/MaskImageGen
 jsk_perception_nodelet(src/project_image_point.cpp "jsk_perception/ProjectImagePoint" "project_image_point")
 jsk_perception_nodelet(src/skeletonization_nodelet.cpp "jsk_perception/Skeletonization" "skeletonization")
 jsk_perception_nodelet(src/sliding_window_object_detector.cpp "jsk_perception/SlidingWindowObjectDetector" "sliding_window_object_detector")
+jsk_perception_nodelet(src/gaussian_blur.cpp "jsk_perception/GaussianBlur" "gaussian_blur")
+jsk_perception_nodelet(src/kmeans.cpp "jsk_perception/KMeans" "kmeans")
 
 # compiling jsk_perception library for nodelet
 add_library(${PROJECT_NAME} SHARED ${jsk_perception_nodelet_sources}
   ${CMAKE_CURRENT_BINARY_DIR}/build/patched-SLIC-Superpixels/slic.cpp
   src/image_utils.cpp
-  src/histogram_of_oriented_gradients.cpp)
+  src/histogram_of_oriented_gradients.cpp
+  )
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencfg ${PROJECT_NAME}_gencpp)
 
@@ -143,6 +157,7 @@ target_link_libraries(rectangle_detector       ${catkin_LIBRARIES} ${OpenCV_LIBR
 target_link_libraries(calc_flow                ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 target_link_libraries(color_histogram_sliding_matcher  ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 target_link_libraries(oriented_gradient_node   ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} oriented_gradient)
+target_link_libraries(sliding_window_object_detector_trainer_node ${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 add_dependencies(camshiftdemo             ${PROJECT_NAME}_gencfg ${PROJECT_NAME}_gencpp)
 add_dependencies(virtual_camera_mono      ${PROJECT_NAME}_gencfg ${PROJECT_NAME}_gencpp)
