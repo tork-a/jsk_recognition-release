@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2014, JSK Lab
+ *  Copyright (c) 2015, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,66 +33,33 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
+#ifndef JSK_PERCEPTION_COLORIZE_FLOAT_IMAAGE_H_
+#define JSK_PERCEPTION_COLORIZE_FLOAT_IMAAGE_H_
 
-#ifndef JSK_PERCEPTION_BACKGROUND_SUBSTRACTION_H_
-#define JSK_PERCEPTION_BACKGROUND_SUBSTRACTION_H_
-
-#include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <opencv/cv.hpp>
-#include <opencv2/opencv.hpp>
-#include <image_transport/image_transport.h>
-#include <image_transport/subscriber_filter.h>
-#include <sensor_msgs/image_encodings.h>
-#include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/Image.h>
-
-#include <dynamic_reconfigure/server.h>
-#include <jsk_perception/BackgroundSubstractionConfig.h>
+#include <jsk_topic_tools/diagnostic_nodelet.h>
+#include <jsk_topic_tools/color_utils.h>
+#include <cv_bridge/cv_bridge.h>
 
 namespace jsk_perception
 {
-  class BackgroundSubstraction: public jsk_topic_tools::DiagnosticNodelet
+  class ColorizeFloatImage: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    BackgroundSubstraction(): DiagnosticNodelet("BackgroundSubstraction") {}
-    typedef jsk_perception::BackgroundSubstractionConfig Config;
+    ColorizeFloatImage(): DiagnosticNodelet("ColorizeFloatImage") {}
   protected:
-    ////////////////////////////////////////////////////////
-    // methods
-    ////////////////////////////////////////////////////////
     virtual void onInit();
     virtual void subscribe();
     virtual void unsubscribe();
-    virtual void updateDiagnostic(
-      diagnostic_updater::DiagnosticStatusWrapper &stat);
-    virtual void substract(
-      const sensor_msgs::Image::ConstPtr& image_msg);
-    virtual void configCallback (Config &config, uint32_t level);
-    ////////////////////////////////////////////////////////
-    // ROS variables
-    ////////////////////////////////////////////////////////
-    ros::Publisher image_pub_;
-    image_transport::Subscriber sub_;
-    boost::shared_ptr<image_transport::ImageTransport> it_;
-    boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
-    boost::mutex mutex_;
+    virtual void colorize(
+      const sensor_msgs::Image::ConstPtr& msg);
 
-    ////////////////////////////////////////////////////////
-    // Parameters
-    ////////////////////////////////////////////////////////
-    // http://stackoverflow.com/questions/28847289/error-cannot-declare-variable-bg-to-be-of-abstract-type-cvbackgroundsubtra
-#if CV_MAJOR_VERSION >= 3
-    cv::Ptr<cv::BackgroundSubtractorMOG2> bg_;
-#else
-    cv::BackgroundSubtractorMOG2 bg_;
-#endif
-    bool detect_shadows_;
-    int nmixtures_;
-    double background_ratio_;
-    
+    ros::Publisher pub_;
+    ros::Subscriber sub_;
   private:
     
   };
+
 }
 
 #endif
