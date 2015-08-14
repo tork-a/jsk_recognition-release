@@ -485,8 +485,18 @@ namespace jsk_pcl_ros
   {
     Eigen::Quaternionf rot;
     rot.setFromTwoVectors(Eigen::Vector3f::UnitZ(), normal_);
+    double c = normal_[2];
+    double z = 0.0;
+    // ax + by + cz + d = 0
+    // z = - d / c (when x = y = 0)
+    if (c == 0.0) {             // its not good
+      z = 0.0;
+    }
+    else {
+      z = - d_ / c;
+    }
     plane_coordinates_
-      = Eigen::Affine3f::Identity() * rot * Eigen::Translation3f(0, 0, - d_);
+      = Eigen::Affine3f::Identity() * rot * Eigen::Translation3f(0, 0, z);
   }
   
   Eigen::Affine3f Plane::coordinates()
@@ -1306,23 +1316,29 @@ namespace jsk_pcl_ros
   {
     Eigen::Affine3f local_coordinates = convex_->coordinates();
     Eigen::Affine3f inv_local_coordinates = local_coordinates.inverse();
-    std::vector<Polygon::Ptr> triangles = convex_->decomposeToTriangles();
+    //std::vector<Polygon::Ptr> triangles = convex_->decomposeToTriangles();
     
     pcl::ExtractPolygonalPrismData<pcl::PointNormal> prism_extract;
     pcl::PointCloud<pcl::PointNormal>::Ptr
       hull_cloud (new pcl::PointCloud<pcl::PointNormal>);
     pcl::PointCloud<pcl::PointNormal>::Ptr
+      hull_output (new pcl::PointCloud<pcl::PointNormal>);
+    pcl::PointCloud<pcl::PointNormal>::Ptr
       rehull_cloud (new pcl::PointCloud<pcl::PointNormal>);
     convex_->boundariesToPointCloud<pcl::PointNormal>(*hull_cloud);
-    pcl::ConvexHull<pcl::PointNormal> chull;
-    chull.setDimension(2);
-    chull.setInputCloud (hull_cloud);
+    // pcl::ConvexHull<pcl::PointNormal> chull;
+    // chull.setDimension(2);
+    // chull.setInputCloud (hull_cloud);
+    // chull.reconstruct(*hull_output);
     
-    // hull_cloud->points.push_back(hull_cloud->points[0]);
+    // it's important to make it sure to close the loop of
+    // convex hull
+    hull_cloud->points.push_back(hull_cloud->points[0]);
     
     prism_extract.setInputCloud(cloud);
     prism_extract.setHeightLimits(-distance_threshold, distance_threshold);
     prism_extract.setInputPlanarHull(hull_cloud);
+    //prism_extract.setInputPlanarHull(hull_output);
     // output_indices is set of indices which are on plane
     pcl::PointIndices output_indices;
     prism_extract.segment(output_indices);
@@ -1370,7 +1386,7 @@ namespace jsk_pcl_ros
     ros_msg.coefficients[0] = coeff[0];
     ros_msg.coefficients[1] = coeff[1];
     ros_msg.coefficients[2] = coeff[2];
-    ros_msg.coefficients[3] = coeff[3]; // is it correct...??
+    ros_msg.coefficients[3] = coeff[3];
     ros_msg.resolution = resolution_;
     for (std::set<IndexPair>::iterator it = cells_.begin();
          it != cells_.end();
