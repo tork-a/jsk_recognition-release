@@ -59,6 +59,119 @@ time end
 Represent range of time.
 
 ## nodelets
+### jsk\_pcl/HeightmapConverter
+![](images/heightmap_converter.png)
+
+Convert a pointcloud(`sensor_msgs/PointCloud2`) into heightmap representation (`sensor_msgs/Image`).
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Input pointcloud
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/Image`)
+
+  fields of the image is `CV_32FC1(float)` and if a pixel is not observed, it is filled by `-FLT_MAX`.
+
+* `~output/config` (`jsk_recognition_msgs/HeightmapConfig`)
+
+  Config topic.
+#### Parameters
+* `~resolution_x` (Integer, default: `400`)
+* `~resolution_y` (Integer, default: `400`)
+
+  Resolution of height map
+
+* `~min_x` (Double, default: `-2.0`)
+* `~max_x` (Double, default: `2.0`)
+* `~min_y` (Double, default: `-2.0`)
+* `~max_y` (Double, default: `2.0`)
+
+  Minimum and maximum value of heightmap dimension.
+
+### jsk\_pcl/HeightmapToPointCloud
+![](images/heightmap_to_pointcloud.png)
+
+Convert a heightmapt to poincloud.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/Image`)
+
+  Input heightmap.
+* `~input/config` (`jsk_recognition_msgs/HeightmapConfig`)
+
+  Config topic.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/PointCloud2`)
+
+  Output pointcloud.
+
+* `~output/config` (`jsk_recognition_msgs/HeightmapConfig`)
+
+  Config topic.
+### jsk\_pcl/HeightmapMorphologicalFiltering
+![](images/heightmap_morphological_filtering.png)
+
+Apply morphological fintering and average filter to fill small holes in pointcloud
+which is represented as heightmap.
+
+#### Subscribing Topic
+* `~input` (`sensor_msgs/Image`)
+
+  Input heightmap. Hole should be represented as `-FLT_MAX` or `nan`.
+* `~output/config` (`jsk_recognition_msgs/HeightmapConfig`)
+
+  Config topic.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/Image`)
+
+  Output heightmap.
+
+#### Parameters
+* `~max_queue_size` (Integer, default: `10`):
+
+  Max queue size of subscription callback.
+* `~mask_size` (Integer, default: `2`):
+
+  Size of kernel operator of average filtering.
+* `~max_variance` (Double, default: `0.1`):
+
+  Allowable max variance in kernel operator
+
+### jsk\_pcl/HeightmapTimeAccumulation
+![](images/heightmap_time_accumulation.png)
+
+
+Accumulate heightmap in time series and construct a new heightmap.
+
+#### Subscription Topic
+* `~input` (`sensor_msgs/Image`)
+
+  Input new heightmap(t=k).
+* `~input/prev_pointcloud` (`sensor_msgs/PointCloud2`)
+
+  Accumulated heightmap represented in pointcloud from 0 to k-1 step.
+* `~input/config` (`jsk_recognition_msgs/HeightmapConfig`)
+
+  Config topic.
+
+#### Publishing Topic
+* `~output` (`sensor_msgs/Image`)
+
+  Accumulated heightmap.
+
+* `~output/config` (`jsk_recognition_msgs/HeightmapConfig`)
+
+  Config topic.
+
+#### Advertising Service
+* `~seset` (`std_srvs/Empty`)
+
+  Reset heightmap cache.
+
 ### jsk\_pcl/NormalEstimationOMP
 This nodelet is almost same to `pcl/NormalEstimationOMP` of `pcl_ros` package,
 but it can handle timestamp correctly.
@@ -703,7 +816,10 @@ Sampling points with fixed grid size on polygons.
 #### Publishing Topic
 * `~output` (`sensor_msgs/PointCloud2`)
 
-  Sampled pointcloud
+  Sampled pointcloud (`pcl::PointXYZRGBNormal`).
+* `~output_xyz` (`sensor_msgs/PointCloud2`)
+
+  Sampled pointcloud (`pcl::PointXYZ`).
 
 #### Parameters
 * `~grid_size` (Double, default: `0.01`)
@@ -1357,7 +1473,12 @@ This nodelet tracks the target pointcloud.
 
 * `~renew_model` (`sensor_msgs/PointCloud2`)
 
-  Reference pointcloud to tracke.
+  Reference pointcloud to track.
+
+* `~renew_model_with_marker` (`visualization_msgs/Marker`)
+
+  Reference marker model to track. This will convert marker model to pointcloud.
+  You need to pass the marker whose type is TRIANGLE_LIST and it should have the color.
 
 * `~renew_box` (`jsk_recognition_msgs/BoundingBox`)
 
@@ -1465,6 +1586,10 @@ This nodelet tracks the target pointcloud.
 * `~enable_cache` (Boolean, default: `false`)
 
   Enable caching of nearest-neighbor search
+
+* `~enable_organized` (Boolean, default: `false`)
+
+  Enable using Organized nearest-neighbor search
 
 * `~cache_size_x` (Double, default: `0.01`)
 * `~cache_size_y` (Double, default: `0.01`)
@@ -1629,6 +1754,9 @@ You can choose several types of tilt/spindle lasers such as tilt-laser of PR2, i
 * `~input`(`sensor_msgs/JointState`):
 
    Joint angles of laser actuator.
+* `~input/cloud`(`sensor_msgs/PointCloud2`):
+
+   Input scan pointcloud, it only used if ~not_use_laser_assembler_service and ~use_laser_assembler is true.
 
 #### Publishing Topics
 * `~output` (`jsk_recognition_msgs/TimeRange`):
@@ -1653,12 +1781,21 @@ You can choose several types of tilt/spindle lasers such as tilt-laser of PR2, i
    Clear cache and restart collecting data.
 
 #### Parameters
+* `~max_queue_size` (Integer, default: `100`):
+
+  Queu size of subscription.
+* `~clear_assembled_scans` (Bool, default: `false`)
+
+   Do not use assembled scans twice.
 * `~skip_number` (Integer, default: `1`):
 
    Skip publishing and calling laser assembler per `~skip_number`.
 * `~use_laser_assembler` (Boolean, default: `False`):
 
    Enable `~output_cloud` and `~assemble_scans2`.
+* `~not_use_laser_assembler_service` (Boolean, default: `False`)
+
+   When it is true, do not use laser_assembler service but assemble scan pointcloud locally.
 * `~joint_name` (String, **required**):
 
    Joint name of actuator to rotate laser.
@@ -1835,6 +1972,54 @@ It also publishes tf of centroids of each cluster and oriented bounding box of t
 ### jsk\_pcl/ClusterPointIndicesDecomposerZAxis
 #### What Is This
 This nodelet is almost same to jsk\_pcl/ClusterPointIndicesDecomposer, however it always sort clusters in z direction.
+
+### jsk\_pcl/PoseWithCovarianceStampedToGaussianPointCloud
+![](images/pose_with_covariance_stamped_to_gaussian_pointcloud.gif)
+
+Visualize `geometry_msgs/PoseWithCovarianceStamped` as gaussian pointcloud.
+Pointcloud is computed within a region of 3 sigma.
+
+#### Subscribing Topics
+* `~input` (`geometry_msgs/PoseWithCovarianceStamped`)
+
+  Input pose
+
+#### Publishing Topics
+* `~output` (`sensor_msgs/PointCloud2`)
+
+  Output pointcloud
+
+#### Parameters
+* `~cut_plane` (default: `xy`)
+
+  You can choose a plane to compute gaussian distribution from `xy`, `yz` or `zx`.
+* `~sampling_num` (default: `10`)
+
+  The number of sampling for each axis. The number of points will square of `~sampling_num`.
+* `~normalize_method` (default: `normalize_area`)
+* `~normalize_value` (default: `1.0`)
+
+  You can choose `normalize_area` or `normalize_height` to normalize gaussian distribution.
+  If you choo `normalize_area`, area of gaussian distribution will be `~normalize_value`.
+  If you choo `normalize_height`, the maximum height of gaussian distribution will be `~normalize_value`.
+
+### jsk\_pcl/ColorizeHeight2DMapping
+![](images/colorize_height_2d_mapping.png)
+
+Utility nodelet to visualize heightmap as pointcloud.
+It just set all the z of points 0 and assign z to intensity.
+
+#### Subscribing Topics
+* `~input` (`sensor_msgs/PointCloud2`)
+
+
+  Input pointcloud.
+
+#### Publishing Topics
+* `~output` (`sensor_msgs/PointCloud2`)
+
+  Output pointcloud. z values of points are 0 and intensity of points
+  has z value.
 
 ### jsk\_pcl/CentroidPublisher
 #### What Is This
@@ -2121,7 +2306,9 @@ This nodelet will republish the pointcloud which is transformed with the designa
 * `~use_latest_tf` (Bool, default: `false`)
 
   If this parameter is true, ignore timestamp of tf to transform pointcloud.
+* `~tf_queue_size` (Int, default: `10`)
 
+  Queue size of tf message filter to synchronize tf and `~input` topic.
 #### Sample
 Plug the depth sensor which can be launched by openni.launch and run the below command.
 
@@ -2294,6 +2481,42 @@ Flip normal direction towards specified frame.
 * `~strict_tf` (Bool, default: `false`)
 
   Do not take into account timestamp if this parameter is false.
+
+### jsk\_pcl/Kinfu
+Publishes camera pose using pcl/KinfuLS
+
+#### Subscribing Topics
+* `~input/info` (`sensor_msgs/CameraInfo`)
+
+  Intrinsic camera parameter of depth image
+* `~input/depth` (`sensor_msgs/Image`)
+
+  Depth image in m and the format should be 32FC1
+* `~input/color` (`sensor_msgs/Image`)
+
+  RGB color image (not yet used)
+
+#### Publishing Topics
+* `~output` (`geometry_msgs/PoseStamped`)
+
+  Pose of camera
+* `~output/cloud` (`sensor_msgs/PointCloud2`)
+
+  Registered scene pointcloud
+
+### jsk\_pcl/PCDReaderWithPose
+Publish cloud with given pose
+
+#### Parameters
+* `~pcd_file` (Strng)
+file name of pcd for publish
+
+#### Subscribing Topocs
+* `~input` (`geometry_msgs/PoseStamped`)
+
+#### Publishing Topics
+* `~output` (`sensor_msgs/PointCloud2`)
+
 
 ## To Test Some Samples
 
