@@ -73,9 +73,9 @@ namespace jsk_pcl_ros
     virtual void onInit();
     virtual void subscribe();
     virtual void unsubscribe();
-    virtual void jointCallback(const sensor_msgs::JointState::ConstPtr& msg);
     virtual void updateDiagnostic(
       diagnostic_updater::DiagnosticStatusWrapper &stat);
+    virtual void jointCallback(const sensor_msgs::JointState::ConstPtr& msg);
     virtual void processTiltHalfUp(const ros::Time& stamp, const double& value);
     virtual void processTiltHalfDown(const ros::Time& stamp, const double& value);
     virtual void processTilt(const ros::Time& stamp, const double& value);
@@ -88,15 +88,22 @@ namespace jsk_pcl_ros
     virtual bool clearCacheCallback(
       std_srvs::Empty::Request& req,
       std_srvs::Empty::Response& res);
+    virtual void cloudCallback(
+      const sensor_msgs::PointCloud2::ConstPtr& msg);
+    virtual void getPointCloudFromLocalBuffer(
+      const std::vector<sensor_msgs::PointCloud2::ConstPtr>& target_clouds,
+      sensor_msgs::PointCloud2& output_cloud);
     ////////////////////////////////////////////////////////
     // ROS variables
     ////////////////////////////////////////////////////////
     ros::Subscriber sub_;
+    ros::Subscriber sub_cloud_;
     ros::Publisher trigger_pub_;
     ros::Publisher cloud_pub_;
     ros::ServiceServer clear_cache_service_;
     ros::ServiceClient assemble_cloud_srv_;
-    
+    jsk_topic_tools::VitalChecker::Ptr cloud_vital_checker_;
+
     ////////////////////////////////////////////////////////
     // parameters
     ////////////////////////////////////////////////////////
@@ -107,10 +114,15 @@ namespace jsk_pcl_ros
     double overwrap_angle_;
     ros::Time start_time_;
     bool use_laser_assembler_;
+    bool not_use_laser_assembler_service_;
+    bool clear_assembled_scans_;
     boost::mutex mutex_;
+    boost::mutex cloud_mutex_;
     TimeStampedVector<StampedJointAngle::Ptr> buffer_;
+    TimeStampedVector<sensor_msgs::PointCloud2::ConstPtr> cloud_buffer_;
     int skip_number_;
     int skip_counter_;
+    int max_queue_size_;
   private:
     
   };
