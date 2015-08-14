@@ -48,6 +48,10 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 
+# For kinfu
+find_package(PCL QUIET COMPONENTS gpu_kinfu_large_scale)
+
+
 add_service_files(FILES SwitchTopic.srv
   UpdateOffset.srv
   SnapFootstep.srv
@@ -67,6 +71,11 @@ add_service_files(FILES SwitchTopic.srv
 
 # generate the dynamic_reconfigure config file
 generate_dynamic_reconfigure_options(
+  cfg/PoseWithCovarianceStampedToGaussianPointCloud.cfg
+  cfg/HeightmapMorphologicalFiltering.cfg
+  cfg/HeightmapConverter.cfg
+  cfg/HeightmapToPointCloud.cfg
+  cfg/HeightmapTimeAccumulation.cfg
   cfg/PolygonMagnifier.cfg
   cfg/PolygonPointsSampler.cfg
   cfg/GeometricConsistencyGrouping.cfg
@@ -129,9 +138,9 @@ macro(jsk_pcl_util_nodelet _nodelet_cpp _nodelet_class _single_nodelet_exec_name
 endmacro(jsk_pcl_util_nodelet _nodelet_cpp _nodelet_class _single_nodelet_exec_name)
 
 if ($ENV{TRAVIS_JOB_ID})
-  add_definitions("-O2 -g")
-else ($ENV{TRAVIS_JOB_ID})
   add_definitions("-O0")
+else ($ENV{TRAVIS_JOB_ID})
+  add_definitions("-O2 -g")
 endif ($ENV{TRAVIS_JOB_ID})
 
 # pcl_ros::Filter based class is not working...
@@ -187,6 +196,8 @@ jsk_pcl_nodelet(src/multi_plane_extraction_nodelet.cpp
   "jsk_pcl/MultiPlaneExtraction" "multi_plane_extraction")
 jsk_pcl_nodelet(src/selected_cluster_publisher_nodelet.cpp
   "jsk_pcl/SelectedClusterPublisher" "selected_cluster_publisher")
+jsk_pcl_util_nodelet(src/pose_with_covariance_stamped_to_gaussian_pointcloud_nodelet.cpp
+  "jsk_pcl/PoseWithCovarianceStampedToGaussianPointCloud" "pose_with_covariance_stamped_to_gaussian_pointcloud")
 jsk_pcl_util_nodelet(src/spherical_pointcloud_simulator_nodelet.cpp
   "jsk_pcl/SphericalPointCloudSimulator" "spherical_pointcloud_simulator")
 jsk_pcl_util_nodelet(src/polygon_flipper_nodelet.cpp
@@ -205,6 +216,9 @@ jsk_pcl_util_nodelet(src/static_polygon_array_publisher_nodelet.cpp
   "jsk_pcl/StaticPolygonArrayPublisher" "static_polygon_array_publisher")
 jsk_pcl_util_nodelet(src/polygon_array_transformer_nodelet.cpp
   "jsk_pcl/PolygonArrayTransformer" "polygon_array_transformer")
+jsk_pcl_util_nodelet(src/pointcloud_to_stl_nodelet.cpp
+  "jsk_pcl/PointCloudToSTL" "pointcloud_to_stl")
+
 if(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
   jsk_pcl_nodelet(src/colorize_segmented_RF_nodelet.cpp
     "jsk_pcl/ColorizeRandomForest" "colorize_random_forest_result")
@@ -251,8 +265,10 @@ jsk_pcl_nodelet(src/parallel_edge_finder_nodelet.cpp
   "jsk_pcl/ParallelEdgeFinder" "parallel_edge_finder")
 jsk_pcl_nodelet(src/edgebased_cube_finder_nodelet.cpp
   "jsk_pcl/EdgebasedCubeFinder" "edgebased_cube_finder")
-jsk_pcl_nodelet(src/colorize_distance_from_plane_nodelet.cpp
+jsk_pcl_util_nodelet(src/colorize_distance_from_plane_nodelet.cpp
   "jsk_pcl/ColorizeDistanceFromPlane" "colorize_distance_from_plane")
+jsk_pcl_util_nodelet(src/colorize_height_2d_mapping_nodelet.cpp
+  "jsk_pcl/ColorizeHeight2DMapping" "colorize_height_2d_mapping")
 jsk_pcl_nodelet(src/multi_plane_sac_segmentation_nodelet.cpp
   "jsk_pcl/MultiPlaneSACSegmentation" "multi_plane_sac_segmentation")
 jsk_pcl_nodelet(src/bounding_box_filter_nodelet.cpp
@@ -333,6 +349,21 @@ jsk_pcl_nodelet(src/convex_connected_voxels_nodelet.cpp
   "jsk_pcl/ConvexConnectedVoxels" "convex_connected_voxels")
 jsk_pcl_nodelet(src/normal_estimation_omp_nodelet.cpp
   "jsk_pcl/NormalEstimationOMP" "normal_estimation_omp")
+jsk_pcl_nodelet(src/heightmap_converter_nodelet.cpp
+  "jsk_pcl/HeightmapConverter" "heightmap_converter")
+jsk_pcl_nodelet(src/heightmap_to_pointcloud_nodelet.cpp
+  "jsk_pcl/HeightmapToPointCloud" "heightmap_to_pointcloud")
+jsk_pcl_nodelet(src/heightmap_morphological_filtering_nodelet.cpp
+  "jsk_pcl/HeightmapMorphologicalFiltering" "heightmap_morphological_filtering")
+jsk_pcl_nodelet(src/heightmap_time_accumulation_nodelet.cpp
+  "jsk_pcl/HeightmapTimeAccumulation" "heightmap_time_accumulation")
+if (PCL_GPU_KINFU_LARGE_SCALE_FOUND)
+  jsk_pcl_nodelet(src/kinfu_nodelet.cpp
+    "jsk_pcl/Kinfu" "kinfu")
+  include_directories(/usr/local/cuda/include)
+endif (PCL_GPU_KINFU_LARGE_SCALE_FOUND)
+jsk_pcl_nodelet(src/pcd_reader_with_pose_nodelet.cpp
+  "jsk_pcl/PCDReaderWithPose" "pcd_reader_with_pose")
 
 add_library(jsk_pcl_ros_base SHARED
   src/grid_index.cpp src/grid_map.cpp src/grid_line.cpp src/geo_util.cpp
@@ -345,9 +376,17 @@ add_library(jsk_pcl_ros_moveit SHARED src/pointcloud_moveit_filter.cpp)
 add_library(jsk_pcl_ros SHARED ${jsk_pcl_nodelet_sources})
 add_library(jsk_pcl_ros_util SHARED ${jsk_pcl_util_nodelet_sources})
 
-target_link_libraries(jsk_pcl_ros
-  ${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES} yaml-cpp
-  jsk_pcl_ros_base)
+if (PCL_GPU_KINFU_LARGE_SCALE_FOUND)
+  target_link_libraries(jsk_pcl_ros
+    ${PCL_GPU_KINFU_LARGE_SCALE_LIBRARY}
+    ${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES} yaml-cpp
+    jsk_pcl_ros_base)
+else (PCL_GPU_KINFU_LARGE_SCALE_FOUND)
+  target_link_libraries(jsk_pcl_ros
+    ${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES} yaml-cpp
+    jsk_pcl_ros_base)
+endif (PCL_GPU_KINFU_LARGE_SCALE_FOUND)
+
 target_link_libraries(jsk_pcl_ros_util
   ${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES} yaml-cpp
   jsk_pcl_ros_base)
