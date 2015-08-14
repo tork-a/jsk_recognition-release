@@ -4,6 +4,7 @@ find_package(catkin REQUIRED
   std_msgs sensor_msgs geometry_msgs message_generation pcl_msgs)
 add_message_files(
   FILES
+  HeightmapConfig.msg
   SimpleOccupancyGrid.msg
   SimpleOccupancyGridArray.msg
   PolygonArray.msg
@@ -18,6 +19,9 @@ add_message_files(
   BoundingBox.msg
   SparseOccupancyGridColumn.msg
   SparseOccupancyGrid.msg
+  Histogram.msg
+  HistogramWithRange.msg
+  HistogramWithRangeBin.msg
   ColorHistogram.msg
   DepthErrorResult.msg
   BoundingBoxArray.msg
