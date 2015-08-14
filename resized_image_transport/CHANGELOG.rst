@@ -2,6 +2,13 @@
 Changelog for package resized_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.14 (2015-08-13)
+-------------------
+* src/log_polar_nodelet.cpp : convert fro milimage to cvmat
+* [resized_image_transport] Initialize vital_checkers first
+* [resized_image_transport] Add diagnostic information
+* Contributors: Kei Okada, Ryohei Ueda
+
 0.2.13 (2015-06-11)
 -------------------
 * [resized_image_transport] Fix coding style of image_processing_nodelet.cpp
