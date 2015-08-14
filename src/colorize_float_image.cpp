@@ -33,66 +33,60 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-
-#include "jsk_perception/gaussian_blur.h"
+#include "jsk_perception/colorize_float_image.h"
 #include <sensor_msgs/image_encodings.h>
-#include <cv_bridge/cv_bridge.h>
-#include <opencv2/opencv.hpp>
 
 namespace jsk_perception
 {
-  void GaussianBlur::onInit()
+  void ColorizeFloatImage::onInit()
   {
     DiagnosticNodelet::onInit();
-    srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
-    dynamic_reconfigure::Server<Config>::CallbackType f =
-      boost::bind (&GaussianBlur::configCallback, this, _1, _2);
-    srv_->setCallback (f);
-
     pub_ = advertise<sensor_msgs::Image>(*pnh_, "output", 1);
   }
 
-  void GaussianBlur::subscribe()
+  void ColorizeFloatImage::subscribe()
   {
-    sub_ = pnh_->subscribe("input", 1, &GaussianBlur::apply, this);
+    sub_ = pnh_->subscribe("input", 1, &ColorizeFloatImage::colorize, this);
   }
 
-  void GaussianBlur::unsubscribe()
+  void ColorizeFloatImage::unsubscribe()
   {
     sub_.shutdown();
   }
 
-  void GaussianBlur::configCallback(
-    Config &config, uint32_t level)
+  void ColorizeFloatImage::colorize(const sensor_msgs::Image::ConstPtr& msg)
   {
-    boost::mutex::scoped_lock lock(mutex_);
-    kernel_size_ = config.kernel_size;
-    sigma_x_ = config.sigma_x;
-    sigma_y_ = config.sigma_y;
+    cv::Mat float_image = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::TYPE_32FC1)->image;
+    cv::Mat color_image = cv::Mat(float_image.rows, float_image.cols, CV_8UC3);
+    float min_value = FLT_MAX;
+    float max_value = - FLT_MAX;
+    for (size_t j = 0; j < float_image.rows; j++) {
+      for (size_t i = 0; i < float_image.cols; i++) {
+        float v = float_image.at<float>(j, i);
+        if (v != - FLT_MAX) {
+          min_value = std::min(v, min_value);
+          max_value = std::max(v, max_value);
+        }
+      }
+    }
+    for (size_t j = 0; j < float_image.rows; j++) {
+      for (size_t i = 0; i < float_image.cols; i++) {
+        float v = float_image.at<float>(j, i);
+        if (v != - FLT_MAX) {
+          std_msgs::ColorRGBA c = jsk_topic_tools::heatColor((v - min_value) / (max_value - min_value));
+          color_image.at<cv::Vec3b>(j, i) = cv::Vec3b(c.r * 255, c.g * 255, c.b * 255);
+        }
+        else {
+          color_image.at<cv::Vec3b>(j, i) = cv::Vec3b(0, 0, 0);
+        }
+      }
+    }
+    pub_.publish(cv_bridge::CvImage(msg->header,
+                                    sensor_msgs::image_encodings::RGB8,
+                                    color_image).toImageMsg());
   }
 
-  void GaussianBlur::apply(
-    const sensor_msgs::Image::ConstPtr& image_msg)
-  {
-    if ((image_msg->width == 0) && (image_msg->height == 0)) {
-        JSK_ROS_WARN("invalid image input");
-        return;
-    }
-    cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(
-      image_msg, image_msg->encoding);
-    cv::Mat image = cv_ptr->image;
-    cv::Mat applied_image;
-    if (kernel_size_ % 2 == 1) {
-      cv::GaussianBlur(image, applied_image, cv::Size(kernel_size_, kernel_size_), sigma_x_, sigma_y_);
-    } else {
-      cv::GaussianBlur(image, applied_image, cv::Size(kernel_size_+1, kernel_size_+1), sigma_x_, sigma_y_);
-    }
-    pub_.publish(cv_bridge::CvImage(
-                     image_msg->header,
-                     image_msg->encoding,
-                     applied_image).toImageMsg());
-  }
 }
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS (jsk_perception::GaussianBlur, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS (jsk_perception::ColorizeFloatImage, nodelet::Nodelet);
