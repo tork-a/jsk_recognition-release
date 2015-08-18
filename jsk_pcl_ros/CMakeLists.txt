@@ -71,6 +71,7 @@ add_service_files(FILES SwitchTopic.srv
 
 # generate the dynamic_reconfigure config file
 generate_dynamic_reconfigure_options(
+  cfg/PlaneSupportedCuboidEstimator.cfg
   cfg/PoseWithCovarianceStampedToGaussianPointCloud.cfg
   cfg/HeightmapMorphologicalFiltering.cfg
   cfg/HeightmapConverter.cfg
@@ -126,7 +127,7 @@ generate_dynamic_reconfigure_options(
 find_package(OpenCV REQUIRED core imgproc)
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS})
-
+link_libraries(${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES} yaml-cpp)
 macro(jsk_pcl_nodelet _nodelet_cpp _nodelet_class _single_nodelet_exec_name)
   jsk_nodelet(${_nodelet_cpp} ${_nodelet_class} ${_single_nodelet_exec_name}
     jsk_pcl_nodelet_sources jsk_pcl_nodelet_executables)
@@ -163,6 +164,8 @@ jsk_pcl_nodelet(src/fisheye_sphere_publisher_nodelet.cpp "jsk_pcl/FisheyeSphereP
 #   "jsk_pcl/NodeletImageMUX" "image_mux")
 # jsk_pcl_nodelet(src/image_demux_nodelet.cpp
 #   "jsk_pcl/NodeletImageDEMUX" "image_demux")
+jsk_pcl_nodelet(src/plane_supported_cuboid_estimator_nodelet.cpp
+  "jsk_pcl/PlaneSupportedCuboidEstimator" "plane_supported_cuboid_estimator")
 jsk_pcl_nodelet(src/image_rotate_nodelet.cpp
   "jsk_pcl/ImageRotateNodelet" "image_rotate")
 jsk_pcl_nodelet(src/octree_change_publisher_nodelet.cpp
@@ -367,6 +370,7 @@ jsk_pcl_nodelet(src/pcd_reader_with_pose_nodelet.cpp
 
 add_library(jsk_pcl_ros_base SHARED
   src/grid_index.cpp src/grid_map.cpp src/grid_line.cpp src/geo_util.cpp
+  src/random_util.cpp
   src/pcl_conversion_util.cpp src/pcl_util.cpp
   src/region_adjacency_graph.cpp
 
@@ -387,19 +391,12 @@ else (PCL_GPU_KINFU_LARGE_SCALE_FOUND)
     jsk_pcl_ros_base)
 endif (PCL_GPU_KINFU_LARGE_SCALE_FOUND)
 
-target_link_libraries(jsk_pcl_ros_util
-  ${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES} yaml-cpp
-  jsk_pcl_ros_base)
-target_link_libraries(jsk_pcl_ros_base
-  ${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES} yaml-cpp)
-target_link_libraries(jsk_pcl_ros_moveit
-  ${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES} yaml-cpp)
-
 add_dependencies(jsk_pcl_ros ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 add_dependencies(jsk_pcl_ros_util ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 add_dependencies(jsk_pcl_ros_base ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 add_dependencies(jsk_pcl_ros_moveit ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
-
+add_executable(bench_ransac_plane_estimation bench/bench_ransac_plane_estimation.cpp)
+target_link_libraries(bench_ransac_plane_estimation jsk_pcl_ros)
 
 generate_messages(DEPENDENCIES
   ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs jsk_footstep_msgs)
