@@ -50,11 +50,12 @@ namespace jsk_pcl_ros
   void PlaneSupportedCuboidEstimator::onInit()
   {
     DiagnosticNodelet::onInit();
+    tf_ = TfListenerSingleton::getInstance();
     srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
     typename dynamic_reconfigure::Server<Config>::CallbackType f =
       boost::bind (&PlaneSupportedCuboidEstimator::configCallback, this, _1, _2);
     srv_->setCallback (f);
-    pnh_->param("sensor_frame", sensor_frame_, std::string(""));
+    pnh_->param("sensor_frame", sensor_frame_, std::string("odom"));
     pub_result_ = pnh_->advertise<jsk_recognition_msgs::BoundingBoxArray>("output/result", 1);
     pub_particles_ = pnh_->advertise<sensor_msgs::PointCloud2>("output/particles", 1);
     pub_candidate_cloud_ = pnh_->advertise<sensor_msgs::PointCloud2>("output/candidate_cloud", 1);
@@ -96,6 +97,13 @@ namespace jsk_pcl_ros
       JSK_NODELET_WARN("Not yet polygon is available");
       return;
     }
+
+    // viewpoint
+    tf::StampedTransform transform
+      = lookupTransformWithDuration(tf_, sensor_frame_, msg->header.frame_id,
+                                    ros::Time(0.0),
+                                    ros::Duration(0.0));
+    tf::vectorTFToEigen(transform.getOrigin(), viewpoint_);
     if (!tracker_) {
       pcl::PointCloud<pcl::tracking::ParticleCuboid>::Ptr particles = initParticles();
       tracker_.reset(new pcl::tracking::ROSCollaborativeParticleFilterTracker<pcl::PointXYZ, pcl::tracking::ParticleCuboid>);
@@ -167,7 +175,7 @@ namespace jsk_pcl_ros
   }
 
   pcl::PointCloud<pcl::PointXYZI>::Ptr PlaneSupportedCuboidEstimator::convertParticlesToXYZI(ParticleCloud::Ptr particles)
- { 
+  { 
     pcl::PointCloud<pcl::PointXYZI>::Ptr output(new pcl::PointCloud<pcl::PointXYZI>);
     output->points.resize(particles->points.size());
     for (size_t i = 0; i < particles->points.size(); i++) {
@@ -238,118 +246,12 @@ namespace jsk_pcl_ros
     sampled_particle.weight = p.weight;
     return sampled_particle;
   }
-
-  double PlaneSupportedCuboidEstimator::binaryLikelihood(double v, double min, double max)
-  {
-    if (v < min) {
-      return 0;
-    }
-    else if (v > max) {
-      return 0;
-    }
-    else {
-      return 1;
-    }
-  }
-  
-  double PlaneSupportedCuboidEstimator::rangeLikelihood(const pcl::tracking::ParticleCuboid& p)
-  {
-    double likelihood = 1.0;
-    if (p.plane->isInside(p.getVector3fMap())) {
-      likelihood *= 1.0;
-    }
-    else {
-      likelihood *= 0.0;
-    }
-    Eigen::Affine3f p_coords = p.toEigenMatrix();
-    // Local distance from plane
-    float local_z = p.plane->distanceToPoint(Eigen::Vector3f(p_coords.translation()));
-    likelihood *= binaryLikelihood(local_z, range_likelihood_local_min_z_, range_likelihood_local_max_z_);
-    return likelihood;
-  }
-
-  double PlaneSupportedCuboidEstimator::computeNumberOfPoints(
-    const pcl::tracking::ParticleCuboid& p)
-  {
-    pcl::CropBox<pcl::PointXYZ> crop_box(false);
-    Eigen::Affine3f pose = p.toEigenMatrix();
-    Eigen::Affine3f pose_inv = pose.inverse();
-    size_t count = 0;
-    for (size_t i = 0; i < candidate_cloud_->points.size(); i++) {
-      Eigen::Vector3f v = candidate_cloud_->points[i].getVector3fMap();
-      Eigen::Vector3f local_v = pose_inv * v;
-      // JSK_ROS_INFO("v: <%f, %f, %f>", v[0], v[1], v[2]);
-      // JSK_ROS_INFO("local_v: <%f, %f, %f>", local_v[0], local_v[1], local_v[2]);
-      if (local_v[0] > p.dx / 2.0 ||
-          local_v[0] < - p.dx / 2.0 ||
-          local_v[1] > p.dy / 2.0 ||
-          local_v[1] < - p.dy / 2.0 ||
-          local_v[2] > p.dz / 2.0 ||
-          local_v[2] < - p.dz / 2.0) {
-        continue;
-      }
-      else {
-        ++count;
-      }
-    }
-    // ROS_INFO("(%f, %f, %f)", p.x, p.y, p.z);
-    // ROS_INFO("<%f, %f, %f>", p.dx, p.dy, p.dz);
-    return count;
-  }
-
-  double PlaneSupportedCuboidEstimator::distanceFromPlaneBasedError(const Particle& p)
-  {
-    Eigen::Affine3f pose = p.toEigenMatrix();
-    Eigen::Affine3f pose_inv = pose.inverse();
-    double error = 1.0;
-    size_t inliners = 0;
-    const Eigen::Vector3f vp(1000, 1000, 1000);
-    const Eigen::Vector3f local_vp = pose_inv * vp;
-    std::set<int> visible_faces = p.visibleFaceIndices(local_vp);
-    for (size_t i = 0; i < candidate_cloud_->points.size(); i++) {
-      Eigen::Vector3f v = candidate_cloud_->points[i].getVector3fMap();
-      Eigen::Vector3f local_v = pose_inv * v;
-      // Brute force
-      if (use_occlusion_likelihood_) {
-        int nearest_index = p.nearestPlaneIndex(local_v);
-        if (visible_faces.find(nearest_index) != visible_faces.end()) {
-          double d = p.distanceToPlane(local_v, nearest_index);
-          if (d < outlier_distance_) {
-            error *= 1 / (1 + pow(d, 2));
-            ++inliners;
-          }
-        }
-      }
-      else {
-        double d = p.distanceToPlane(local_v, p.nearestPlaneIndex(local_v));
-        if (d < outlier_distance_) {
-          error *= 1 / (1 + pow(d, 2));
-          ++inliners;
-        }
-      }
-    }
-    if (inliners < min_inliers_) {
-      return 0;
-    }
-    else {
-      return error * inliners;
-    }
-  }
   
   void PlaneSupportedCuboidEstimator::likelihood(pcl::PointCloud<pcl::PointXYZ>::ConstPtr input,
                                                  pcl::tracking::ParticleCuboid& p)
   {
-    double range_likelihood = 1.0;
-    if (use_range_likelihood_) {
-      range_likelihood = rangeLikelihood(p);
-    }
-    //p.weight = std::abs(p.z);
-    if (range_likelihood == 0.0) {
-      p.weight = range_likelihood;
-    }
-    else {
-      p.weight = range_likelihood * distanceFromPlaneBasedError(p);
-    }
+    //p.weight = computeLikelihood(p, input, config_);
+    p.weight = computeLikelihood(p, candidate_cloud_, viewpoint_, config_);
   }
   
   void PlaneSupportedCuboidEstimator::polygonCallback(
@@ -411,6 +313,7 @@ namespace jsk_pcl_ros
   void PlaneSupportedCuboidEstimator::configCallback(Config& config, uint32_t level)
   {
     boost::mutex::scoped_lock lock(mutex_);
+    config_ = config;
     init_local_position_z_min_ = config.init_local_position_z_min;
     init_local_position_z_max_ = config.init_local_position_z_max;
     use_init_world_position_z_model_ = config.use_init_world_position_z_model;
@@ -434,12 +337,6 @@ namespace jsk_pcl_ros
     step_dx_variance_ = config.step_dx_variance;
     step_dy_variance_ = config.step_dy_variance;
     step_dz_variance_ = config.step_dz_variance;
-    use_range_likelihood_ = config.use_range_likelihood;
-    range_likelihood_local_min_z_ = config.range_likelihood_local_min_z;
-    range_likelihood_local_max_z_ = config.range_likelihood_local_max_z;
-    use_occlusion_likelihood_ = config.use_occlusion_likelihood;
-    min_inliers_ = config.min_inliers;
-    outlier_distance_ = config.outlier_distance;
   }
 
   bool PlaneSupportedCuboidEstimator::resetCallback(std_srvs::EmptyRequest& req,
