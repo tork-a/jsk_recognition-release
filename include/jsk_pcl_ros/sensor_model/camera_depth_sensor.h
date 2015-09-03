@@ -33,27 +33,43 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include "jsk_pcl_ros/random_util.h"
-#include <iostream>
+#ifndef JSK_PCL_ROS_CAMERA_DEPTH_SENSOR_H_
+#define JSK_PCL_ROS_CAMERA_DEPTH_SENSOR_H_
+
+#include "jsk_pcl_ros/sensor_model/pointcloud_sensor_model.h"
+#include <sensor_msgs/CameraInfo.h>
+#include <image_geometry/pinhole_camera_model.h>
 
 namespace jsk_pcl_ros
 {
-  double randomGaussian(double mean, double var, boost::mt19937& gen)
+  class CameraDepthSensor: public PointCloudSensorModel
   {
-    boost::normal_distribution<> dst(mean, sqrt(var));
-    boost::variate_generator<
-      boost::mt19937&,
-      boost::normal_distribution<> > rand(gen, dst);
-    return rand();
-  }
-  
-  double randomUniform(double min, double max, boost::mt19937& gen)
-  {
-    // std::cout << min << " -- " << max << std::endl;
-    boost::uniform_real<> dst(min, max);
-    boost::variate_generator<
-      boost::mt19937&,
-      boost::uniform_real<> > rand(gen, dst);
-    return rand();
-  }
+  public:
+    typedef boost::shared_ptr<CameraDepthSensor> Ptr;
+    CameraDepthSensor() {}
+    
+    virtual void setCameraInfo(const sensor_msgs::CameraInfo& info)
+    {
+      model_.fromCameraInfo(info);
+    }
+
+    /**
+     * @brief
+     * Return the expected number of points according to distance and area.
+     * it is calculated according to:
+     * f^2\frac{s}{r^2}
+     **/
+    virtual double expectedPointCloudNum(double distance, double area) const
+    {
+      double f = model_.fx();
+      return f*f / (distance*distance) * area;
+    }
+  protected:
+    image_geometry::PinholeCameraModel model_;
+    
+  private:
+    
+  };
 }
+
+#endif
