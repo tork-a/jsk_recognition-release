@@ -23,14 +23,8 @@ else()
   set(ML_CLASSIFIERS ml_classifiers) ## hydro and later
 endif()
 
-find_package(PkgConfig)
-pkg_check_modules(yaml_cpp yaml-cpp REQUIRED)
-IF(${yaml_cpp_VERSION} VERSION_LESS "0.5.0")
-## indigo yaml-cpp : 0.5.0 /  hydro yaml-cpp : 0.3.0
-  add_definitions("-DUSE_OLD_YAML")
-ENDIF()
-
 find_package(catkin REQUIRED COMPONENTS
+  jsk_recognition_utils
   dynamic_reconfigure pcl_ros nodelet message_generation genmsg
   ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs
   eigen_conversions tf_conversions tf2_ros tf
@@ -52,6 +46,12 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}
 # For kinfu
 find_package(PCL QUIET COMPONENTS gpu_kinfu_large_scale)
 
+find_package(PkgConfig)
+pkg_check_modules(yaml_cpp yaml-cpp REQUIRED)
+IF(${yaml_cpp_VERSION} VERSION_LESS "0.5.0")
+## indigo yaml-cpp : 0.5.0 /  hydro yaml-cpp : 0.3.0
+  add_definitions("-DUSE_OLD_YAML")
+ENDIF()
 
 add_service_files(FILES SwitchTopic.srv
   UpdateOffset.srv
@@ -72,8 +72,10 @@ add_service_files(FILES SwitchTopic.srv
 
 # generate the dynamic_reconfigure config file
 generate_dynamic_reconfigure_options(
+  cfg/PolygonArrayAreaLikelihood.cfg
   cfg/InteractiveCuboidLikelihood.cfg
   cfg/PlaneSupportedCuboidEstimator.cfg
+  cfg/ExtractParticlesTopNBase.cfg
   cfg/PoseWithCovarianceStampedToGaussianPointCloud.cfg
   cfg/HeightmapMorphologicalFiltering.cfg
   cfg/HeightmapConverter.cfg
@@ -168,6 +170,8 @@ jsk_pcl_nodelet(src/fisheye_sphere_publisher_nodelet.cpp "jsk_pcl/FisheyeSphereP
 #   "jsk_pcl/NodeletImageDEMUX" "image_demux")
 jsk_pcl_nodelet(src/plane_supported_cuboid_estimator_nodelet.cpp
   "jsk_pcl/PlaneSupportedCuboidEstimator" "plane_supported_cuboid_estimator")
+jsk_pcl_nodelet(src/extract_cuboid_particles_top_n_nodelet.cpp
+  "jsk_pcl/ExtractCuboidParticlesTopN" "extract_cuboid_particles_top_n")
 jsk_pcl_nodelet(src/interactive_cuboid_likelihood_nodelet.cpp
   "jsk_pcl/InteractiveCuboidLikelihood" "interactive_cuboid_likelihood")
 jsk_pcl_nodelet(src/image_rotate_nodelet.cpp
@@ -176,6 +180,10 @@ jsk_pcl_nodelet(src/octree_change_publisher_nodelet.cpp
   "jsk_pcl/OctreeChangePublisher" "octree_change_publisher")
 jsk_pcl_nodelet(src/tf_transform_cloud_nodelet.cpp
   "jsk_pcl/TfTransformCloud" "tf_transform_cloud")
+jsk_pcl_nodelet(src/tf_transform_bounding_box_nodelet.cpp
+  "jsk_pcl/TfTransformBoundingBox" "tf_transform_bounding_box")
+jsk_pcl_nodelet(src/tf_transform_bounding_box_array_nodelet.cpp
+  "jsk_pcl/TfTransformBoundingBoxArray" "tf_transform_bounding_box_array")
 jsk_pcl_nodelet(src/color_filter_nodelet.cpp
   "jsk_pcl/RGBColorFilter" "rgb_color_filter")
 jsk_pcl_nodelet(src/color_filter_nodelet.cpp
@@ -203,6 +211,12 @@ jsk_pcl_nodelet(src/multi_plane_extraction_nodelet.cpp
   "jsk_pcl/MultiPlaneExtraction" "multi_plane_extraction")
 jsk_pcl_nodelet(src/selected_cluster_publisher_nodelet.cpp
   "jsk_pcl/SelectedClusterPublisher" "selected_cluster_publisher")
+jsk_pcl_util_nodelet(src/polygon_array_distance_likelihood_nodelet.cpp
+  "jsk_pcl/PolygonArrayDistanceLikelihood" "polygon_array_distance_likelihood")
+jsk_pcl_util_nodelet(src/polygon_array_area_likelihood_nodelet.cpp
+  "jsk_pcl/PolygonArrayAreaLikelihood" "polygon_array_area_likelihood")
+jsk_pcl_util_nodelet(src/polygon_array_angle_likelihood_nodelet.cpp
+  "jsk_pcl/PolygonArrayAngleLikelihood" "polygon_array_angle_likelihood")
 jsk_pcl_util_nodelet(src/pose_with_covariance_stamped_to_gaussian_pointcloud_nodelet.cpp
   "jsk_pcl/PoseWithCovarianceStampedToGaussianPointCloud" "pose_with_covariance_stamped_to_gaussian_pointcloud")
 jsk_pcl_util_nodelet(src/spherical_pointcloud_simulator_nodelet.cpp
@@ -306,6 +320,8 @@ jsk_pcl_nodelet(src/normal_direction_filter_nodelet.cpp
   "jsk_pcl/NormalDirectionFilter" "normal_direction_filter")
 jsk_pcl_nodelet(src/attention_clipper_nodelet.cpp
   "jsk_pcl/AttentionClipper" "attention_clipper")
+jsk_pcl_nodelet(src/boundingbox_occlusion_rejector_nodelet.cpp
+  "jsk_pcl/BoundingBoxOcclusionRejector" "boundingbox_occlusion_rejector")
 jsk_pcl_nodelet(src/roi_clipper_nodelet.cpp
   "jsk_pcl/ROIClipper" "roi_clipper")
 jsk_pcl_nodelet(src/point_indices_to_mask_image_nodelet.cpp
@@ -373,17 +389,12 @@ jsk_pcl_nodelet(src/pcd_reader_with_pose_nodelet.cpp
   "jsk_pcl/PCDReaderWithPose" "pcd_reader_with_pose")
 
 add_library(jsk_pcl_ros_base SHARED
-  src/grid_index.cpp src/grid_map.cpp src/grid_line.cpp src/geo_util.cpp
-  src/random_util.cpp
-  src/pcl_conversion_util.cpp src/pcl_util.cpp
   src/region_adjacency_graph.cpp
-
-  src/tf_listener_singleton.cpp
   src/viewpoint_sampler.cpp)
 add_library(jsk_pcl_ros_moveit SHARED src/pointcloud_moveit_filter.cpp)
 add_library(jsk_pcl_ros SHARED ${jsk_pcl_nodelet_sources})
 add_library(jsk_pcl_ros_util SHARED ${jsk_pcl_util_nodelet_sources})
-
+target_link_libraries(jsk_pcl_ros_util jsk_pcl_ros_base)
 if (PCL_GPU_KINFU_LARGE_SCALE_FOUND)
   target_link_libraries(jsk_pcl_ros
     ${PCL_GPU_KINFU_LARGE_SCALE_LIBRARY}
@@ -399,9 +410,39 @@ add_dependencies(jsk_pcl_ros ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 add_dependencies(jsk_pcl_ros_util ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 add_dependencies(jsk_pcl_ros_base ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 add_dependencies(jsk_pcl_ros_moveit ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
+
+# bench/ directory
+
 add_executable(bench_ransac_plane_estimation bench/bench_ransac_plane_estimation.cpp)
 target_link_libraries(bench_ransac_plane_estimation jsk_pcl_ros)
 
+# sample/ directory
+add_executable(sample_cube_nearest_point sample/src/sample_cube_nearest_point.cpp)
+target_link_libraries(sample_cube_nearest_point jsk_pcl_ros_base)
+
+# tool/ directory
+add_executable(range_sensor_error_visualization tool/range_sensor_error_visualization.cpp)
+add_executable(depth_camera_error_visualization tool/depth_camera_error_visualization.cpp)
+target_link_libraries(depth_camera_error_visualization jsk_pcl_ros)
+
+file(GLOB _headers ${PROJECT_SOURCE_DIR}/include/jsk_pcl_ros/*.h)
+list(SORT _headers)
+set(_include_headers "")
+foreach(_header ${_headers})
+  string(FIND "${_header}" kinfu IS_KINFU)
+  string(FIND "${_header}" point_types IS_POINT_TYPES)
+  if (${IS_KINFU} EQUAL -1 AND ${IS_POINT_TYPES} EQUAL -1)
+    set(_include_headers "${_include_headers}#include \"${_header}\"\n")
+  endif()
+endforeach()
+execute_process(
+  COMMAND ${PROJECT_SOURCE_DIR}/scripts/build_check_helper.py ${PROJECT_SOURCE_DIR}/jsk_pcl_nodelets.xml
+  OUTPUT_VARIABLE _class_instances
+  )
+
+configure_file(src/build_check.cpp.in build_check.cpp)
+add_executable(build_check build_check.cpp)
+target_link_libraries(build_check jsk_pcl_ros jsk_pcl_ros_base jsk_pcl_ros_util jsk_pcl_ros_moveit)
 generate_messages(DEPENDENCIES
   ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs jsk_footstep_msgs)
 
