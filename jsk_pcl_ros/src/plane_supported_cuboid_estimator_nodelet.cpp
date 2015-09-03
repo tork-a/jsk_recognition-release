@@ -89,22 +89,77 @@ namespace jsk_pcl_ros
 
   }
 
+  size_t PlaneSupportedCuboidEstimator::getNearestPolygon(
+    const Particle& p,
+    const std::vector<ConvexPolygon::Ptr>& polygons)
+  {
+    size_t min_index = 0;
+    double min_distance = DBL_MAX;
+    Eigen::Vector3f inp = p.getVector3fMap();
+    for (size_t i = 0; i < polygons.size(); i++) {
+      ConvexPolygon::Ptr polygon = polygons[i];
+      Eigen::Vector3f p;
+      polygon->project(inp, p);
+      double d = (p - inp).norm();
+      if (d < min_distance) {
+        min_distance = d;
+        min_index = i;
+      }
+    }
+    return min_index;
+  }
+  
+  void PlaneSupportedCuboidEstimator::updateParticlePolygonRelationship(
+    ParticleCloud::Ptr particles)
+  {
+    if (latest_polygon_msg_->polygons.size() == 0) {
+      NODELET_ERROR("no valid polygons, skip update relationship");
+      return;
+    }
+
+    // The order of convexes and polygons_ should be same
+    // because it is inside of critical section.
+    std::vector<ConvexPolygon::Ptr> convexes;
+    for (size_t i = 0; i < latest_polygon_msg_->polygons.size(); i++) {
+      ConvexPolygon::Ptr polygon = ConvexPolygon::fromROSMsgPtr(latest_polygon_msg_->polygons[i].polygon);
+      convexes.push_back(polygon);
+    }
+
+    
+    // Second, compute distances and assing polygons.
+    for (size_t i = 0; i < particles->points.size(); i++) {
+      size_t nearest_index = getNearestPolygon(particles->points[i], convexes);
+      //particles->points[i].plane = polygons[nearest_index];
+      particles->points[i].plane_index = (int)nearest_index;
+    }
+  }
+  
   void PlaneSupportedCuboidEstimator::cloudCallback(
     const sensor_msgs::PointCloud2::ConstPtr& msg)
   {
     boost::mutex::scoped_lock lock(mutex_);
+    NODELET_INFO("cloudCallback");
     if (!latest_polygon_msg_ || !latest_coefficients_msg_) {
       JSK_NODELET_WARN("Not yet polygon is available");
       return;
     }
 
+    // Update polygons_ vector
+    polygons_.clear();
+    for (size_t i = 0; i < latest_polygon_msg_->polygons.size(); i++) {
+      Polygon::Ptr polygon = Polygon::fromROSMsgPtr(latest_polygon_msg_->polygons[i].polygon);
+      polygons_.push_back(polygon);
+    }
+    
     // viewpoint
     tf::StampedTransform transform
       = lookupTransformWithDuration(tf_, sensor_frame_, msg->header.frame_id,
                                     ros::Time(0.0),
                                     ros::Duration(0.0));
     tf::vectorTFToEigen(transform.getOrigin(), viewpoint_);
+
     if (!tracker_) {
+      NODELET_INFO("initTracker");
       pcl::PointCloud<pcl::tracking::ParticleCuboid>::Ptr particles = initParticles();
       tracker_.reset(new pcl::tracking::ROSCollaborativeParticleFilterTracker<pcl::PointXYZ, pcl::tracking::ParticleCuboid>);
       tracker_->setCustomSampleFunc(boost::bind(&PlaneSupportedCuboidEstimator::sample, this, _1));
@@ -126,8 +181,9 @@ namespace jsk_pcl_ros
         pcl::PointCloud<pcl::PointXYZ>::Ptr
           boundaries (new pcl::PointCloud<pcl::PointXYZ>);
         polygon->boundariesToPointCloud<pcl::PointXYZ>(*boundaries);
+        boundaries->points.push_back(boundaries->points[0]);
         prism_extract.setInputCloud(cloud);
-        //prism_extract.setViewPoint(0, 0, -1.0); // 適当
+        prism_extract.setViewPoint(viewpoint_[0], viewpoint_[1], viewpoint_[2]);
         prism_extract.setHeightLimits(init_local_position_z_min_, init_local_position_z_max_);
         prism_extract.setInputPlanarHull(boundaries);
         pcl::PointIndices output_indices;
@@ -146,6 +202,12 @@ namespace jsk_pcl_ros
       pcl::toROSMsg(*candidate_cloud_, ros_candidate_cloud);
       ros_candidate_cloud.header = msg->header;
       pub_candidate_cloud_.publish(ros_candidate_cloud);
+      tree_.setInputCloud(candidate_cloud_);
+      if (support_plane_updated_) {
+        // Compute assignment between particles and polygons
+        NODELET_INFO("polygon updated");
+        updateParticlePolygonRelationship(tracker_->getParticles());
+      }
       tracker_->compute();
       Particle result = tracker_->getResult();
       jsk_recognition_msgs::BoundingBoxArray box_array;
@@ -154,6 +216,7 @@ namespace jsk_pcl_ros
       box_array.boxes[0].header = msg->header;
       pub_result_.publish(box_array);
     }
+    support_plane_updated_ = false;
     ParticleCloud::Ptr particles = tracker_->getParticles();
     // Publish histograms
     publishHistogram(particles, 0, pub_histogram_global_x_, msg->header);
@@ -166,29 +229,13 @@ namespace jsk_pcl_ros
     publishHistogram(particles, 7, pub_histogram_dy_, msg->header);
     publishHistogram(particles, 8, pub_histogram_dz_, msg->header);
     // Publish particles
-    pcl::PointCloud<pcl::PointXYZI>::Ptr particles_xyz = convertParticlesToXYZI(particles);
     sensor_msgs::PointCloud2 ros_particles;
-    pcl::toROSMsg(*particles_xyz, ros_particles);
+    pcl::toROSMsg(*particles, ros_particles);
     ros_particles.header = msg->header;
     pub_particles_.publish(ros_particles);
 
   }
 
-  pcl::PointCloud<pcl::PointXYZI>::Ptr PlaneSupportedCuboidEstimator::convertParticlesToXYZI(ParticleCloud::Ptr particles)
-  { 
-    pcl::PointCloud<pcl::PointXYZI>::Ptr output(new pcl::PointCloud<pcl::PointXYZI>);
-    output->points.resize(particles->points.size());
-    for (size_t i = 0; i < particles->points.size(); i++) {
-      pcl::PointXYZI p;
-      p.x = particles->points[i].x;
-      p.y = particles->points[i].y;
-      p.z = particles->points[i].z;
-      p.intensity = particles->points[i].weight;
-      output->points[i] = p;
-    }
-    return output;
-  }
-  
   void PlaneSupportedCuboidEstimator::publishHistogram(
     ParticleCloud::Ptr particles, int index, ros::Publisher& pub, const std_msgs::Header& header)
   {
@@ -239,10 +286,13 @@ namespace jsk_pcl_ros
     sampled_particle.roll = randomGaussian(p.roll, step_roll_variance_, random_generator_);
     sampled_particle.pitch = randomGaussian(p.pitch, step_pitch_variance_, random_generator_);
     sampled_particle.yaw = randomGaussian(p.yaw, step_yaw_variance_, random_generator_);
-    sampled_particle.dx = randomGaussian(p.dx, step_dx_variance_, random_generator_);
-    sampled_particle.dy = randomGaussian(p.dy, step_dy_variance_, random_generator_);
-    sampled_particle.dz = randomGaussian(p.dz, step_dz_variance_, random_generator_);
-    sampled_particle.plane = p.plane;
+    sampled_particle.dx = std::max(randomGaussian(p.dx, step_dx_variance_, random_generator_),
+                                   min_dx_);
+    sampled_particle.dy = std::max(randomGaussian(p.dy, step_dy_variance_, random_generator_),
+                                   min_dy_);
+    sampled_particle.dz = std::max(randomGaussian(p.dz, step_dz_variance_, random_generator_),
+                                   min_dz_);
+    sampled_particle.plane_index = p.plane_index;
     sampled_particle.weight = p.weight;
     return sampled_particle;
   }
@@ -250,8 +300,9 @@ namespace jsk_pcl_ros
   void PlaneSupportedCuboidEstimator::likelihood(pcl::PointCloud<pcl::PointXYZ>::ConstPtr input,
                                                  pcl::tracking::ParticleCuboid& p)
   {
-    //p.weight = computeLikelihood(p, input, config_);
-    p.weight = computeLikelihood(p, candidate_cloud_, viewpoint_, config_);
+    p.weight = computeLikelihood(p, candidate_cloud_, tree_, viewpoint_,
+                                 polygons_, latest_polygon_msg_->likelihood,
+                                 config_);
   }
   
   void PlaneSupportedCuboidEstimator::polygonCallback(
@@ -261,15 +312,32 @@ namespace jsk_pcl_ros
     boost::mutex::scoped_lock lock(mutex_);
     latest_polygon_msg_ = polygon_msg;
     latest_coefficients_msg_ = coef_msg;
+    support_plane_updated_ = true;
   }
 
-  size_t PlaneSupportedCuboidEstimator::chooseUniformRandomPlaneIndex()
+  size_t PlaneSupportedCuboidEstimator::chooseUniformRandomPlaneIndex(const std::vector<Polygon::Ptr>& polygons)
   {
-    boost::uniform_smallint<> dst(0, latest_coefficients_msg_->coefficients.size() - 1);
-    boost::variate_generator<
-      boost::mt19937&, boost::uniform_smallint<>
-      > rand(random_generator_, dst);
-    return (size_t)rand();
+    // randomly select plane according to their area
+    std::vector<double> area_table(polygons.size());
+    double sum = 0;
+    for (size_t i = 0; i < latest_polygon_msg_->polygons.size(); i++) {
+      area_table[i] = polygons[i]->area();
+      if (use_init_polygon_likelihood_) {
+        area_table[i] = area_table[i] * latest_polygon_msg_->likelihood[i];
+      }
+      sum += area_table[i];
+    }
+    double val = randomUniform(0, sum, random_generator_);
+    double bin_start = 0.0;
+    for (size_t i = 0; i < latest_polygon_msg_->polygons.size(); i++) {
+      if (val >= bin_start && val < bin_start + area_table[i]) {
+        return i;
+      }
+      bin_start += area_table[i];
+    }
+    // Unexpected region here
+    NODELET_ERROR("should not reach here, failed to select plane randomly");
+    return 0;
   }
   
   pcl::PointCloud<pcl::tracking::ParticleCuboid>::Ptr PlaneSupportedCuboidEstimator::initParticles()
@@ -282,30 +350,33 @@ namespace jsk_pcl_ros
       polygons[i] = polygon;
     }
     for (size_t i = 0; i < particle_num_; i++) {
-      pcl::tracking::ParticleCuboid p_local;
-      size_t plane_i = chooseUniformRandomPlaneIndex();
-      Polygon::Ptr polygon = polygons[plane_i];
-      Eigen::Vector3f v = polygon->randomSampleLocalPoint(random_generator_);
-      v[2] = randomUniform(
-        init_local_position_z_min_, init_local_position_z_max_,
-        random_generator_);
-      p_local.getVector3fMap() = v;
-      p_local.roll = randomGaussian(
-        0, init_local_orientation_roll_variance_, random_generator_);
-      p_local.pitch = randomGaussian(
-        0, init_local_orientation_pitch_variance_, random_generator_);
-      p_local.yaw = randomGaussian(init_local_orientation_yaw_mean_,
-                                   init_local_orientation_yaw_variance_,
-                                   random_generator_);
-      p_local.dx = randomGaussian(
-        init_dx_mean_, init_dx_variance_, random_generator_);
-      p_local.dy = randomGaussian(
-        init_dy_mean_, init_dy_variance_, random_generator_);
-      p_local.dz = randomGaussian(
-        init_dz_mean_, init_dz_variance_, random_generator_);
-      pcl::tracking::ParticleCuboid p_global = p_local * polygon->coordinates();
-      p_global.plane = polygon;
-      particles->points[i] = p_global;
+      while (true) {
+        pcl::tracking::ParticleCuboid p_local;
+        size_t plane_i = chooseUniformRandomPlaneIndex(polygons);
+        Polygon::Ptr polygon = polygons[plane_i];
+        Eigen::Vector3f v = polygon->randomSampleLocalPoint(random_generator_);
+        v[2] = randomUniform(init_local_position_z_min_, init_local_position_z_max_,
+                             random_generator_);
+        p_local.getVector3fMap() = v;
+        p_local.roll = randomGaussian(0, init_local_orientation_roll_variance_, random_generator_);
+        p_local.pitch = randomGaussian(0, init_local_orientation_pitch_variance_, random_generator_);
+        p_local.yaw = randomGaussian(init_local_orientation_yaw_mean_,
+                                     init_local_orientation_yaw_variance_,
+                                     random_generator_);
+        p_local.dx = randomGaussian(init_dx_mean_, init_dx_variance_, random_generator_);
+        p_local.dy = randomGaussian(init_dy_mean_, init_dy_variance_, random_generator_);
+        p_local.dz = randomGaussian(init_dz_mean_, init_dz_variance_, random_generator_);
+        pcl::tracking::ParticleCuboid p_global =  p_local * polygon->coordinates();
+        if (use_init_world_position_z_model_) {
+          if (p_global.z < init_world_position_z_min_ ||
+              p_global.z > init_world_position_z_max_) {
+            continue;
+          }
+        }
+        p_global.plane_index = plane_i;
+        particles->points[i] = p_global;
+        break;
+      }
     }
     return particles;
   }
@@ -317,6 +388,8 @@ namespace jsk_pcl_ros
     init_local_position_z_min_ = config.init_local_position_z_min;
     init_local_position_z_max_ = config.init_local_position_z_max;
     use_init_world_position_z_model_ = config.use_init_world_position_z_model;
+    init_world_position_z_min_ = config.init_world_position_z_min;
+    init_world_position_z_max_ = config.init_world_position_z_max;
     init_local_orientation_roll_variance_ = config.init_local_orientation_roll_variance;
     init_local_orientation_pitch_variance_ = config.init_local_orientation_pitch_variance;
     init_local_orientation_yaw_mean_ = config.init_local_orientation_yaw_mean;
@@ -337,6 +410,10 @@ namespace jsk_pcl_ros
     step_dx_variance_ = config.step_dx_variance;
     step_dy_variance_ = config.step_dy_variance;
     step_dz_variance_ = config.step_dz_variance;
+    min_dx_ = config.min_dx;
+    min_dy_ = config.min_dy;
+    min_dz_ = config.min_dz;
+    use_init_polygon_likelihood_ = config.use_init_polygon_likelihood;
   }
 
   bool PlaneSupportedCuboidEstimator::resetCallback(std_srvs::EmptyRequest& req,
