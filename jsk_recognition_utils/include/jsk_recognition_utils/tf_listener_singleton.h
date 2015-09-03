@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2014, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,27 +33,34 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include "jsk_pcl_ros/random_util.h"
-#include <iostream>
 
-namespace jsk_pcl_ros
+#ifndef JSK_RECOGNITION_UTILS_TF_LISTENER_SINGLETON_H_
+#define JSK_RECOGNITION_UTILS_TF_LISTENER_SINGLETON_H_
+
+#include <tf/transform_listener.h>
+
+namespace jsk_recognition_utils
 {
-  double randomGaussian(double mean, double var, boost::mt19937& gen)
+  class TfListenerSingleton
   {
-    boost::normal_distribution<> dst(mean, sqrt(var));
-    boost::variate_generator<
-      boost::mt19937&,
-      boost::normal_distribution<> > rand(gen, dst);
-    return rand();
-  }
-  
-  double randomUniform(double min, double max, boost::mt19937& gen)
-  {
-    // std::cout << min << " -- " << max << std::endl;
-    boost::uniform_real<> dst(min, max);
-    boost::variate_generator<
-      boost::mt19937&,
-      boost::uniform_real<> > rand(gen, dst);
-    return rand();
-  }
+  public:
+    static tf::TransformListener* getInstance();
+    static void destroy();
+  protected:
+    static tf::TransformListener* instance_;
+    static boost::mutex mutex_;
+  private:
+    TfListenerSingleton(TfListenerSingleton const&){};
+    TfListenerSingleton& operator=(TfListenerSingleton const&){};
+  };
+
+  // tf Utility
+  tf::StampedTransform lookupTransformWithDuration(
+    tf::TransformListener* listener,
+    const std::string& to_frame,
+    const std::string& from_frame,
+    const ros::Time& stamp,
+    ros::Duration duration);
 }
+
+#endif
