@@ -1,4 +1,16 @@
 <library path="libjsk_pcl_ros_util">
+  <class name="jsk_pcl/PolygonArrayDistanceLikelihood" 
+         type="jsk_pcl_ros::PolygonArrayDistanceLikelihood"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_pcl/PolygonArrayAreaLikelihood" 
+         type="jsk_pcl_ros::PolygonArrayAreaLikelihood"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_pcl/PolygonArrayAngleLikelihood" 
+         type="jsk_pcl_ros::PolygonArrayAngleLikelihood"
+         base_class_type="nodelet::Nodelet">
+  </class>
   <class name="jsk_pcl/PoseWithCovarianceStampedToGaussianPointCloud" 
          type="jsk_pcl_ros::PoseWithCovarianceStampedToGaussianPointCloud"
          base_class_type="nodelet::Nodelet">
@@ -84,6 +96,10 @@
   </class>
   <class name="jsk_pcl/PlaneSupportedCuboidEstimator"
          type="jsk_pcl_ros::PlaneSupportedCuboidEstimator"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_pcl/ExtractCuboidParticlesTopN"
+         type="jsk_pcl_ros::ExtractCuboidParticlesTopN"
          base_class_type="nodelet::Nodelet">
   </class>
   <class name="jsk_pcl/PointCloudLocalization"
@@ -186,6 +202,10 @@
          type="jsk_pcl_ros::AttentionClipper"
          base_class_type="nodelet::Nodelet">
     Publish ROI of attention reagion
+  </class>
+  <class name="jsk_pcl/BoundingBoxOcclusionRejector"
+         type="jsk_pcl_ros::BoundingBoxOcclusionRejector"
+         base_class_type="nodelet::Nodelet">
   </class>
   <class name="jsk_pcl/NormalDirectionFilter"
          type="jsk_pcl_ros::NormalDirectionFilter"
@@ -497,6 +517,12 @@
     <description>
       publish transformed cloud with target id
     </description>
+  </class>
+  <class name="jsk_pcl/TfTransformBoundingBox" type="jsk_pcl_ros::TfTransformBoundingBox"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_pcl/TfTransformBoundingBoxArray" type="jsk_pcl_ros::TfTransformBoundingBoxArray"
+         base_class_type="nodelet::Nodelet">
   </class>
   <class name="jsk_pcl/ColorizeRandomForest" type="jsk_pcl_ros::ColorizeRandomForest"
          base_class_type="nodelet::Nodelet">

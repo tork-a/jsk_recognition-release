@@ -109,11 +109,17 @@ namespace jsk_pcl_ros
     vertices.push_back(Eigen::Vector3f(plane_pose_ * (- Eigen::Vector3f::UnitX() - Eigen::Vector3f::UnitY())));
     vertices.push_back(Eigen::Vector3f(plane_pose_ * (Eigen::Vector3f::UnitX() - Eigen::Vector3f::UnitY())));
     Polygon::Ptr plane(new Polygon(vertices));
-    particle_.plane = plane;
-    for (size_t i = 0; i < vertices.size(); i++) {
-      ROS_INFO("v: [%f, %f, %f]", vertices[i][0], vertices[i][1], vertices[i][2]);
-    }
-    double l = computeLikelihood(particle_, cloud, vp, config_);
+    //particle_.plane = plane;
+    particle_.plane_index = 0;
+    std::vector<Polygon::Ptr> polygons;
+    polygons.push_back(plane);
+    // for (size_t i = 0; i < vertices.size(); i++) {
+    //   ROS_INFO("v: [%f, %f, %f]", vertices[i][0], vertices[i][1], vertices[i][2]);
+    // }
+    pcl::KdTreeFLANN<pcl::PointXYZ> tree;
+    tree.setInputCloud(cloud);
+    std::vector<float> polygon_likelihood(1, 1.0);
+    double l = computeLikelihood(particle_, cloud, tree, vp, polygons, polygon_likelihood, config_);
     NODELET_INFO("likelihood: %f", l);
     std_msgs::Float32 float_msg;
     float_msg.data = l;
@@ -142,7 +148,7 @@ namespace jsk_pcl_ros
     int_marker.header.frame_id = frame_id_;
     int_marker.header.stamp = ros::Time::now();
     int_marker.name = getName() + "_plane";
-        visualization_msgs::InteractiveMarkerControl control;
+    visualization_msgs::InteractiveMarkerControl control;
     control.orientation.w = 1;
     control.orientation.x = 1;
     control.orientation.y = 0;
