@@ -33,16 +33,14 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-
 #ifndef JSK_PCL_ROS_RANDOM_UTIL_H_
 #define JSK_PCL_ROS_RANDOM_UTIL_H_
-
-#include <boost/random.hpp>
-
+#pragma warning "jsk_pcl_ros/random_util.h is deprecated"
+#include <jsk_recognition_utils/random_util.h>
 namespace jsk_pcl_ros
 {
-  double randomGaussian(double mean, double var, boost::mt19937& gen);
-  double randomUniform(double min, double max, boost::mt19937& gen);
+  using namespace jsk_recognition_utils;
 }
 
 #endif
+
