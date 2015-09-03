@@ -59,6 +59,72 @@ time end
 Represent range of time.
 
 ## nodelets
+### jsk\_pcl/PolygonArrayAreaLikelihood
+Compute likelihood based on area.
+Near polygon is, larger likelihood is.
+The likelihood is determined by `1/(1+d^2)` where `d` is difference between area and expected area.
+
+#### Subscribing Topic
+* `~input` (`jsk_recognition_msgs/PolygonArray`)
+
+  Input polygon array.
+
+#### Publishing Topic
+* `~input` (`jsk_recognition_msgs/PolygonArray`)
+
+  Input polygon array.
+
+#### Parameters
+* `~area` (default: `1.0`)
+
+  Expected size of area of polygon.
+
+### jsk\_pcl/PolygonArrayAngleLikelihood
+Compute likelihood based on distance.
+Near polygon is, larger likelihood is.
+The likelihood is determined by `1/(1+d^2)` where `d` is a angular difference from `~target_frame_id` to the polygon.
+
+#### Subscribing Topic
+* `~input` (`jsk_recognition_msgs/PolygonArray`)
+
+  Input polygon array.
+
+#### Publishing Topic
+* `~input` (`jsk_recognition_msgs/PolygonArray`)
+
+  Input polygon array.
+
+#### Parameters
+* `~target_frame_id` (required)
+
+  Frame id to compute polygon's distance from
+* `~tf_queue_size`
+
+  Queue size of tf message filter
+
+### jsk\_pcl/PolygonArrayDistanceLikelihood
+Compute likelihood based on distance.
+Near polygon is, larger likelihood is.
+The likelihood is determined by `1/(1+d^2)` where `d` is a distance from `~target_frame_id` to the polygon.
+
+#### Subscribing Topic
+* `~input` (`jsk_recognition_msgs/PolygonArray`)
+
+  Input polygon array.
+
+#### Publishing Topic
+* `~input` (`jsk_recognition_msgs/PolygonArray`)
+
+  Input polygon array.
+
+#### Parameters
+* `~target_frame_id` (required)
+
+  Frame id to compute polygon's distance from
+* `~tf_queue_size`
+
+  Queue size of tf message filter
+
 ### jsk\_pcl/HeightmapConverter
 ![](images/heightmap_converter.png)
 
@@ -1427,15 +1493,18 @@ and evaluation function of connectivity if based on the following equation:
    normal pointcloud of `~input`
 
 #### Publishing Topics
+* `~output/clustering_result` (`jsk_recognition_msgs/ClusterPointIndices`):
+
+  Result of region growing as cluster.
 * `~output/inliers` (`jsk_recognition_msgs/ClusterPointIndices`):
 
-   Set of indices of the polygons.
+  Set of indices of the polygons.
 * `~output/coefficients` (`jsk_recognition_msgs/ModelCoefficientsArray`):
 
-   Array of coefficients of the polygons.
+  Array of coefficients of the polygons.
 * `~output/polygons` (`jsk_recognition_msgs/PolygonArray`):
 
-   Polygons
+  Polygons
 
 #### Parameters
 * `~angular_threshold` (Double, default: `0.04`)
@@ -1767,6 +1836,9 @@ You can choose several types of tilt/spindle lasers such as tilt-laser of PR2, i
    Assembled pointcloud according to time range
    of `~output`. this require `~assemble_scans2`
    service of [laser_assembler](http://wiki.ros.org/laser_assembler).
+* `~output_velocity` (`geometry_msgs/TwistStamped`)
+
+   Velocity of rotating laser. it is only published when `~twist_frame_id` is provided.
 
 #### Using Services
 * `~assemble_scans2` (`laser_assembler/AssembleScans2`):
@@ -1790,6 +1862,9 @@ You can choose several types of tilt/spindle lasers such as tilt-laser of PR2, i
 * `~skip_number` (Integer, default: `1`):
 
    Skip publishing and calling laser assembler per `~skip_number`.
+* `~twist_frame_id`
+
+  Frame id used in twist velocity.
 * `~use_laser_assembler` (Boolean, default: `False`):
 
    Enable `~output_cloud` and `~assemble_scans2`.
@@ -2316,6 +2391,27 @@ Plug the depth sensor which can be launched by openni.launch and run the below c
 roslaunch jsk_pcl_ros tf_transform_cloud.launch
 ```
 
+### jsk\_pcl/TfTransformBoundingBox
+This nodelet will republish bounding box which is transformed with the designated frame_id.
+
+#### Subscribing Topics
+* `~input` (`jsk_recognition_msgs/BoundingBox`)
+
+  input bounding box.
+
+#### Publishing Topics
+* `~output` (`jsk_recognition_msgs/BoundingBox`)
+
+  output bounding box.
+
+#### Parameters
+* `~target_frame_id` (string): The frame_id to transform pointcloud.
+* `~use_latest_tf` (Bool, default: `false`)
+
+  If this parameter is true, ignore timestamp of tf to transform pointcloud.
+* `~tf_queue_size` (Int, default: `10`)
+
+  Queue size of tf message filter to synchronize tf and `~input` topic.
 
 ## Depth Camera Calibration(Kinect,Xtion,Primesense)
 ![](images/depth_calibration.png)
@@ -2589,6 +2685,59 @@ to confirm likelihood function behaves as expected.
 * `~sensor_frame` (default: `odom`)
 
   Frame ID of sensor frame. It is used to compute viewpoint and occlusion.
+
+### jsk\_pcl/ExtractCuboidParticlesTopN
+Extract top-N particles of `pcl::tracking::ParticleCuboid`.
+
+#### Publishing Topics
+* `~output` (`pcl_msgs/PointIndices`)
+
+  Top-N particles indices.
+* `~output/box_array` (`jsk_recognition_msgs/BoundingBoxArray`)
+
+  Top-N particles as BoundingBoxArray.
+
+#### Subscribing Topics
+* `~input` (`sensor_msgs/PointCloud2`)
+
+  Particle cloud of `pcl::tracking::ParticleCuboid`.
+  All the weights are expected to be normalized.
+
+#### Parameters
+* `top_n_ratio` (default: `0.9`)
+
+  Ratio of top-N.
+
+### jsk\_pcl/BoundingBoxOcclusionRejector
+![](images/boundingbox_occlusion_rejector.png)
+Rejects bounding boxes which occludes target object.
+
+sample
+```
+$ roslaunch sample_boundingbox_occlusion_rejector.launch
+```
+
+#### Publishing Topics
+* `~output` (`jsk_recognition_msgs/BoundingBoxArray`)
+
+  Occlusion free candidate bounding boxes.
+* `~output/target_image` (`sensor_msgs/Image`)
+
+  Simulated rendered image of target object.
+* `~output/candidate_image` (`sensor_msgs/Image`)
+
+  Simulated rendered image of candidate object.
+
+#### Subscribing Topics
+* `~input/camera_info` (`sensor_msgs/CameraInfo`)
+
+  CameraInfo of sensor.
+* `~input/target_boxes` (`jsk_recognition_msgs/BoundingBoxArray`)
+
+  BoundingBox array to represent target objects to see.
+* `~input/candidate_boxes` (`jsk_recognition_msgs/BoundingBoxArray`)
+
+  BoundingBox array of candidate poses.
 ### jsk\_pcl/PCDReaderWithPose
 Publish cloud with given pose
 
