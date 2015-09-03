@@ -1,8 +1,8 @@
-// -*- mode: C++ -*-
+// -*- mode: c++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2014, JSK Lab
+ *  Copyright (c) 2015, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,23 +33,40 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include "jsk_pcl_ros/grid_index.h"
+#ifndef JSK_PCL_ROS_TF_TRANFORM_BOUNDING_BOX_ARRAY_H_
+#define JSK_PCL_ROS_TF_TRANFORM_BOUNDING_BOX_ARRAY_H_
+
+
+#include <jsk_topic_tools/diagnostic_nodelet.h>
+#include <jsk_recognition_msgs/BoundingBoxArray.h>
+
+#include "jsk_pcl_ros/tf_listener_singleton.h"
+#include <message_filters/subscriber.h>
+#include <tf/message_filter.h>
 
 namespace jsk_pcl_ros
 {
-  GridIndex::GridIndex(): x(0), y(0)
+
+  class TfTransformBoundingBoxArray: public jsk_topic_tools::DiagnosticNodelet
   {
-
-  }
-
-  GridIndex::GridIndex(int _x, int _y): x(_x), y(_y)
-  {
-
-  }
-  
-  GridIndex::~GridIndex()
-  {
-
-  }
-
+  public:
+    TfTransformBoundingBoxArray(): DiagnosticNodelet("TfTransformBoundingBoxArray") {}
+  protected:
+    virtual void onInit();
+    virtual void subscribe();
+    virtual void unsubscribe();
+    virtual void transform(const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& msg);
+    
+    ros::Subscriber sub_;
+    message_filters::Subscriber<jsk_recognition_msgs::BoundingBoxArray> sub_filter_;
+    ros::Publisher pub_;
+    std::string target_frame_id_;
+    tf::TransformListener* tf_listener_;
+    boost::shared_ptr<tf::MessageFilter<jsk_recognition_msgs::BoundingBoxArray> > tf_filter_;
+    bool use_latest_tf_;
+    int tf_queue_size_;
+  };
 }
+
+
+#endif
