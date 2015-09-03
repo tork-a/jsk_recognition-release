@@ -4,6 +4,7 @@ find_package(catkin REQUIRED
   std_msgs sensor_msgs geometry_msgs message_generation pcl_msgs)
 add_message_files(
   FILES
+  PlotData.msg
   HeightmapConfig.msg
   SimpleOccupancyGrid.msg
   SimpleOccupancyGridArray.msg
@@ -54,3 +55,6 @@ generate_messages(
 catkin_package(
   CATKIN_DEPENDS std_msgs sensor_msgs geometry_msgs pcl_msgs
 )
+
+install(DIRECTORY scripts
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
