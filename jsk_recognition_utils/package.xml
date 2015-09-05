@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_recognition_utils</name>
-  <version>0.3.1</version>
+  <version>0.3.2</version>
   <description>The jsk_recognition_utils package</description>
   <maintainer email="ueda@jsk.t.u-tokyo.ac.jp">Ryohei Ueda</maintainer>
 
@@ -19,7 +19,8 @@
   <build_depend>sensor_msgs</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>jsk_topic_tools</build_depend>
-
+  <build_depend>std_msgs</build_depend>
+  <build_depend>yaml-cpp</build_depend>
   <run_depend>jsk_recognition_msgs</run_depend>
   <run_depend>pcl_ros</run_depend>
   <run_depend>pcl_msgs</run_depend>
@@ -31,7 +32,8 @@
   <run_depend>sensor_msgs</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>jsk_topic_tools</run_depend>
-
+  <run_depend>std_msgs</run_depend>
+  <run_depend>yaml-cpp</run_depend>
 
   <export>
   </export>
