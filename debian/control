@@ -1,0 +1,12 @@
+Source: ros-hydro-jsk-recognition-utils
+Section: misc
+Priority: extra
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), libyaml-cpp-dev, ros-hydro-catkin, ros-hydro-eigen-conversions, ros-hydro-geometry-msgs, ros-hydro-image-geometry, ros-hydro-jsk-recognition-msgs, ros-hydro-jsk-topic-tools, ros-hydro-pcl-msgs, ros-hydro-pcl-ros, ros-hydro-sensor-msgs, ros-hydro-std-msgs, ros-hydro-tf, ros-hydro-tf-conversions, ros-hydro-tf2-ros
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-hydro-jsk-recognition-utils
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libyaml-cpp-dev, ros-hydro-eigen-conversions, ros-hydro-geometry-msgs, ros-hydro-image-geometry, ros-hydro-jsk-recognition-msgs, ros-hydro-jsk-topic-tools, ros-hydro-pcl-msgs, ros-hydro-pcl-ros, ros-hydro-sensor-msgs, ros-hydro-std-msgs, ros-hydro-tf, ros-hydro-tf-conversions, ros-hydro-tf2-ros
+Description: The jsk_recognition_utils package
