@@ -16,12 +16,13 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   geometry_msgs
   jsk_topic_tools
+  visualization_msgs
 )
 
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES jsk_recognition_utils
- CATKIN_DEPENDS jsk_recognition_msgs pcl_ros
+ CATKIN_DEPENDS jsk_recognition_msgs pcl_ros visualization_msgs
 )
 
 find_package(OpenCV REQUIRED core imgproc)
@@ -39,17 +40,25 @@ link_libraries(${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES}  yam
 
 add_library(jsk_recognition_utils SHARED
   src/grid_index.cpp
-  src/grid_map.cpp 
-  src/grid_line.cpp 
+  src/grid_map.cpp
+  src/grid_line.cpp
   src/geo_util.cpp
   src/random_util.cpp
   src/pcl_ros_util.cpp
-  src/pcl_conversion_util.cpp 
+  src/pcl_conversion_util.cpp
   src/pcl_util.cpp
   src/tf_listener_singleton.cpp
   src/pcl/ear_clipping_patched.cpp
   src/sensor_model_utils.cpp
   src/cv_utils.cpp
+  src/geo/line.cpp
+  src/geo/segment.cpp
+  src/geo/plane.cpp
+  src/geo/polygon.cpp
+  src/geo/convex_polygon.cpp
+  src/geo/cube.cpp
+  src/geo/cylinder.cpp
+  src/geo/grid_plane.cpp
   )
 
 install(TARGETS jsk_recognition_utils
