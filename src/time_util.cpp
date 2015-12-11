@@ -33,53 +33,59 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_RECOGNITION_UTILS_SPINDLE_LASER_SENSOR_H_
-#define JSK_RECOGNITION_UTILS_SPINDLE_LASER_SENSOR_H_
-
-#include "jsk_recognition_utils/sensor_model/pointcloud_sensor_model.h"
+#include "jsk_recognition_utils/time_util.h"
 
 namespace jsk_recognition_utils
 {
-  class SpindleLaserSensor: public PointCloudSensorModel
+  ScopedWallDurationReporter::ScopedWallDurationReporter(WallDurationTimer* parent):
+    parent_(parent), start_time_(ros::WallTime::now())
   {
-  public:
-    typedef boost::shared_ptr<SpindleLaserSensor> Ptr;
-    
-    SpindleLaserSensor(const double min_angle, const double max_angle,
-                       const double laser_freq,
-                       const size_t point_sample):
-      min_angle_(min_angle), max_angle_(max_angle),
-      laser_freq_(laser_freq),
-      point_sample_(point_sample) { }
-    
-    virtual void setSpindleVelocity(const double velocity)
-    {
-      spindle_velocity_ = spindle_velocity;
-    }
 
-    /**
-     * @brief
-     * Return the expected number of points according to distance and area.
-     * it is calculated according to:
-     * \frac{N}{2 \pi \Delta \phi}\frac{1}{r^2}s
-     * \Delta \phi = \frac{2 \pi}{\omega}
-     */
-    virtual double expectedPointCloudNum(double distance, double area) const
-    {
-      assert(spindle_velocity_ != 0.0);
-      double dphi = 2.0 * M_PI / spindle_velocity_;
-      return point_sample_ * laser_freq_ / (2.0 * dphi) / (distance * distance) * area;
+  }
+  
+  ScopedWallDurationReporter::~ScopedWallDurationReporter()
+  {
+    ros::WallTime end_time = ros::WallTime::now();
+    ros::WallDuration d = end_time - start_time_;
+    parent_->report(d);
+  }
+
+  WallDurationTimer::WallDurationTimer(const int max_num):
+    max_num_(max_num), buffer_(max_num)
+  {
+  }
+  
+  void WallDurationTimer::report(ros::WallDuration& duration)
+  {
+    buffer_.push_back(duration);
+  }
+
+  ScopedWallDurationReporter WallDurationTimer::reporter()
+  {
+    return ScopedWallDurationReporter(this);
+  }
+
+  double WallDurationTimer::latestSec()
+  {
+    return buffer_[buffer_.size() - 1].toSec();
+  }
+  
+  void WallDurationTimer::clearBuffer()
+  {
+    buffer_.clear();
+  }
+
+  double WallDurationTimer::meanSec()
+  {
+    double secs = 0.0;
+    for (size_t i = 0; i < buffer_.size(); i++) {
+      secs += buffer_[i].toSec();
     }
-    
-  protected:
-    
-    double spindle_velocity_;
-    double min_angle_;
-    double max_angle_;
-    size_t point_sample_;
-  private:
-    
-  };
+    return secs / buffer_.size();
+  }
+
+  size_t WallDurationTimer::sampleNum()
+  {
+    return buffer_.size();
+  }
 }
-
-#endif 
