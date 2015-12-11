@@ -34,14 +34,19 @@
  *********************************************************************/
 
 #include "jsk_pcl_ros/cluster_point_indices_decomposer.h"
+#include <cv_bridge/cv_bridge.h>
 #include <pluginlib/class_list_macros.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/common/centroid.h>
 #include <pcl/common/common.h>
 #include <boost/format.hpp>
+#include <boost/range/adaptors.hpp>
+#include <boost/range/algorithm.hpp>
+#include <boost/range/irange.hpp>
 #include <pcl/registration/ia_ransac.h>
 #include <pcl/filters/project_inliers.h>
 #include <pcl/common/pca.h>
+#include <sensor_msgs/image_encodings.h>
 #include <jsk_topic_tools/color_utils.h>
 #include <Eigen/Geometry> 
 
@@ -64,11 +69,17 @@ namespace jsk_pcl_ros
     }
 
     pnh_->param("publish_clouds", publish_clouds_, false);
+    if (publish_clouds_) {
+      JSK_ROS_WARN("~output%%02d are not published before subscribed, you should subscribe ~debug_output in debuging.");
+    }
     pnh_->param("align_boxes", align_boxes_, false);
     pnh_->param("use_pca", use_pca_, false);
     pnh_->param("force_to_flip_z_axis", force_to_flip_z_axis_, true);
+    negative_indices_pub_ = advertise<pcl_msgs::PointIndices>(*pnh_, "negative_indices", 1);
     pc_pub_ = advertise<sensor_msgs::PointCloud2>(*pnh_, "debug_output", 1);
     box_pub_ = advertise<jsk_recognition_msgs::BoundingBoxArray>(*pnh_, "boxes", 1);
+    mask_pub_ = advertise<sensor_msgs::Image>(*pnh_, "mask", 1);
+    label_pub_ = advertise<sensor_msgs::Image>(*pnh_, "label", 1);
   }
 
   void ClusterPointIndicesDecomposer::subscribe()
@@ -300,17 +311,42 @@ namespace jsk_pcl_ros
       debug_output.points.push_back(p);
     }
   }
-  
-  void ClusterPointIndicesDecomposer::extract
-  (const sensor_msgs::PointCloud2ConstPtr &input,
-   const jsk_recognition_msgs::ClusterPointIndicesConstPtr &indices_input,
-   const jsk_recognition_msgs::PolygonArrayConstPtr& planes,
-   const jsk_recognition_msgs::ModelCoefficientsArrayConstPtr& coefficients)
+
+  void ClusterPointIndicesDecomposer::publishNegativeIndices(
+    const sensor_msgs::PointCloud2ConstPtr &input,
+    const jsk_recognition_msgs::ClusterPointIndicesConstPtr &indices_input)
   {
+    std::set<int> all_indices;
+    boost::copy(
+      boost::irange(0, (int)(input->width * input->height)),
+      std::inserter(all_indices, all_indices.begin()));
+    for (size_t i = 0; i < indices_input->cluster_indices.size(); i++) {
+      std::set<int> indices_set(indices_input->cluster_indices[i].indices.begin(),
+                                indices_input->cluster_indices[i].indices.end());
+      std::set<int> diff_indices;
+      std::set_difference(all_indices.begin(), all_indices.end(),
+                          indices_set.begin(), indices_set.end(),
+                          std::inserter(diff_indices, diff_indices.begin()));
+      all_indices = diff_indices;
+    }
+    // publish all_indices
+    pcl_msgs::PointIndices ros_indices;
+    ros_indices.indices = std::vector<int>(all_indices.begin(), all_indices.end());
+    ros_indices.header = input->header;
+    negative_indices_pub_.publish(ros_indices);
+  }
+    
+  void ClusterPointIndicesDecomposer::extract(
+    const sensor_msgs::PointCloud2ConstPtr &input,
+    const jsk_recognition_msgs::ClusterPointIndicesConstPtr &indices_input,
+    const jsk_recognition_msgs::PolygonArrayConstPtr& planes,
+    const jsk_recognition_msgs::ModelCoefficientsArrayConstPtr& coefficients)
+  {
+    vital_checker_->poke();
     if (publish_clouds_) {
       allocatePublishers(indices_input->cluster_indices.size());
     }
-    vital_checker_->poke();
+    publishNegativeIndices(input, indices_input);
     pcl::ExtractIndices<pcl::PointXYZRGB> extract;
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZRGB>);
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_xyz (new pcl::PointCloud<pcl::PointXYZ>);
@@ -331,6 +367,11 @@ namespace jsk_pcl_ros
     sortIndicesOrder(cloud_xyz, converted_indices, sorted_indices);
     extract.setInputCloud(cloud);
 
+    // point cloud from camera not laser
+    bool is_sensed_with_camera = (input->height != 1);
+
+    cv::Mat mask = cv::Mat::zeros(input->height, input->width, CV_8UC1);
+    cv::Mat label = cv::Mat::zeros(input->height, input->width, CV_32SC1);
     pcl::PointCloud<pcl::PointXYZRGB> debug_output;
     jsk_recognition_msgs::BoundingBoxArray bounding_box_array;
     bounding_box_array.header = input->header;
@@ -358,6 +399,18 @@ namespace jsk_pcl_ros
                                                input->header.frame_id,
                                                tf_prefix_ + (boost::format("output%02u") % (i)).str()));
       }
+      if (is_sensed_with_camera) {
+        // create mask & label image from cluster indices
+        for (size_t j = 0; j < sorted_indices[i]->size(); j++) {
+          int index = sorted_indices[i]->data()[j];
+          int width_index = index % input->width;
+          int height_index = index / input->width;
+          mask.at<uchar>(height_index, width_index) = 255;
+          // 0 should be skipped,
+          // because it is to label image as the black region is to mask image
+          label.at<int>(height_index, width_index) = (int)i + 1;
+        }
+      }
       // adding the pointcloud into debug_output
       addToDebugPointCloud(segmented_cloud, i, debug_output);
       
@@ -368,6 +421,19 @@ namespace jsk_pcl_ros
         return;
       }
       bounding_box_array.boxes.push_back(bounding_box);
+    }
+
+    if (is_sensed_with_camera) {
+      // publish mask
+      cv_bridge::CvImage mask_bridge(indices_input->header,
+                                    sensor_msgs::image_encodings::MONO8,
+                                    mask);
+      mask_pub_.publish(mask_bridge.toImageMsg());
+      // publish label
+      cv_bridge::CvImage label_bridge(indices_input->header,
+                                      sensor_msgs::image_encodings::TYPE_32SC1,
+                                      label);
+      label_pub_.publish(label_bridge.toImageMsg());
     }
     
     sensor_msgs::PointCloud2 debug_ros_output;
