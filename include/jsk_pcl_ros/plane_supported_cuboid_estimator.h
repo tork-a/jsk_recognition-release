@@ -119,7 +119,8 @@ namespace jsk_pcl_ros
   {
     Polygon::Ptr plane = planes[p.plane_index];
     if (config.use_support_plane_angular_likelihood) {
-      double cos_likelihood = (p.toEigenMatrix().rotation() * Eigen::Vector3f::UnitZ()).dot(plane->getNormal());
+      // double cos_likelihood = (p.toEigenMatrix().rotation() * Eigen::Vector3f::UnitZ()).dot(plane->getNormal());
+      double cos_likelihood = (p.toEigenMatrix().rotation() * Eigen::Vector3f::UnitX()).dot(plane->getNormal());
       // ROS_INFO("cos_likelihood: %f", cos_likelihood);
       return pow(std::abs(cos_likelihood),
                  config.support_plane_angular_likelihood_weight_power);
@@ -143,7 +144,7 @@ namespace jsk_pcl_ros
       return 1.0;
     }
   }
-  
+
   template <class Config>
   double distanceFromPlaneBasedError(
     const pcl::tracking::ParticleCuboid& p,
@@ -156,19 +157,21 @@ namespace jsk_pcl_ros
     Eigen::Affine3f pose_inv = pose.inverse();
     const Eigen::Vector3f local_vp = pose_inv * viewpoint;
     std::vector<int> visible_faces = p.visibleFaceIndices(local_vp);
-    double r = sqrt(p.dx * p.dx + p.dy * p.dy + p.dz * p.dz) / 2.0;
+    double r = sqrt(p.dx /2 * p.dx/2 + p.dy/2 * p.dy/2 + p.dz/2 * p.dz/2);
     std::vector<int> candidate_point_indices;
     std::vector<float> candidate_point_distances;
     pcl::PointXYZ xyz_point;
     xyz_point.getVector3fMap() = p.getVector3fMap();
+    size_t inliers = 0;
     // roughly search near points by kdtree radius search
     tree.radiusSearch(xyz_point, r + config.outlier_distance, candidate_point_indices, candidate_point_distances);
     if (candidate_point_indices.size() < config.min_inliers) {
       return 0;
     }
     else {
+      //ROS_INFO("indices: %lu", candidate_point_indices.size());
       double error = 0.0;
-      size_t inliers = 0;
+      
       Cube::Ptr cube = p.toCube();
       std::vector<Polygon::Ptr> faces = cube->faces();
       for (size_t i = 0; i < candidate_point_indices.size(); i++) {
@@ -176,7 +179,7 @@ namespace jsk_pcl_ros
         Eigen::Vector3f v = cloud->points[index].getVector3fMap();
         if (config.use_occlusion_likelihood) {
           double d = p.distanceNearestToPlaneWithOcclusion(v, visible_faces, faces);
-          if (d < config.outlier_distance) {
+          if (d <= config.outlier_distance) {
             //error *= 1 / (1 + pow(d, config.plane_distance_error_power));
             error += pow(d, config.plane_distance_error_power);
             ++inliers;
@@ -184,8 +187,16 @@ namespace jsk_pcl_ros
         }
         else {
           Eigen::Vector3f local_v = pose_inv * v;
-          double d = p.distanceToPlane(local_v, p.nearestPlaneIndex(local_v));
-          if (d < config.outlier_distance) {
+          double d = p.signedDistanceToPlane(local_v, p.nearestPlaneIndex(local_v));
+          if (config.use_inside_points_distance_zero) {
+            if (d < 0) {
+              d = 0;
+            }
+          }
+          else {
+            d = std::abs(d);
+          }
+          if (d <= config.outlier_distance) {
             //error *= 1 / (1 + pow(d, config.plane_distance_error_power));
             error += pow(d, config.plane_distance_error_power);
             ++inliers;
@@ -193,11 +204,25 @@ namespace jsk_pcl_ros
         }
       }
       // ROS_INFO("inliers: %lu", inliers);
+      // ROS_INFO("error: %f", error);
+      size_t expected_num = p.volume() / config.expected_density / config.expected_density / config.expected_density;
+      // ROS_INFO("expected: %lu", expected_num);
       if (inliers < config.min_inliers) {
         return 0;
       }
       else {
-        return 1 / (1 + error / inliers);
+        double non_inlier_value = 1 / (1 + error / inliers);
+        if (config.use_inliers) {
+          // how to compute expected inliers...?
+          // double inliers_err = std::abs(p.volume() / config.expected_density - inliers);
+          // return non_inlier_value * (1 / (1 + pow(inliers_err, config.inliers_power)));
+          double inlier_likelihood = 1 / (1 + pow(expected_num - inliers, config.inliers_power));
+          // ROS_INFO("inlier likelihood: %f", inlier_likelihood);
+          return non_inlier_value * inlier_likelihood;
+        }
+        else {
+          return non_inlier_value;
+        }
       }
     }
   }
@@ -262,6 +287,10 @@ namespace jsk_pcl_ros
       const jsk_recognition_msgs::ModelCoefficientsArray::ConstPtr& coef_msg);
     virtual void cloudCallback(
       const sensor_msgs::PointCloud2::ConstPtr& msg);
+    virtual void estimate(
+      const sensor_msgs::PointCloud2::ConstPtr& msg);
+    virtual void fastCloudCallback(
+      const sensor_msgs::PointCloud2::ConstPtr& msg);
     virtual pcl::PointCloud<pcl::tracking::ParticleCuboid>::Ptr initParticles();
     virtual size_t chooseUniformRandomPlaneIndex(const std::vector<Polygon::Ptr>& polygons);
     virtual void configCallback(Config& config, uint32_t level);
@@ -294,6 +323,7 @@ namespace jsk_pcl_ros
     virtual void updateParticlePolygonRelationship(ParticleCloud::Ptr particles);
     boost::mutex mutex_;
     ros::Subscriber sub_cloud_;
+    ros::Subscriber sub_fast_cloud_;
     ros::Publisher pub_result_;
     ros::Publisher pub_particles_;
     ros::Publisher pub_candidate_cloud_;
@@ -328,6 +358,9 @@ namespace jsk_pcl_ros
     double init_local_orientation_yaw_mean_;
     double init_local_orientation_yaw_variance_;
 
+    bool disable_init_roll_;
+    bool disable_init_pitch_;
+
     double init_dx_mean_;
     double init_dx_variance_;
     double init_dy_mean_;
@@ -348,6 +381,7 @@ namespace jsk_pcl_ros
     double min_dx_;
     double min_dy_;
     double min_dz_;
+    double fast_cloud_threshold_;
     bool use_init_polygon_likelihood_;
     int particle_num_;
     std::string sensor_frame_;
