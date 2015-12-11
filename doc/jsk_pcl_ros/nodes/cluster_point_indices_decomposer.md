@@ -20,6 +20,12 @@ It also publishes tf of centroids of each cluster and oriented bounding box of t
 * `~output%02d` (`sensor_msgs/PointCloud2`):
 
    Series of topics for each pointcloud cluster.
+   This is published only when `publish_clouds` is `true`.
+
+* `/tf` (`tf2_msgs/TFMessage`)
+
+   Transformation of each decomposed points' center of gravity.
+
 * `~debug_output` (`sensor_msgs/PointCloud2`):
 
    Concatenate all the clusters into one pointcloud and colorize each cluster to see the result of segmentation.
@@ -27,11 +33,24 @@ It also publishes tf of centroids of each cluster and oriented bounding box of t
 
    Array of oriented bounding box for each segmented cluster.
 
+* `~label` (`sensor_msgs/Image`):
+
+   Label image for each cluster point indices.
+   You can visualize it with [jsk\_perception/ColorizeLabels](../jsk_perception/nodes/colorize_labels.md)
+
+* `~mask` (`sensor_msgs/Image`):
+
+   Mask image generated from cluster point indices.
+
+* `~negative_indices` (`pcl_msgs/PointIndices`)
+
+  Point indices which are not included in input indices.
+
 ## Parameters
-* `~publish_tf` (Boolean, default: `True`):
+* `~publish_tf` (Boolean, default: `False`):
 
    Toggle tf publishing.
-* `~publish_clouds` (Boolean, default: `True`):
+* `~publish_clouds` (Boolean, default: `False`):
 
    Toggle `~output%02d` topics.
 * `~align_boxes` (Boolean, default: `False`):
