@@ -39,6 +39,7 @@
 #include "jsk_pcl_ros/tf_listener_singleton.h"
 #include "jsk_pcl_ros/geo_util.h"
 #include "jsk_pcl_ros/pcl_conversion_util.h"
+#include <jsk_topic_tools/rosparam_utils.h>
 
 namespace jsk_pcl_ros
 {
@@ -50,6 +51,15 @@ namespace jsk_pcl_ros
       return;
     }
     pnh_->param("tf_queue_size", tf_queue_size_, 10);
+    std::vector<double> axis(3);
+    if (!jsk_topic_tools::readVectorParameter(*pnh_, "axis", axis)) {
+      axis[0] = 1;
+      axis[1] = 0;
+      axis[2] = 0;
+    }
+    axis_[0] = axis[0];
+    axis_[1] = axis[1];
+    axis_[2] = axis[2];
     tf_listener_ = TfListenerSingleton::getInstance();
     pub_ = advertise<jsk_recognition_msgs::PolygonArray>(*pnh_, "output", 1);
   }
@@ -84,12 +94,12 @@ namespace jsk_pcl_ros
       // respected from msg->header.frame_id
       tf::StampedTransform transform;
       tf_listener_->lookupTransform(
-        msg->header.frame_id, target_frame_id_, msg->header.stamp, transform);
+        target_frame_id_, msg->header.frame_id, msg->header.stamp, transform);
       Eigen::Affine3f pose;
       tf::transformTFToEigen(transform, pose);
 
       // Use x
-      Eigen::Vector3f reference_axis = pose.rotation() * Eigen::Vector3f::UnitX();
+      Eigen::Vector3f reference_axis = pose.rotation() * axis_;
 
       double min_distance = DBL_MAX;
       double max_distance = - DBL_MAX;
@@ -107,7 +117,7 @@ namespace jsk_pcl_ros
       for (size_t i = 0; i < distances.size(); i++) {
         // double normalized_distance
         //   = (distances[i] - min_distance) / (max_distance - min_distance);
-        double likelihood = 1 / (1 + distances[i] * distances[i]);
+        double likelihood = 1 / (1 + (distances[i] - 1) * (distances[i] - 1));
         
         if (msg->likelihood.size() == 0) {
           new_msg.likelihood.push_back(likelihood);
