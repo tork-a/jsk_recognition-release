@@ -33,53 +33,41 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_RECOGNITION_UTILS_SPINDLE_LASER_SENSOR_H_
-#define JSK_RECOGNITION_UTILS_SPINDLE_LASER_SENSOR_H_
-
-#include "jsk_recognition_utils/sensor_model/pointcloud_sensor_model.h"
+#include <ros/ros.h>
+#include <boost/circular_buffer.hpp>
 
 namespace jsk_recognition_utils
 {
-  class SpindleLaserSensor: public PointCloudSensorModel
+  class WallDurationTimer;
+  
+  class ScopedWallDurationReporter
   {
   public:
-    typedef boost::shared_ptr<SpindleLaserSensor> Ptr;
-    
-    SpindleLaserSensor(const double min_angle, const double max_angle,
-                       const double laser_freq,
-                       const size_t point_sample):
-      min_angle_(min_angle), max_angle_(max_angle),
-      laser_freq_(laser_freq),
-      point_sample_(point_sample) { }
-    
-    virtual void setSpindleVelocity(const double velocity)
-    {
-      spindle_velocity_ = spindle_velocity;
-    }
-
-    /**
-     * @brief
-     * Return the expected number of points according to distance and area.
-     * it is calculated according to:
-     * \frac{N}{2 \pi \Delta \phi}\frac{1}{r^2}s
-     * \Delta \phi = \frac{2 \pi}{\omega}
-     */
-    virtual double expectedPointCloudNum(double distance, double area) const
-    {
-      assert(spindle_velocity_ != 0.0);
-      double dphi = 2.0 * M_PI / spindle_velocity_;
-      return point_sample_ * laser_freq_ / (2.0 * dphi) / (distance * distance) * area;
-    }
-    
+    typedef boost::shared_ptr<ScopedWallDurationReporter> Ptr;
+    ScopedWallDurationReporter(WallDurationTimer* parent);
+    virtual ~ScopedWallDurationReporter();
   protected:
-    
-    double spindle_velocity_;
-    double min_angle_;
-    double max_angle_;
-    size_t point_sample_;
+    WallDurationTimer* parent_;
+    ros::WallTime start_time_;
   private:
     
   };
+  
+  class WallDurationTimer
+  {
+  public:
+    typedef boost::shared_ptr<WallDurationTimer> Ptr;
+    WallDurationTimer(const int max_num);
+    virtual void report(ros::WallDuration& duration);
+    virtual ScopedWallDurationReporter reporter();
+    virtual void clearBuffer();
+    virtual double meanSec();
+    virtual double latestSec();
+    virtual size_t sampleNum();
+  protected:
+    const int max_num_;
+    boost::circular_buffer<ros::WallDuration> buffer_;
+  private:
+  };
+  
 }
-
-#endif 
