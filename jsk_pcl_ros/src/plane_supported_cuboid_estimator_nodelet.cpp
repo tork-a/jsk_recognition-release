@@ -44,6 +44,7 @@
 #include <pcl/filters/extract_indices.h>
 #include <pcl/filters/crop_box.h>
 #include <algorithm>
+#include <pcl/common/centroid.h>
 
 namespace jsk_pcl_ros
 {
@@ -76,6 +77,8 @@ namespace jsk_pcl_ros
     sync_polygon_->connectInput(sub_polygon_, sub_coefficients_);
     sync_polygon_->registerCallback(boost::bind(&PlaneSupportedCuboidEstimator::polygonCallback, this, _1, _2));
     sub_cloud_ = pnh_->subscribe("input", 1, &PlaneSupportedCuboidEstimator::cloudCallback, this);
+    sub_fast_cloud_ = pnh_->subscribe("fast_input", 1, &PlaneSupportedCuboidEstimator::fastCloudCallback,
+                                      this);
     srv_reset_ = pnh_->advertiseService("reset", &PlaneSupportedCuboidEstimator::resetCallback, this);
   }
 
@@ -119,13 +122,16 @@ namespace jsk_pcl_ros
 
     // The order of convexes and polygons_ should be same
     // because it is inside of critical section.
-    std::vector<ConvexPolygon::Ptr> convexes;
+    std::vector<ConvexPolygon::Ptr> convexes(latest_polygon_msg_->polygons.size());
     for (size_t i = 0; i < latest_polygon_msg_->polygons.size(); i++) {
       ConvexPolygon::Ptr polygon = ConvexPolygon::fromROSMsgPtr(latest_polygon_msg_->polygons[i].polygon);
-      convexes.push_back(polygon);
+      polygon->decomposeToTriangles();
+      convexes[i] = polygon;
     }
 
-    
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
     // Second, compute distances and assing polygons.
     for (size_t i = 0; i < particles->points.size(); i++) {
       size_t nearest_index = getNearestPolygon(particles->points[i], convexes);
@@ -133,24 +139,34 @@ namespace jsk_pcl_ros
       particles->points[i].plane_index = (int)nearest_index;
     }
   }
-  
-  void PlaneSupportedCuboidEstimator::cloudCallback(
+
+  void PlaneSupportedCuboidEstimator::fastCloudCallback(
     const sensor_msgs::PointCloud2::ConstPtr& msg)
   {
     boost::mutex::scoped_lock lock(mutex_);
-    NODELET_INFO("cloudCallback");
-    if (!latest_polygon_msg_ || !latest_coefficients_msg_) {
-      JSK_NODELET_WARN("Not yet polygon is available");
+    if (!tracker_) {
       return;
     }
+    ParticleCloud::Ptr particles = tracker_->getParticles();
+    Eigen::Vector4f center;
+    pcl::compute3DCentroid(*particles, center);
+    if (center.norm() < fast_cloud_threshold_) {
+      estimate(msg);
+    }
+  }
 
+  void PlaneSupportedCuboidEstimator::estimate(
+    const sensor_msgs::PointCloud2::ConstPtr& msg)
+  {
     // Update polygons_ vector
     polygons_.clear();
     for (size_t i = 0; i < latest_polygon_msg_->polygons.size(); i++) {
       Polygon::Ptr polygon = Polygon::fromROSMsgPtr(latest_polygon_msg_->polygons[i].polygon);
+      polygon->decomposeToTriangles();
       polygons_.push_back(polygon);
     }
     
+    try {
     // viewpoint
     tf::StampedTransform transform
       = lookupTransformWithDuration(tf_, sensor_frame_, msg->header.frame_id,
@@ -202,13 +218,20 @@ namespace jsk_pcl_ros
       pcl::toROSMsg(*candidate_cloud_, ros_candidate_cloud);
       ros_candidate_cloud.header = msg->header;
       pub_candidate_cloud_.publish(ros_candidate_cloud);
+      // check the number of candidate points
+      if (candidate_cloud_->points.size() == 0) {
+        JSK_NODELET_ERROR("No candidate cloud");
+        return;
+      }
       tree_.setInputCloud(candidate_cloud_);
       if (support_plane_updated_) {
         // Compute assignment between particles and polygons
         NODELET_INFO("polygon updated");
         updateParticlePolygonRelationship(tracker_->getParticles());
       }
+      ROS_INFO("start tracker_->compute()");
       tracker_->compute();
+      ROS_INFO("done tracker_->compute()");
       Particle result = tracker_->getResult();
       jsk_recognition_msgs::BoundingBoxArray box_array;
       box_array.header = msg->header;
@@ -233,7 +256,69 @@ namespace jsk_pcl_ros
     pcl::toROSMsg(*particles, ros_particles);
     ros_particles.header = msg->header;
     pub_particles_.publish(ros_particles);
+    }
+    catch (tf2::TransformException& e) {
+      JSK_ROS_ERROR("tf exception");
+    }
+  }
+  
+  void PlaneSupportedCuboidEstimator::cloudCallback(
+    const sensor_msgs::PointCloud2::ConstPtr& msg)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    NODELET_INFO("cloudCallback");
+    if (!latest_polygon_msg_ || !latest_coefficients_msg_) {
+      JSK_NODELET_WARN("Not yet polygon is available");
+      return;
+    }
 
+    if (!tracker_) {
+      NODELET_INFO("initTracker");
+      // Update polygons_ vector
+      polygons_.clear();
+      for (size_t i = 0; i < latest_polygon_msg_->polygons.size(); i++) {
+        Polygon::Ptr polygon = Polygon::fromROSMsgPtr(latest_polygon_msg_->polygons[i].polygon);
+        polygons_.push_back(polygon);
+      }
+      // viewpoint
+      tf::StampedTransform transform
+        = lookupTransformWithDuration(tf_, sensor_frame_, msg->header.frame_id,
+                                      ros::Time(0.0),
+                                      ros::Duration(0.0));
+      tf::vectorTFToEigen(transform.getOrigin(), viewpoint_);
+      
+      ParticleCloud::Ptr particles = initParticles();
+      tracker_.reset(new pcl::tracking::ROSCollaborativeParticleFilterTracker<pcl::PointXYZ, pcl::tracking::ParticleCuboid>);
+      tracker_->setCustomSampleFunc(boost::bind(&PlaneSupportedCuboidEstimator::sample, this, _1));
+      tracker_->setLikelihoodFunc(boost::bind(&PlaneSupportedCuboidEstimator::likelihood, this, _1, _2));
+      tracker_->setParticles(particles);
+      tracker_->setParticleNum(particle_num_);
+      support_plane_updated_ = false;
+      // Publish histograms
+      publishHistogram(particles, 0, pub_histogram_global_x_, msg->header);
+      publishHistogram(particles, 1, pub_histogram_global_y_, msg->header);
+      publishHistogram(particles, 2, pub_histogram_global_z_, msg->header);
+      publishHistogram(particles, 3, pub_histogram_global_roll_, msg->header);
+      publishHistogram(particles, 4, pub_histogram_global_pitch_, msg->header);
+      publishHistogram(particles, 5, pub_histogram_global_yaw_, msg->header);
+      publishHistogram(particles, 6, pub_histogram_dx_, msg->header);
+      publishHistogram(particles, 7, pub_histogram_dy_, msg->header);
+      publishHistogram(particles, 8, pub_histogram_dz_, msg->header);
+      // Publish particles
+      sensor_msgs::PointCloud2 ros_particles;
+      pcl::toROSMsg(*particles, ros_particles);
+      ros_particles.header = msg->header;
+      pub_particles_.publish(ros_particles);
+      
+    }
+    else {
+      ParticleCloud::Ptr particles = tracker_->getParticles();
+      Eigen::Vector4f center;
+      pcl::compute3DCentroid(*particles, center);
+      if (center.norm() > fast_cloud_threshold_) {
+        estimate(msg);
+      }
+    }
   }
 
   void PlaneSupportedCuboidEstimator::publishHistogram(
@@ -374,6 +459,12 @@ namespace jsk_pcl_ros
           }
         }
         p_global.plane_index = plane_i;
+        if (disable_init_pitch_) {
+          p_global.pitch = 0;
+        }
+        if (disable_init_roll_) {
+          p_global.roll = 0;
+        }
         particles->points[i] = p_global;
         break;
       }
@@ -414,6 +505,9 @@ namespace jsk_pcl_ros
     min_dy_ = config.min_dy;
     min_dz_ = config.min_dz;
     use_init_polygon_likelihood_ = config.use_init_polygon_likelihood;
+    fast_cloud_threshold_ = config.fast_cloud_threshold;
+    disable_init_roll_ = config.disable_init_roll;
+    disable_init_pitch_ = config.disable_init_pitch;
   }
 
   bool PlaneSupportedCuboidEstimator::resetCallback(std_srvs::EmptyRequest& req,
