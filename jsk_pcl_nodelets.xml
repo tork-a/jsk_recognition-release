@@ -11,6 +11,10 @@
          type="jsk_pcl_ros::PolygonArrayAngleLikelihood"
          base_class_type="nodelet::Nodelet">
   </class>
+  <class name="jsk_pcl/PolygonArrayFootAngleLikelihood" 
+         type="jsk_pcl_ros::PolygonArrayFootAngleLikelihood"
+         base_class_type="nodelet::Nodelet">
+  </class>
   <class name="jsk_pcl/PoseWithCovarianceStampedToGaussianPointCloud" 
          type="jsk_pcl_ros::PoseWithCovarianceStampedToGaussianPointCloud"
          base_class_type="nodelet::Nodelet">
@@ -186,6 +190,11 @@
          type="jsk_pcl_ros::PointIndicesToMaskImage"
          base_class_type="nodelet::Nodelet">
     Generate mask image out of point indices
+  </class>
+  <class name="jsk_pcl/ExtractIndices"
+         type="jsk_pcl_ros::ExtractIndices"
+         base_class_type="nodelet::Nodelet">
+    Extract point cloud with point indices
   </class>
   <class name="jsk_pcl/MaskImageToDepthConsideredMaskImage"
          type="jsk_pcl_ros::MaskImageToDepthConsideredMaskImage"
@@ -469,6 +478,12 @@
       publish the centroid of the pointcloud to /tf
     </description>
   </class>
+  <class name="jsk_pcl/MovingLeastSquareSmoothing" type="jsk_pcl_ros::MovingLeastSquareSmoothing"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      smooth the pointcloud
+    </description>
+  </class>
   <class name="jsk_pcl/FisheyeSpherePublisher"
          type="jsk_pcl_ros::FisheyeSpherePublisher"
          base_class_type="nodelet::Nodelet">
@@ -566,6 +581,16 @@
     <description>
     </description>
   </class>
+  <class name="jsk_pcl/OctreeVoxelGrid" type="jsk_pcl_ros::OctreeVoxelGrid"
+         base_class_type="nodelet::Nodelet">
+    <description>
+    </description>
+  </class>
+  <class name="jsk_pcl/VoxelGridLargeScale" type="jsk_pcl_ros::VoxelGridLargeScale"
+         base_class_type="nodelet::Nodelet">
+    <description>
+    </description>
+  </class>
 
   <!-- <class name="jsk_pcl/OrganizePointCloud" type="jsk_pcl_ros::OrganizePointCloud" -->
   <!--        base_class_type="nodelet::Nodelet"> -->
@@ -580,6 +605,15 @@
     </description>
   </class>
 
+  <class name="jsk_pcl/OctomapServerContact"
+         type="jsk_pcl_ros::OctomapServerContact"
+         base_class_type="nodelet::Nodelet">
+  </class>
+
+  <class name="jsk_pcl/CollisionDetector"
+         type="jsk_pcl_ros::CollisionDetector"
+         base_class_type="nodelet::Nodelet">
+  </class>
 </library>
 <library path="libjsk_pcl_ros_moveit">
   <class name="jsk_pcl/PointCloudMoveitFilter"
