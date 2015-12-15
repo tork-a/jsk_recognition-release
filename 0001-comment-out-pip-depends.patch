@@ -1,4 +1,4 @@
-From c2043d57704bb9d46ff7f7c00f4d26926d85307e Mon Sep 17 00:00:00 2001
+From f3bc70cfbb365be5cc7b0ef88cccae7adbcf0eb2 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 15:07:28 +0900
 Subject: [PATCH] comment out pip depends
