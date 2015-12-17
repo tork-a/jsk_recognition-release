@@ -2,6 +2,17 @@
 Changelog for package imagesift
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.11 (2015-12-18)
+-------------------
+
+0.3.10 (2015-12-17)
+-------------------
+* [imagesift] INFO -> DEBUG to remove verbose output
+* Contributors: Kentaro Wada
+
+0.3.9 (2015-12-14)
+------------------
+
 0.3.8 (2015-12-08)
 ------------------
 * Use ccache if installed to make it fast to generate object file
