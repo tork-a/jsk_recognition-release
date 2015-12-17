@@ -33,55 +33,51 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include "jsk_pcl_ros/polygon_array_wrapper.h"
+#include "jsk_pcl_ros/polygon_array_unwrapper.h"
 
 namespace jsk_pcl_ros
 {
-  void PolygonArrayWrapper::onInit()
+  void PolygonArrayUnwrapper::onInit()
   {
     ConnectionBasedNodelet::onInit();
-    pub_polygon_array_ = advertise<jsk_recognition_msgs::PolygonArray>(*pnh_,
-      "output_polygons", 1);
-    pub_coefficients_array_
-      = advertise<jsk_recognition_msgs::ModelCoefficientsArray>(*pnh_,
+    pub_polygon_ = advertise<geometry_msgs::PolygonStamped>(
+      *pnh_, "output_polygon", 1);
+    pub_coefficients_
+      = advertise<pcl_msgs::ModelCoefficients>(
+        *pnh_,
         "output_coefficients", 1);
   }
 
-  void PolygonArrayWrapper::subscribe()
+  void PolygonArrayUnwrapper::subscribe()
   {
     sync_ = boost::make_shared<message_filters::Synchronizer<SyncPolicy> >(100);
-    sub_polygon_.subscribe(*pnh_, "input_polygon", 1);
+    sub_polygon_.subscribe(*pnh_, "input_polygons", 1);
     sub_coefficients_.subscribe(*pnh_, "input_coefficients", 1);
     sync_->connectInput(sub_polygon_, sub_coefficients_);
     sync_->registerCallback(boost::bind(
-                              &PolygonArrayWrapper::wrap,
+                              &PolygonArrayUnwrapper::unwrap,
                               this, _1, _2));
   }
 
-  void PolygonArrayWrapper::unsubscribe()
+  void PolygonArrayUnwrapper::unsubscribe()
   {
     sub_polygon_.unsubscribe();
     sub_coefficients_.unsubscribe();
   }
   
-  void PolygonArrayWrapper::wrap(
-    const geometry_msgs::PolygonStamped::ConstPtr& polygon,
-    const pcl_msgs::ModelCoefficients::ConstPtr& coefficients)
+  void PolygonArrayUnwrapper::unwrap(
+    const jsk_recognition_msgs::PolygonArray::ConstPtr& polygons,
+    const jsk_recognition_msgs::ModelCoefficientsArray::ConstPtr& coefficients)
   {
-    jsk_recognition_msgs::PolygonArray array_msg;
-    array_msg.header = polygon->header;
-    geometry_msgs::PolygonStamped new_polygon(*polygon);
-    array_msg.polygons.push_back(new_polygon);
-    pub_polygon_array_.publish(array_msg);
-
-    jsk_recognition_msgs::ModelCoefficientsArray coefficients_array;
-    coefficients_array.header = coefficients->header;
-    pcl_msgs::ModelCoefficients new_coefficients(*coefficients);
-    coefficients_array.coefficients.push_back(new_coefficients);
-    pub_coefficients_array_.publish(coefficients_array);
+    if (polygons->polygons.size() > 0) {
+      geometry_msgs::PolygonStamped polygon_msg = polygons->polygons[0];
+      pcl_msgs::ModelCoefficients coefficients_msg = coefficients->coefficients[0];
+      pub_polygon_.publish(polygon_msg);
+      pub_coefficients_.publish(coefficients_msg);
+    }
   }
   
 }
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS (jsk_pcl_ros::PolygonArrayWrapper, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS (jsk_pcl_ros::PolygonArrayUnwrapper, nodelet::Nodelet);
