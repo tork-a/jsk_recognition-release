@@ -2,6 +2,11 @@
 Changelog for package imagesift
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.10 (2015-12-17)
+-------------------
+* [imagesift] INFO -> DEBUG to remove verbose output
+* Contributors: Kentaro Wada
+
 0.3.9 (2015-12-14)
 ------------------
 
