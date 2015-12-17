@@ -2,13 +2,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_pcl_ros)
 
-# Use ccache if installed to make it fast to generate object files
-find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif(CCACHE_FOUND)
-
 if($ENV{ROS_DISTRO} STREQUAL "groovy")
   # update package.xml, in groovy we need to add pcl to package.xml
   execute_process(COMMAND sed -i s@<run_depend>pcl_ros</run_depend>@<run_depend>pcl_ros</run_depend><run_depend>pcl</run_depend>@g ${PROJECT_SOURCE_DIR}/package.xml)
@@ -36,7 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
   ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs
   eigen_conversions tf_conversions tf2_ros tf
   image_transport nodelet cv_bridge
-  ${ML_CLASSIFIERS} sklearn jsk_topic_tools
+  sklearn jsk_topic_tools
   image_geometry
   jsk_footstep_msgs
   interactive_markers
@@ -47,6 +40,8 @@ find_package(catkin REQUIRED COMPONENTS
   kdl_parser
   kdl_conversions
   )
+find_package(PkgConfig)
+pkg_check_modules(${ML_CLASSIFIERS} ml_classifiers QUIET)
 # only run in hydro
 if(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
   find_package(PCL REQUIRED)
@@ -59,7 +54,6 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}
 # For kinfu
 find_package(PCL QUIET COMPONENTS gpu_kinfu_large_scale)
 
-find_package(PkgConfig)
 pkg_check_modules(yaml_cpp yaml-cpp REQUIRED)
 IF(${yaml_cpp_VERSION} VERSION_LESS "0.5.0")
 ## indigo yaml-cpp : 0.5.0 /  hydro yaml-cpp : 0.3.0
@@ -88,7 +82,8 @@ add_service_files(FILES SwitchTopic.srv
 generate_dynamic_reconfigure_options(
   cfg/VoxelGridLargeScale.cfg
   cfg/PolygonArrayAreaLikelihood.cfg
-  cfg/cuboid_parameter.cfg
+  cfg/PlaneSupportedCuboidEstimator.cfg
+  cfg/InteractiveCuboidLikelihood.cfg
   cfg/ExtractParticlesTopNBase.cfg
   cfg/PoseWithCovarianceStampedToGaussianPointCloud.cfg
   cfg/HeightmapMorphologicalFiltering.cfg
@@ -255,10 +250,12 @@ jsk_pcl_util_nodelet(src/pointcloud_to_stl_nodelet.cpp
   "jsk_pcl/PointCloudToSTL" "pointcloud_to_stl")
 
 if(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
-  jsk_pcl_nodelet(src/colorize_segmented_RF_nodelet.cpp
-    "jsk_pcl/ColorizeRandomForest" "colorize_random_forest_result")
-  jsk_pcl_nodelet(src/colorize_random_points_RF_nodelet.cpp
-    "jsk_pcl/ColorizeMapRandomForest" "colorize_random_foreset_result2")
+  if(ml_classifiers_FOUND)
+    jsk_pcl_nodelet(src/colorize_segmented_RF_nodelet.cpp
+      "jsk_pcl/ColorizeRandomForest" "colorize_random_forest_result")
+    jsk_pcl_nodelet(src/colorize_random_points_RF_nodelet.cpp
+      "jsk_pcl/ColorizeMapRandomForest" "colorize_random_foreset_result2")
+  endif(ml_classifiers_FOUND)
 endif()
 jsk_pcl_nodelet(src/environment_plane_modeling_nodelet.cpp
   "jsk_pcl/EnvironmentPlaneModeling" "environment_plane_modeling")
@@ -281,6 +278,8 @@ jsk_pcl_nodelet(src/depth_image_creator_nodelet.cpp
   "jsk_pcl/DepthImageCreator" "depth_image_creator")
 jsk_pcl_util_nodelet(src/polygon_array_wrapper_nodelet.cpp
   "jsk_pcl/PolygonArrayWrapper" "polygon_array_wrapper")
+jsk_pcl_util_nodelet(src/polygon_array_unwrapper_nodelet.cpp
+  "jsk_pcl/PolygonArrayUnwrapper" "polygon_array_unwrapper")
 jsk_pcl_nodelet(src/border_estimator_nodelet.cpp
   "jsk_pcl/BorderEstimator" "border_estimator")
 jsk_pcl_nodelet(src/region_growing_multiple_plane_segmentation_nodelet.cpp
@@ -525,7 +524,7 @@ install(DIRECTORY launch
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   # install test data by a script
-  add_custom_target(install_test_data COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_test_data.sh)
+  add_custom_target(install_test_data COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_test_data.py)
   if(TARGET tests)
     add_dependencies(tests install_test_data)
   endif()
