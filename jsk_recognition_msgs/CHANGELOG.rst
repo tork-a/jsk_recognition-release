@@ -2,6 +2,9 @@
 Changelog for package jsk_recognition_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.10 (2015-12-17)
+-------------------
+
 0.3.9 (2015-12-14)
 ------------------
 * [jsk_perception] Add PolygonArrayColorHistogram
