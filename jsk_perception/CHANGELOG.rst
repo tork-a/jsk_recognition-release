@@ -2,6 +2,52 @@
 Changelog for package jsk_perception
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.11 (2015-12-18)
+-------------------
+* [jsk_perception] slic as submodule
+* Contributors: Ryohei Ueda
+
+0.3.10 (2015-12-17)
+-------------------
+* [jsk_perception] Add utils to save images by request or from bagfile
+  I sent PR to upstream:
+  - https://github.com/ros-perception/image_pipeline/pull/159
+  - https://github.com/ros-perception/image_pipeline/pull/163
+  - https://github.com/ros-perception/image_pipeline/pull/164
+  Added:
+  jsk_perception/node_scripts/extract_images_sync
+  jsk_perception/node_scripts/image_saver_sync
+  jsk_perception/node_scripts/publish_header
+* [jsk_pcl_ros] Check header.frame_id before resolving 3-D spacially
+  Modified:
+  jsk_pcl_ros/src/multi_plane_extraction_nodelet.cpp
+  jsk_perception/src/polygon_array_color_histogram.cpp
+  jsk_recognition_utils/include/jsk_recognition_utils/pcl_ros_util.h
+  jsk_recognition_utils/src/pcl_ros_util.cpp
+* Contributors: Kentaro Wada, Ryohei Ueda
+
+0.3.9 (2015-12-14)
+------------------
+* [jsk_perception] Test slop with test_topic_published.py
+  Depends on https://github.com/jsk-ros-pkg/jsk_common/pull/1254
+* [jsk_perception] Specific test name for each test files
+* [jsk_perception] test_topic_published.py does not work on hydro travis/jenkins
+  Modified:
+  jsk_perception/CMakeLists.txt
+* [jsk_perception] Warn about segfault with large size image in SlicSuperpixel
+  Modified:
+  jsk_perception/src/slic_superpixels.cpp
+* [jsk_perception] Test slic_super_pixels
+* merge origin/master
+* use shared_ptr for self_mask instance.
+* Merge remote-tracking branch 'origin/master' into add-robot-mask
+* [jsk_perception] Clean up duplicated packages in package.xml
+* [jsk_perception] Compute polygon likelihood based on color histogram.
+* [jsk_perception] Add PolygonArrayColorHistogram
+* add sample launch file.
+* add robot_to_mask source files.
+* Contributors: Kentaro Wada, MasakiMurooka, Ryohei Ueda, Masaki Murooka
+
 0.3.8 (2015-12-08)
 ------------------
 * [jsk_perception] Add CATKIN_ENABLE_TESTING if block
