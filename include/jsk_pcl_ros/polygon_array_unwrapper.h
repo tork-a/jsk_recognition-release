@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2014, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,14 +32,45 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
-#define BOOST_PARAMETER_MAX_ARITY 7
 
-@_include_headers@
-#include <iostream>
 
-int main(int argc, char** argv)
+#ifndef JSK_PCL_ROS_POLYGON_ARRAY_UNWRAPPER_H_
+#define JSK_PCL_ROS_POLYGON_ARRAY_UNWRAPPER_H_
+
+#include <message_filters/subscriber.h>
+#include <message_filters/time_synchronizer.h>
+#include <message_filters/synchronizer.h>
+
+#include <geometry_msgs/PolygonStamped.h>
+#include <jsk_recognition_msgs/PolygonArray.h>
+#include <jsk_recognition_msgs/ModelCoefficientsArray.h>
+#include <jsk_topic_tools/connection_based_nodelet.h>
+
+namespace jsk_pcl_ros
 {
-  @_class_instances@
-  std::cout << "Hello World" << std::endl;
-  return 0;
+  class PolygonArrayUnwrapper: public jsk_topic_tools::ConnectionBasedNodelet
+  {
+  public:
+    typedef message_filters::sync_policies::ExactTime<
+    jsk_recognition_msgs::PolygonArray,
+    jsk_recognition_msgs::ModelCoefficientsArray>
+    SyncPolicy;
+
+  protected:
+    virtual void onInit();
+    virtual void subscribe();
+    virtual void unsubscribe();
+    virtual void unwrap(
+      const jsk_recognition_msgs::PolygonArray::ConstPtr& polygon,
+      const jsk_recognition_msgs::ModelCoefficientsArray::ConstPtr& coefficients);
+    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
+    message_filters::Subscriber<jsk_recognition_msgs::PolygonArray> sub_polygon_;
+    message_filters::Subscriber<jsk_recognition_msgs::ModelCoefficientsArray> sub_coefficients_;
+    ros::Publisher pub_polygon_;
+    ros::Publisher pub_coefficients_;
+  private:
+    
+  };
 }
+
+#endif
