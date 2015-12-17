@@ -2,6 +2,17 @@
 Changelog for package jsk_recognition_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.11 (2015-12-18)
+-------------------
+
+0.3.10 (2015-12-17)
+-------------------
+
+0.3.9 (2015-12-14)
+------------------
+* [jsk_perception] Add PolygonArrayColorHistogram
+* Contributors: Ryohei Ueda
+
 0.3.8 (2015-12-08)
 ------------------
 * [jsk_pcl_ros] Add Failure flag to Torus message
