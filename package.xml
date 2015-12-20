@@ -37,7 +37,7 @@
   <build_depend>boost</build_depend>
   <build_depend>rosboost_cfg</build_depend>
   <build_depend>cv_bridge</build_depend>
-  <build_depend>ml_classifiers</build_depend>
+  <!-- <build_depend>ml_classifiers</build_depend> -->
   <build_depend>diagnostic_updater</build_depend>
   <build_depend>diagnostic_msgs</build_depend>
   <build_depend>jsk_topic_tools</build_depend>
@@ -79,10 +79,10 @@
   <run_depend>boost</run_depend>
   <run_depend>rosboost_cfg</run_depend>
   <run_depend>cv_bridge</run_depend>
-  <run_depend>ml_classifiers</run_depend>
+  <!-- <run_depend>ml_classifiers</run_depend> -->
   <run_depend>diagnostic_updater</run_depend>
   <run_depend>diagnostic_msgs</run_depend>
-  <run_depend>python-sklearn</run_depend>
+  <!-- <run_depend>python-sklearn</run_depend> -->
   <build_depend>laser_assembler</build_depend>
   <run_depend>laser_assembler</run_depend>
   <build_depend>moveit_ros_perception</build_depend>
