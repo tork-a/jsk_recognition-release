@@ -1,0 +1,61 @@
+From 386e50e7234ad9b73a4b0eeac86384a50bf4d00c Mon Sep 17 00:00:00 2001
+From: Kei Okada <kei.okada@gmail.com>
+Date: Sun, 20 Dec 2015 13:04:12 +0900
+Subject: [PATCH] ml_classifiers and sklearn is not released on jade
+
+---
+ CMakeLists.txt |    4 ++--
+ package.xml    |    8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e46288f..b5004fa 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -20,7 +20,7 @@ endif()
+ if($ENV{ROS_DISTRO} STREQUAL "groovy")
+   set(ML_CLASSIFIERS )
+ else()
+-  set(ML_CLASSIFIERS ml_classifiers) ## hydro and later
++  set(ML_CLASSIFIERS ) ## hydro and later
+ endif()
+ 
+ find_package(catkin REQUIRED COMPONENTS
+@@ -29,7 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
+   ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs
+   eigen_conversions tf_conversions tf2_ros tf
+   image_transport nodelet cv_bridge
+-  sklearn jsk_topic_tools
++  jsk_topic_tools
+   image_geometry
+   jsk_footstep_msgs
+   interactive_markers
+diff --git a/package.xml b/package.xml
+index 05de3e6..df6a918 100644
+--- a/package.xml
++++ b/package.xml
+@@ -37,8 +37,8 @@
+   <build_depend>boost</build_depend>
+   <build_depend>rosboost_cfg</build_depend>
+   <build_depend>cv_bridge</build_depend>
+-  <build_depend>ml_classifiers</build_depend>
+-  <build_depend>sklearn</build_depend>
++  <!-- <build_depend>ml_classifiers</build_depend> -->
++  <!-- <build_depend>sklearn</build_depend> -->
+   <build_depend>diagnostic_updater</build_depend>
+   <build_depend>diagnostic_msgs</build_depend>
+   <build_depend>jsk_topic_tools</build_depend>
+@@ -80,8 +80,8 @@
+   <run_depend>boost</run_depend>
+   <run_depend>rosboost_cfg</run_depend>
+   <run_depend>cv_bridge</run_depend>
+-  <run_depend>ml_classifiers</run_depend>
+-  <run_depend>sklearn</run_depend>
++  <!-- <run_depend>ml_classifiers</run_depend> -->
++  <!-- <run_depend>sklearn</run_depend> -->
+   <run_depend>diagnostic_updater</run_depend>
+   <run_depend>diagnostic_msgs</run_depend>
+   <build_depend>python-sklearn</build_depend>
+-- 
+1.7.9.5
+
