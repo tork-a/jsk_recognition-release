@@ -1,3 +1,4 @@
+!!python/unicode 'release_repo_url': git@github.com:tork-a/jsk_recognition-release
 tracks:
   groovy:
     actions:
