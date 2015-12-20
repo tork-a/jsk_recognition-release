@@ -2,6 +2,15 @@
 Changelog for package jsk_recognition_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.13 (2015-12-19)
+-------------------
+
+0.3.12 (2015-12-19)
+-------------------
+* [jsk_pcl_ros_utils] Introduce new package called jsk_pcl_ros_utils
+  in order to speed-up compilation of jsk_pcl_ros
+* Contributors: Ryohei Ueda
+
 0.3.11 (2015-12-18)
 -------------------
 
