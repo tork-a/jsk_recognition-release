@@ -437,7 +437,7 @@ namespace jsk_pcl_ros
     if(marker.type == visualization_msgs::Marker::TRIANGLE_LIST && !marker.points.empty()){
       ROS_INFO("Reset Tracker Model with renew_model_with_marker_topic_cb");
       pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
-      markerMsgToPointCloud(marker,
+      jsk_recognition_utils::markerMsgToPointCloud(marker,
                             marker_to_pointcloud_sampling_nums_,
                             *cloud
                             );
@@ -468,8 +468,8 @@ namespace jsk_pcl_ros
   }
   
   bool ParticleFilterTracking::renew_model_cb(
-    jsk_pcl_ros::SetPointCloud2::Request &req,
-    jsk_pcl_ros::SetPointCloud2::Response &res)
+    jsk_recognition_msgs::SetPointCloud2::Request &req,
+    jsk_recognition_msgs::SetPointCloud2::Response &res)
   {
     pcl::PointCloud<PointT>::Ptr new_target_cloud(new pcl::PointCloud<PointT>());
     pcl::fromROSMsg(req.cloud, *new_target_cloud);
