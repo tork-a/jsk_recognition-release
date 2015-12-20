@@ -1,4 +1,4 @@
-From 0bda856b796c533e5f10583aa85dd6e15910f58a Mon Sep 17 00:00:00 2001
+From 1f1ce2a84d27ab8a3f13f7c6231c89b1c4132fa5 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 20:16:37 +0900
 Subject: [PATCH 2/2] comment out un released depends
@@ -8,7 +8,7 @@ Subject: [PATCH 2/2] comment out un released depends
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/package.xml b/package.xml
-index 76eabce..ae1f897 100644
+index f93ee3b..fc939c2 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -65,7 +65,7 @@
