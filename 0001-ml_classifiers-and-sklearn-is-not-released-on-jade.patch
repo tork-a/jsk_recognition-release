@@ -1,4 +1,4 @@
-From 386e50e7234ad9b73a4b0eeac86384a50bf4d00c Mon Sep 17 00:00:00 2001
+From 6400707cb4d3acbbbd2c49487e8697ec22a6e39f Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Sun, 20 Dec 2015 13:04:12 +0900
 Subject: [PATCH] ml_classifiers and sklearn is not released on jade
