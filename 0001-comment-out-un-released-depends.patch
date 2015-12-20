@@ -1,4 +1,4 @@
-From 014b536cdfbdaf129ca1219325ff3dbecad304ea Mon Sep 17 00:00:00 2001
+From 474220f8b9e58ed2a0324f49dae2d67e3b392ae4 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 19:22:47 +0900
 Subject: [PATCH 1/2] comment out un released depends
@@ -8,7 +8,7 @@ Subject: [PATCH 1/2] comment out un released depends
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 3d6d360..433aeaa 100644
+index 102f123..063ad97 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -37,8 +37,8 @@
@@ -22,7 +22,7 @@ index 3d6d360..433aeaa 100644
    <build_depend>diagnostic_updater</build_depend>
    <build_depend>diagnostic_msgs</build_depend>
    <build_depend>jsk_topic_tools</build_depend>
-@@ -80,12 +80,12 @@
+@@ -81,12 +81,12 @@
    <run_depend>boost</run_depend>
    <run_depend>rosboost_cfg</run_depend>
    <run_depend>cv_bridge</run_depend>
