@@ -20,7 +20,7 @@ endif()
 if($ENV{ROS_DISTRO} STREQUAL "groovy")
   set(ML_CLASSIFIERS )
 else()
-  set(ML_CLASSIFIERS ml_classifiers) ## hydro and later
+  set(ML_CLASSIFIERS ) ## hydro and later
 endif()
 
 find_package(catkin REQUIRED COMPONENTS
@@ -29,7 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
   ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs
   eigen_conversions tf_conversions tf2_ros tf
   image_transport nodelet cv_bridge
-  sklearn jsk_topic_tools
+  jsk_topic_tools
   image_geometry
   jsk_footstep_msgs
   interactive_markers
