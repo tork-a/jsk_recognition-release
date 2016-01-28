@@ -1,4 +1,4 @@
-From c45ba3dc6a239664c045d9b0cc0e62142d0cd61f Mon Sep 17 00:00:00 2001
+From c28ff771138845d86204245ae60e4552ea5f9125 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 20:16:37 +0900
 Subject: [PATCH 2/2] comment out un released depends
