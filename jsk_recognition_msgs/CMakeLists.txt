@@ -7,6 +7,7 @@ add_message_files(
   BoundingBoxArray.msg
   BoundingBoxMovement.msg
   BoundingBox.msg
+  BoundingBoxArrayWithCameraInfo.msg
   Circle2DArray.msg
   Circle2D.msg
   ClassificationResult.msg
@@ -49,10 +50,13 @@ add_message_files(
   TimeRange.msg
   TorusArray.msg
   Torus.msg
+  TrackerStatus.msg
+  BoolStamped.msg
   VectorArray.msg
   WeightedPoseArray.msg
   ContactSensor.msg
   ContactSensorArray.msg
+  PlotDataArray.msg
   )
 
 add_service_files(FILES
