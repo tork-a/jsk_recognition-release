@@ -47,7 +47,9 @@ namespace jsk_perception
   {
     DiagnosticNodelet::onInit();
     pnh_->param("approximate_sync", approximate_sync_, false);
+    pnh_->param("clip", clip_, true);
     pnh_->param("mask_black_to_transparent", mask_black_to_transparent_, false);
+    pnh_->param("queue_size", queue_size_, 100);
     pub_image_ = advertise<sensor_msgs::Image>(
       *pnh_, "output", 1);
     pub_mask_ = advertise<sensor_msgs::Image>(
@@ -60,12 +62,12 @@ namespace jsk_perception
     sub_image_.subscribe(*pnh_, "input", 1);
     sub_mask_.subscribe(*pnh_, "input/mask", 1);
     if (approximate_sync_) {
-      async_ = boost::make_shared<message_filters::Synchronizer<ApproximateSyncPolicy> >(100);
+      async_ = boost::make_shared<message_filters::Synchronizer<ApproximateSyncPolicy> >(queue_size_);
       async_->connectInput(sub_image_, sub_mask_);
       async_->registerCallback(boost::bind(&ApplyMaskImage::apply, this, _1, _2));
     }
     else {
-      sync_ = boost::make_shared<message_filters::Synchronizer<SyncPolicy> >(100);
+      sync_ = boost::make_shared<message_filters::Synchronizer<SyncPolicy> >(queue_size_);
       sync_->connectInput(sub_image_, sub_mask_);
       sync_->registerCallback(boost::bind(&ApplyMaskImage::apply, this, _1, _2));
     }
@@ -104,16 +106,19 @@ namespace jsk_perception
       return;
     }
     
-    cv::Rect region = boundingRectOfMaskImage(mask);
-    cv::Mat clipped_mask = mask(region);
+    if (clip_) {
+      cv::Rect region = boundingRectOfMaskImage(mask);
+      mask = mask(region);
+      image = image(region);
+    }
+
     pub_mask_.publish(cv_bridge::CvImage(
                         mask_msg->header,
                         "mono8",
-                        clipped_mask).toImageMsg());
+                        mask).toImageMsg());
 
-    cv::Mat clipped_image = image(region);
     cv::Mat masked_image;
-    clipped_image.copyTo(masked_image, clipped_mask);
+    image.copyTo(masked_image, mask);
 
     cv::Mat output_image;
     if (mask_black_to_transparent_) {
@@ -126,9 +131,9 @@ namespace jsk_perception
       else {  // BGR, BGRA or RGBA
         cv::cvtColor(masked_image, output_image, CV_BGR2BGRA);
       }
-      for (size_t j=0; j<clipped_mask.rows; j++) {
-        for (int i=0; i<clipped_mask.cols; i++) {
-          if (clipped_mask.at<uchar>(j, i) == 0) {
+      for (size_t j=0; j < mask.rows; j++) {
+        for (int i=0; i < mask.cols; i++) {
+          if (mask.at<uchar>(j, i) == 0) {
             cv::Vec4b color = output_image.at<cv::Vec4b>(j, i);
             color[3] = 0;  // mask black -> transparent
             output_image.at<cv::Vec4b>(j, i) = color;
