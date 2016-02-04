@@ -78,6 +78,13 @@ namespace jsk_pcl_ros
     pub_pose_stamped_ = advertise<geometry_msgs::PoseStamped>(*pnh_, "output/pose", 1);
     pub_coefficients_ = advertise<PCLModelCoefficientMsg>(
       *pnh_, "output/coefficients", 1);
+    pub_latest_time_ = advertise<std_msgs::Float32>(
+      *pnh_, "output/latest_time", 1);
+    pub_average_time_ = advertise<std_msgs::Float32>(
+      *pnh_, "output/average_time", 1);
+
+    done_initialization_ = true;
+    onInitPostProcess();
   }
 
   void TorusFinder::configCallback(Config &config, uint32_t level)
@@ -109,6 +116,9 @@ namespace jsk_pcl_ros
   void TorusFinder::segmentFromPoints(
     const geometry_msgs::PolygonStamped::ConstPtr& polygon_msg)
   {
+    if (!done_initialization_) {
+      return;
+    }
     // Convert to pointcloud and call it
     // No normal
     pcl::PointCloud<pcl::PointNormal>::Ptr cloud
@@ -130,12 +140,16 @@ namespace jsk_pcl_ros
   void TorusFinder::segment(
     const sensor_msgs::PointCloud2::ConstPtr& cloud_msg)
   {
+    if (!done_initialization_) {
+      return;
+    }
     boost::mutex::scoped_lock lock(mutex_);
     vital_checker_->poke();
     pcl::PointCloud<pcl::PointNormal>::Ptr cloud
       (new pcl::PointCloud<pcl::PointNormal>);
     pcl::fromROSMsg(*cloud_msg, *cloud);
-
+    jsk_recognition_utils::ScopedWallDurationReporter r
+      = timer_.reporter(pub_latest_time_, pub_average_time_);
     if (voxel_grid_sampling_) {
       pcl::PointCloud<pcl::PointNormal>::Ptr downsampled_cloud
       (new pcl::PointCloud<pcl::PointNormal>);
