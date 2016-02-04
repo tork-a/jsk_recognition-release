@@ -1,11 +1,11 @@
-From 8862cb203e2b1bd73973d959f92e8e85a53fc59e Mon Sep 17 00:00:00 2001
+From 402652831fc3c076fa9fb6c51cac3ed558f6d418 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Sun, 20 Dec 2015 13:04:12 +0900
 Subject: [PATCH] ml_classifiers and sklearn is not released on jade
 
 ---
- CMakeLists.txt |    4 ++--
- package.xml    |    8 ++++----
+ CMakeLists.txt | 4 ++--
+ package.xml    | 8 ++++----
  2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
@@ -57,5 +57,5 @@ index 05de3e6..df6a918 100644
    <run_depend>diagnostic_msgs</run_depend>
    <build_depend>python-sklearn</build_depend>
 -- 
-1.7.9.5
+1.9.1
 
