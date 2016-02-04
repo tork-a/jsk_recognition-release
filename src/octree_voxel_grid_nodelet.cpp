@@ -35,32 +35,34 @@
 
 #define BOOST_PARAMETER_MAX_ARITY 7
 #include "jsk_pcl_ros/octree_voxel_grid.h"
+#include <std_msgs/Float32.h>
 #include <jsk_topic_tools/color_utils.h>
+#include <pcl/common/common.h>
+#include <jsk_recognition_utils/pcl_ros_util.h>
 
 namespace jsk_pcl_ros
 {
-  void OctreeVoxelGrid::generateVoxelCloud(const sensor_msgs::PointCloud2ConstPtr& input_msg)
+  template <class PointT>
+  void OctreeVoxelGrid::generateVoxelCloudImpl(const sensor_msgs::PointCloud2ConstPtr& input_msg)
   {
-    boost::mutex::scoped_lock lock(mutex_);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ> ());
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_voxeled (new pcl::PointCloud<pcl::PointXYZ> ());
+    typename pcl::PointCloud<PointT>::Ptr cloud (new pcl::PointCloud<PointT> ());
+    typename pcl::PointCloud<PointT>::Ptr cloud_voxeled (new pcl::PointCloud<PointT> ());
     pcl::fromROSMsg(*input_msg, *cloud);
 
     // generate octree
-    pcl::octree::OctreePointCloud<pcl::PointXYZ> octree(resolution_);
+    typename pcl::octree::OctreePointCloud<PointT> octree(resolution_);
     // add point cloud to octree
     octree.setInputCloud(cloud);
     octree.addPointsFromInputCloud();
     // get points where grid is occupied
-    pcl::octree::OctreePointCloud<pcl::PointXYZ>::AlignedPointTVector point_vec;
+    typename pcl::octree::OctreePointCloud<PointT>::AlignedPointTVector point_vec;
     octree.getOccupiedVoxelCenters(point_vec);
     // put points into point cloud
     cloud_voxeled->width = point_vec.size();
     cloud_voxeled->height = 1;
     for (int i = 0; i < point_vec.size(); i++) {
-      pcl::PointXYZ p(point_vec[i].x, point_vec[i].y, point_vec[i].z);
-      cloud_voxeled->push_back(p);
+      cloud_voxeled->push_back(point_vec[i]);
     }
 
     // publish point cloud
@@ -78,9 +80,15 @@ namespace jsk_pcl_ros
       marker_msg.scale.z = resolution_;
       marker_msg.header = input_msg->header;
       marker_msg.pose.orientation.w = 1.0;
-      marker_msg.color = jsk_topic_tools::colorCategory20(0);
-
-      pcl::PointXYZ p;
+      if (marker_color_ == "flat") {
+        marker_msg.color = jsk_topic_tools::colorCategory20(0);
+        marker_msg.color.a = marker_color_alpha_;
+      }
+      
+      // compute min and max
+      Eigen::Vector4f minpt, maxpt;
+      pcl::getMinMax3D<PointT>(*cloud_voxeled, minpt, maxpt);
+      PointT p;
       for (size_t i = 0; i < cloud_voxeled->size(); i++) {
         p = cloud_voxeled->at(i);
         geometry_msgs::Point point_ros;
@@ -88,10 +96,53 @@ namespace jsk_pcl_ros
         point_ros.y = p.y;
         point_ros.z = p.z;
         marker_msg.points.push_back(point_ros);
-        marker_msg.colors.push_back(jsk_topic_tools::colorCategory20(0));
+        if (marker_color_ == "flat") {
+          marker_msg.colors.push_back(jsk_topic_tools::colorCategory20(0));
+        }
+        else if (marker_color_ == "z") {
+          marker_msg.colors.push_back(jsk_topic_tools::heatColor((p.z - minpt[2]) / (maxpt[2] - minpt[2])));
+        }
+        else if (marker_color_ == "x") {
+          marker_msg.colors.push_back(jsk_topic_tools::heatColor((p.x - minpt[0]) / (maxpt[0] - minpt[0])));
+        }
+        else if (marker_color_ == "y") {
+          marker_msg.colors.push_back(jsk_topic_tools::heatColor((p.y - minpt[1]) / (maxpt[1] - minpt[1])));
+        }
+        marker_msg.colors[marker_msg.colors.size() - 1].a = marker_color_alpha_;
       }
       pub_marker_.publish(marker_msg);
     }
+  }
+
+  void OctreeVoxelGrid::generateVoxelCloud(const sensor_msgs::PointCloud2ConstPtr& input_msg)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    if (resolution_ == 0.0) {
+      pub_cloud_.publish(input_msg);
+      
+    }
+    else {
+      if (jsk_recognition_utils::hasField("rgb", *input_msg) &&
+          jsk_recognition_utils::hasField("normal_x", *input_msg) &&
+          jsk_recognition_utils::hasField("normal_y", *input_msg) &&
+          jsk_recognition_utils::hasField("normal_z", *input_msg)) {
+        generateVoxelCloudImpl<pcl::PointXYZRGBNormal>(input_msg);
+      }
+      else if (jsk_recognition_utils::hasField("rgb", *input_msg)) {
+        generateVoxelCloudImpl<pcl::PointXYZRGB>(input_msg);
+      }
+      else if (jsk_recognition_utils::hasField("normal_x", *input_msg) &&
+               jsk_recognition_utils::hasField("normal_y", *input_msg) &&
+               jsk_recognition_utils::hasField("normal_z", *input_msg)) {
+        generateVoxelCloudImpl<pcl::PointNormal>(input_msg);
+      }
+      else {
+        generateVoxelCloudImpl<pcl::PointXYZ>(input_msg);
+      }
+    }
+    std_msgs::Float32 resolution;
+    resolution.data = resolution_;
+    pub_octree_resolution_.publish(resolution);
   }
 
   void OctreeVoxelGrid::subscribe()
@@ -107,16 +158,15 @@ namespace jsk_pcl_ros
   void OctreeVoxelGrid::configCallback(Config &config, uint32_t level)
   {
     boost::mutex::scoped_lock lock(mutex_);
-    double resolution_min = 0.001;
-    resolution_ = std::max(config.resolution, resolution_min);
+    resolution_ = config.resolution;
+    publish_marker_flag_ = config.publish_marker;
+    marker_color_ = config.marker_color;
+    marker_color_alpha_ = config.marker_color_alpha;
   }
 
   void OctreeVoxelGrid::onInit(void)
   {
     DiagnosticNodelet::onInit();
-
-    pnh_->param("publish_marker", publish_marker_flag_, true);
-
     srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
     dynamic_reconfigure::Server<Config>::CallbackType f =
       boost::bind (&OctreeVoxelGrid::configCallback, this, _1, _2);
@@ -124,6 +174,9 @@ namespace jsk_pcl_ros
 
     pub_cloud_ = advertise<sensor_msgs::PointCloud2>(*pnh_, "output", 1);
     pub_marker_ = advertise<visualization_msgs::Marker>(*pnh_, "output_marker", 1);
+    pub_octree_resolution_ = advertise<std_msgs::Float32>(*pnh_, "output_resolution", 1);
+
+    onInitPostProcess();
   }
 }
 
