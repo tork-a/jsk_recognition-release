@@ -24,6 +24,10 @@ and other voxel filtered functions output the other position such as the centroi
 
    Voxel grided clouds.
 
+* `~output_resolution` (`std_msgs/Float32`)
+
+   Resolution of octree.
+
 ## Parameters
 * `~publish_marker` (Boolean, default: `true`):
 
@@ -32,7 +36,14 @@ and other voxel filtered functions output the other position such as the centroi
 ## Dynamic Reconfigure Parameters
 * `~resolution` (Double, default: `0.1`):
 
-   Resolution of voxel grid.
+   Resolution of voxel grid. If resolution is set as 0, it just relays input pointcloud.
+* `~marker_color` (String, default: `z`)
+
+  Method to decide color of marker. z, x, y or flat can be selected.
+
+* `~marker_color_alpha` (Double, default: `0.8`)
+
+  Alpha value of marker color.
 
 ## Sample
 Plug the depth sensor which can be launched by openni.launch and run the below command.
