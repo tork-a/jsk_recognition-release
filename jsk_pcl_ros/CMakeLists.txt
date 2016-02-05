@@ -2,26 +2,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_pcl_ros)
 
-if($ENV{ROS_DISTRO} STREQUAL "groovy")
-  # update package.xml, in groovy we need to add pcl to package.xml
-  execute_process(COMMAND sed -i s@<run_depend>pcl_ros</run_depend>@<run_depend>pcl_ros</run_depend><run_depend>pcl</run_depend>@g ${PROJECT_SOURCE_DIR}/package.xml)
-  execute_process(COMMAND sed -i s@<build_depend>pcl_ros</build_depend>@<build_depend>pcl_ros</build_depend><build_depend>pcl</build_depend>@g ${PROJECT_SOURCE_DIR}/package.xml)
-endif($ENV{ROS_DISTRO} STREQUAL "groovy")
-
-
 # Load catkin and all dependencies required for this package
 # TODO: remove all from COMPONENTS that are not catkin packages.
-if($ENV{ROS_DISTRO} STREQUAL "groovy")
-  set(PCL_MSGS pcl)
-else()
-  set(PCL_MSGS pcl_msgs) ## hydro and later
-endif()
-
-if($ENV{ROS_DISTRO} STREQUAL "groovy")
-  set(ML_CLASSIFIERS )
-else()
-  set(ML_CLASSIFIERS ml_classifiers) ## hydro and later
-endif()
+set(PCL_MSGS pcl_msgs) ## hydro and later
 
 find_package(catkin REQUIRED COMPONENTS
   jsk_recognition_utils jsk_pcl_ros_utils
@@ -29,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs
   eigen_conversions tf_conversions tf2_ros tf
   image_transport nodelet cv_bridge
-  sklearn jsk_topic_tools
+  jsk_topic_tools
   image_geometry
   jsk_footstep_msgs
   interactive_markers
@@ -41,11 +24,9 @@ find_package(catkin REQUIRED COMPONENTS
   kdl_conversions
   )
 find_package(PkgConfig)
-pkg_check_modules(${ML_CLASSIFIERS} ml_classifiers QUIET)
+pkg_check_modules(ml_classifieres ml_classifiers QUIET)
 # only run in hydro
-if(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
-  find_package(PCL REQUIRED)
-endif(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
+find_package(PCL REQUIRED)
 find_package(OpenMP)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
@@ -111,6 +92,7 @@ generate_dynamic_reconfigure_options(
   cfg/NormalEstimationIntegralImage.cfg
   cfg/EnvironmentPlaneModeling.cfg
   cfg/ColorHistogramMatcher.cfg
+  cfg/ClusterPointIndicesDecomposer.cfg
   cfg/GridSampler.cfg
   cfg/OrganizedEdgeDetector.cfg
   cfg/EdgeDepthRefinement.cfg
@@ -126,6 +108,7 @@ generate_dynamic_reconfigure_options(
   cfg/MovingLeastSquareSmoothing.cfg
   cfg/OctreeVoxelGrid.cfg
   cfg/OctreeChangePublisher.cfg
+  cfg/ExtractTopPolygonLikelihood.cfg
   )
 
 find_package(OpenCV REQUIRED core imgproc)
@@ -195,10 +178,8 @@ jsk_pcl_util_nodelet_deprecated(src/normal_concatenater_nodelet.cpp
   "jsk_pcl/NormalConcatenater" "normal_concatenater")
 jsk_pcl_nodelet(src/normal_estimation_integral_image_nodelet.cpp
   "jsk_pcl/NormalEstimationIntegralImage" "normal_estimation_integral_image")
-if(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
-  jsk_pcl_nodelet(src/region_growing_segmentation_nodelet.cpp
-    "jsk_pcl/RegionGrowingSegmentation" "region_growing_segmentation")
-endif(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
+jsk_pcl_nodelet(src/region_growing_segmentation_nodelet.cpp
+  "jsk_pcl/RegionGrowingSegmentation" "region_growing_segmentation")
 
 jsk_pcl_nodelet(src/organized_multi_plane_segmentation_nodelet.cpp
   "jsk_pcl/OrganizedMultiPlaneSegmentation" "organized_multi_plane_segmentation")
@@ -237,14 +218,12 @@ jsk_pcl_util_nodelet_deprecated(src/polygon_array_transformer_nodelet.cpp
 jsk_pcl_util_nodelet_deprecated(src/pointcloud_to_stl_nodelet.cpp
   "jsk_pcl/PointCloudToSTL" "pointcloud_to_stl")
 
-if(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
-  if(ml_classifiers_FOUND)
-    jsk_pcl_nodelet(src/colorize_segmented_RF_nodelet.cpp
-      "jsk_pcl/ColorizeRandomForest" "colorize_random_forest_result")
-    jsk_pcl_nodelet(src/colorize_random_points_RF_nodelet.cpp
-      "jsk_pcl/ColorizeMapRandomForest" "colorize_random_foreset_result2")
-  endif(ml_classifiers_FOUND)
-endif()
+if(ml_classifiers_FOUND)
+  jsk_pcl_nodelet(src/colorize_segmented_RF_nodelet.cpp
+    "jsk_pcl/ColorizeRandomForest" "colorize_random_forest_result")
+  jsk_pcl_nodelet(src/colorize_random_points_RF_nodelet.cpp
+    "jsk_pcl/ColorizeMapRandomForest" "colorize_random_foreset_result2")
+endif(ml_classifiers_FOUND)
 jsk_pcl_nodelet(src/environment_plane_modeling_nodelet.cpp
   "jsk_pcl/EnvironmentPlaneModeling" "environment_plane_modeling")
 jsk_pcl_nodelet(src/color_histogram_matcher_nodelet.cpp
@@ -274,12 +253,10 @@ jsk_pcl_nodelet(src/region_growing_multiple_plane_segmentation_nodelet.cpp
   "jsk_pcl/RegionGrowingMultiplePlaneSegmentation"
   "region_growing_multiple_plane_segmentation")
 
-if(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
-  IF(${PCL_VERSION} VERSION_GREATER "1.7.2")
-    jsk_pcl_nodelet(src/organized_edge_detector_nodelet.cpp
-      "jsk_pcl/OrganizedEdgeDetector" "organized_edge_detector")
-  ENDIF(${PCL_VERSION} VERSION_GREATER "1.7.2")
-endif(NOT $ENV{ROS_DISTRO} STREQUAL "groovy")
+IF(${PCL_VERSION} VERSION_GREATER "1.7.2")
+  jsk_pcl_nodelet(src/organized_edge_detector_nodelet.cpp
+    "jsk_pcl/OrganizedEdgeDetector" "organized_edge_detector")
+ENDIF(${PCL_VERSION} VERSION_GREATER "1.7.2")
 
 jsk_pcl_nodelet(src/edge_depth_refinement_nodelet.cpp
   "jsk_pcl/EdgeDepthRefinement" "edge_depth_refinement")
@@ -485,6 +462,9 @@ if (CATKIN_ENABLE_TESTING)
   if(TARGET tests)
     add_dependencies(tests install_test_data)
   endif()
+  add_rostest_gtest(test_extract_indices test/test_extract_indices.test test/test_extract_indices.cpp)
+  target_link_libraries(test_extract_indices ${catkin_LIBRARIES} ${GTEST_LIBRARIES})
+
   # check ros distro >= indigo
   execute_process(
     COMMAND python -c "import sys; sys.exit(ord('$ENV{ROS_DISTRO}'[0]) >= ord('indigo'[0]))"
@@ -493,6 +473,5 @@ if (CATKIN_ENABLE_TESTING)
     # because of unreleased topic_tools/transform on hydro
     add_rostest(test/test_attention_clipper.test DEPENDENCIES install_test_data)
     add_rostest(test/test_euclidean_segmentation.test DEPENDENCIES install_test_data)
-    add_rostest(test/test_extract_indices.test DEPENDENCIES install_test_data)
   endif()
 endif()
