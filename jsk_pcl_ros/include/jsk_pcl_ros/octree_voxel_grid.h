@@ -63,17 +63,22 @@ namespace jsk_pcl_ros
     virtual void unsubscribe();
     virtual void configCallback(Config &config, uint32_t level);
     virtual void generateVoxelCloud(const sensor_msgs::PointCloud2ConstPtr& input);
+    template <class PointT>
+    void generateVoxelCloudImpl(const sensor_msgs::PointCloud2ConstPtr& input);
 
     ros::Subscriber sub_input_;
     ros::Publisher pub_cloud_;
     ros::Publisher pub_marker_;
+    ros::Publisher pub_octree_resolution_;
 
     boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
     boost::mutex mutex_;
 
     double resolution_;
-
+    double marker_color_alpha_;
+    
     bool publish_marker_flag_;
+    std::string marker_color_;
   };
 }
 
