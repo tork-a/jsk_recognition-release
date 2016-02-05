@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2014, JSK Lab
+ *  Copyright (c) 2015, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,56 +34,37 @@
  *********************************************************************/
 
 
-#ifndef JSK_PCL_ROS_UTILS_POINT_INDICES_TO_MASK_IMAGE_H_
-#define JSK_PCL_ROS_UTILS_POINT_INDICES_TO_MASK_IMAGE_H_
+#ifndef JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
+#define JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
 #include <sensor_msgs/Image.h>
-#include "jsk_recognition_utils/pcl_conversion_util.h"
-#include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
 
 namespace jsk_pcl_ros_utils
 {
-  class PointIndicesToMaskImage: public jsk_topic_tools::DiagnosticNodelet
-  {
-  public:
-    typedef message_filters::sync_policies::ApproximateTime<
-    PCLIndicesMsg,
-    sensor_msgs::Image > ApproximateSyncPolicy;
-    typedef message_filters::sync_policies::ExactTime<
-      PCLIndicesMsg,
-      sensor_msgs::Image > SyncPolicy;
 
-    PointIndicesToMaskImage(): DiagnosticNodelet("PointIndicesToMaskImage") { }
-  protected:
-    ////////////////////////////////////////////////////////
-    // methods
-    ////////////////////////////////////////////////////////
-    virtual void onInit();
-    virtual void subscribe();
-    virtual void unsubscribe();
-    virtual void updateDiagnostic(
-      diagnostic_updater::DiagnosticStatusWrapper &stat);
-    virtual void mask(
-      const PCLIndicesMsg::ConstPtr& indices_msg,
-      const sensor_msgs::Image::ConstPtr& image_msg);
-  
-    ////////////////////////////////////////////////////////
-    // ROS variables
-    ////////////////////////////////////////////////////////
-    bool approximate_sync_;
-    int queue_size_;
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
-    boost::shared_ptr<message_filters::Synchronizer<ApproximateSyncPolicy> >async_; 
-   message_filters::Subscriber<PCLIndicesMsg> sub_input_;
-    message_filters::Subscriber<sensor_msgs::Image> sub_image_;
-    ros::Publisher pub_;
-  private:
-  
-  };
-}
+class LabelToClusterPointIndices: public jsk_topic_tools::DiagnosticNodelet
+{
+public:
+  LabelToClusterPointIndices(): DiagnosticNodelet("MaskImageToPointIndices") { }
+protected:
+  ////////////////////////////////////////////////////////
+  // methods
+  ////////////////////////////////////////////////////////
+  virtual void onInit();
+  virtual void subscribe();
+  virtual void unsubscribe();
+  virtual void convert(const sensor_msgs::Image::ConstPtr& label_msg);
 
-#endif
+  ////////////////////////////////////////////////////////
+  // ROS variables
+  ////////////////////////////////////////////////////////
+  ros::Subscriber sub_;
+  ros::Publisher pub_;
+  ros::Publisher pub_bg_;
+private:
+};
+
+}  // namespace jsk_pcl_ros_utils
+
+#endif  // JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
