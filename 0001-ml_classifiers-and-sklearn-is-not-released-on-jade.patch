@@ -1,61 +1,38 @@
-From 402652831fc3c076fa9fb6c51cac3ed558f6d418 Mon Sep 17 00:00:00 2001
+From eeb606a73dd6578ed601cc5d107c6ad3f52f7f1b Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Sun, 20 Dec 2015 13:04:12 +0900
 Subject: [PATCH] ml_classifiers and sklearn is not released on jade
 
 ---
- CMakeLists.txt | 4 ++--
- package.xml    | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ package.xml | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index e46288f..b5004fa 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -20,7 +20,7 @@ endif()
- if($ENV{ROS_DISTRO} STREQUAL "groovy")
-   set(ML_CLASSIFIERS )
- else()
--  set(ML_CLASSIFIERS ml_classifiers) ## hydro and later
-+  set(ML_CLASSIFIERS ) ## hydro and later
- endif()
- 
- find_package(catkin REQUIRED COMPONENTS
-@@ -29,7 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
-   ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs
-   eigen_conversions tf_conversions tf2_ros tf
-   image_transport nodelet cv_bridge
--  sklearn jsk_topic_tools
-+  jsk_topic_tools
-   image_geometry
-   jsk_footstep_msgs
-   interactive_markers
 diff --git a/package.xml b/package.xml
-index 05de3e6..df6a918 100644
+index 75115fc..00914cb 100644
 --- a/package.xml
 +++ b/package.xml
-@@ -37,8 +37,8 @@
+@@ -37,7 +37,7 @@
    <build_depend>boost</build_depend>
    <build_depend>rosboost_cfg</build_depend>
    <build_depend>cv_bridge</build_depend>
 -  <build_depend>ml_classifiers</build_depend>
--  <build_depend>sklearn</build_depend>
 +  <!-- <build_depend>ml_classifiers</build_depend> -->
-+  <!-- <build_depend>sklearn</build_depend> -->
    <build_depend>diagnostic_updater</build_depend>
    <build_depend>diagnostic_msgs</build_depend>
    <build_depend>jsk_topic_tools</build_depend>
-@@ -80,8 +80,8 @@
+@@ -79,10 +79,10 @@
    <run_depend>boost</run_depend>
    <run_depend>rosboost_cfg</run_depend>
    <run_depend>cv_bridge</run_depend>
 -  <run_depend>ml_classifiers</run_depend>
--  <run_depend>sklearn</run_depend>
 +  <!-- <run_depend>ml_classifiers</run_depend> -->
-+  <!-- <run_depend>sklearn</run_depend> -->
    <run_depend>diagnostic_updater</run_depend>
    <run_depend>diagnostic_msgs</run_depend>
-   <build_depend>python-sklearn</build_depend>
+-  <run_depend>python-sklearn</run_depend>
++  <!-- <run_depend>python-sklearn</run_depend> -->
+   <build_depend>laser_assembler</build_depend>
+   <run_depend>laser_assembler</run_depend>
+   <build_depend>moveit_ros_perception</build_depend>
 -- 
-1.9.1
+2.1.0
 
