@@ -1,4 +1,4 @@
-From 4d86d374413367126088dd5aef298a52782cb768 Mon Sep 17 00:00:00 2001
+From 7368e5475e2aa5b9513081e4eaa8f2903d762859 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 19:17:07 +0900
 Subject: [PATCH] comment out un released depends
@@ -8,7 +8,7 @@ Subject: [PATCH] comment out un released depends
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/package.xml b/package.xml
-index cb64e56..1daf126 100644
+index 32cb057..347d804 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -29,7 +29,7 @@
@@ -21,5 +21,5 @@ index cb64e56..1daf126 100644
    <run_depend>std_msgs</run_depend>
    <run_depend>tf2_ros</run_depend>
 -- 
-1.9.1
+2.1.0
 
