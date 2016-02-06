@@ -214,6 +214,13 @@ add_library(${PROJECT_NAME} SHARED ${jsk_perception_nodelet_sources}
   src/image_utils.cpp
   src/histogram_of_oriented_gradients.cpp
   )
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} yaml-cpp)
+set(robot_self_filter_LIBRARIES2)
+foreach(lib ${robot_self_filter_LIBRARIES})
+  string(REPLACE ":/" "/" lib ${lib})
+  list(APPEND robot_self_filter_LIBRARIES2 ${lib})
+endforeach()
+set(robot_self_filter_LIBRARIES ${robot_self_filter_LIBRARIES2})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${robot_self_filter_LIBRARIES} yaml-cpp)
 if(robot_self_filter_FOUND)
   include_directories(${robot_self_filter_INCLUDE_DIRS})
