@@ -1,10 +1,10 @@
-From 347a8340e677df098f5da0e42e540527e06147d7 Mon Sep 17 00:00:00 2001
+From 2d435c641a577c0f4763c2d48355b9c2453a7830 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 19:22:47 +0900
 Subject: [PATCH] comment out un released depends
 
 ---
- package.xml | 12 ++++++------
+ package.xml |   12 ++++++------
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/package.xml b/package.xml
@@ -53,5 +53,5 @@ index e67764b..e902b38 100644
    <run_depend>kdl_conversions</run_depend>
    <run_depend>nav_msgs</run_depend>
 -- 
-2.1.0
+1.7.9.5
 
