@@ -1,24 +1,26 @@
-From 59c4f82f0d934afe8060fce35d132245c5ba629e Mon Sep 17 00:00:00 2001
+From 8e2601532a4ab74440b5acd6ff4e35043d795b78 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 15:02:36 +0900
 Subject: [PATCH] comment out pip depends
 
 ---
- package.xml |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ package.xml |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 874a6d0..fc939c2 100644
+index 74364ff..f205695 100644
 --- a/package.xml
 +++ b/package.xml
-@@ -65,8 +65,8 @@
+@@ -65,9 +65,9 @@
    <run_depend>nodelet</run_depend>
    <run_depend>pcl_ros</run_depend>
    <run_depend>posedetection_msgs</run_depend>
 -  <run_depend>python-dlib</run_depend>
 -  <run_depend>python-gdown</run_depend>
+-  <run_depend>python-sklearn</run_depend>
 +  <!-- <run_depend>python-dlib</run_depend> -->
 +  <!-- <run_depend>python-gdown</run_depend> -->
++  <!-- <run_depend>python-sklearn</run_depend> -->
    <run_depend>rosbuild</run_depend>
    <run_depend>roscpp</run_depend>
    <run_depend>roseus</run_depend>
