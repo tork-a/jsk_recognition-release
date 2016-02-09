@@ -1,22 +1,24 @@
-=================
-jsk_pcl_ros_utils
-=================
+===============
+jsk_recognition
+===============
 
-jsk_pcl_ros_utils is a package to provide some programs using `pcl <http://pointclouds.org>`_.
+jsk_recognition is a stack for the perception packages which are used in JSK lab.
 
-This package provides some programs as nodelet.
+The code is open source, and `available on github`_.
+
+.. _available on github: http://github.com/jsk-ros-pkg/jsk_recognition
 
 
-.. toctree::
-   :glob:
-   :maxdepth: 1
-
-   ./*
+This repository contains following ros packages:
 
 
 .. toctree::
-   :glob:
    :maxdepth: 1
-   :caption: nodes and nodelets
 
-   ./nodes/*
+   overview
+   imagesift/index
+   checkerboard_detector/index
+   jsk_perception/index
+   jsk_pcl_ros_utils/index
+   jsk_pcl_ros/index
+   tips
