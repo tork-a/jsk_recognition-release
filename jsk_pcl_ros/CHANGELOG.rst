@@ -2,6 +2,9 @@
 Changelog for package jsk_pcl_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.15 (2016-02-09)
+-------------------
+
 0.3.14 (2016-02-04)
 -------------------
 * add me to maintainer to get jenkins notification
