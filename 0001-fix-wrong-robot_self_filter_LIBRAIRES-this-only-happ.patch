@@ -1,11 +1,11 @@
-From e0f9b3561b6eceeebd1220db38896d89bcb538a2 Mon Sep 17 00:00:00 2001
+From 6d8f9c615ea3f1d97adb936e5dc74a7cfc648f49 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Sat, 6 Feb 2016 12:33:49 +0000
 Subject: [PATCH] fix wrong robot_self_filter_LIBRAIRES, this only happens on
  utopic and vivid
 
 ---
- CMakeLists.txt | 7 +++++++
+ CMakeLists.txt |    7 +++++++
  1 file changed, 7 insertions(+)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
@@ -27,5 +27,5 @@ index fdd356d..00f317e 100644
  if(robot_self_filter_FOUND)
    include_directories(${robot_self_filter_INCLUDE_DIRS})
 -- 
-2.1.0
+1.7.9.5
 
