@@ -1,0 +1,12 @@
+Source: ros-jade-jsk-recognition
+Section: misc
+Priority: extra
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-jade-catkin
+Homepage: http://ros.org/wiki/jsk_recognition
+Standards-Version: 3.9.2
+
+Package: ros-jade-jsk-recognition
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jade-checkerboard-detector, ros-jade-imagesift, ros-jade-jsk-pcl-ros, ros-jade-jsk-perception, ros-jade-jsk-recognition-msgs, ros-jade-jsk-recognition-utils, ros-jade-resized-image-transport
+Description: Metapackage that contains recognition package for jsk-ros-pkg
