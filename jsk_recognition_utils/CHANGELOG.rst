@@ -2,6 +2,9 @@
 Changelog for package jsk_recognition_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.18 (2016-03-21)
+-------------------
+
 0.3.17 (2016-03-20)
 -------------------
 * [jsk_perception] Use timer callback to speed up tile_image with no_sync:=true
