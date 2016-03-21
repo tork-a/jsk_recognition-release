@@ -2,6 +2,9 @@
 Changelog for package imagesift
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.18 (2016-03-21)
+-------------------
+
 0.3.17 (2016-03-20)
 -------------------
 * [imagesift] Set ros node name same to the executable name
