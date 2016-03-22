@@ -1,14 +1,14 @@
-From 5d8877039d721024ed8348d238439e87283be340 Mon Sep 17 00:00:00 2001
+From 277c02dd751f32851031110262596d08ef0cda1e Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 15:02:36 +0900
 Subject: [PATCH] comment out pip depends
 
 ---
- package.xml |    6 +++---
+ package.xml | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index b072408..fc1641e 100644
+index 90adaa9..0bebdbc 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -65,9 +65,9 @@
@@ -25,5 +25,5 @@ index b072408..fc1641e 100644
    <run_depend>roscpp</run_depend>
    <run_depend>roseus</run_depend>
 -- 
-1.7.9.5
+1.9.1
 
