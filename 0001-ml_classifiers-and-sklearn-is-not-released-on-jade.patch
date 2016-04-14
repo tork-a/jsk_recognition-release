@@ -1,14 +1,14 @@
-From d6dcc03819e41f3337040228825283738f755cb9 Mon Sep 17 00:00:00 2001
+From 07d74ee975f5b6aad538d653b35915206d53f232 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Sun, 20 Dec 2015 13:04:12 +0900
 Subject: [PATCH] ml_classifiers and sklearn is not released on jade
 
 ---
- package.xml | 6 +++---
+ package.xml |    6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 1d25ee8..22b2523 100644
+index 52cfcec..88215d3 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -37,7 +37,7 @@
@@ -34,5 +34,5 @@ index 1d25ee8..22b2523 100644
    <run_depend>laser_assembler</run_depend>
    <build_depend>moveit_ros_perception</build_depend>
 -- 
-1.9.1
+1.7.9.5
 
