@@ -1,17 +1,17 @@
-From 265e98232bfab9fe7245ea841df60ef845838a32 Mon Sep 17 00:00:00 2001
+From 19cf9d473eedda7485d220430ce69637dec6adfc Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 19:55:50 +0900
 Subject: [PATCH] comment out un released depends
 
 ---
- package.xml | 8 ++++----
+ package.xml |    8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 90adaa9..f36d702 100644
+index 84a193a..0326f10 100644
 --- a/package.xml
 +++ b/package.xml
-@@ -61,13 +61,13 @@
+@@ -60,13 +60,13 @@
    <run_depend>jsk_topic_tools</run_depend>
    <run_depend>message_runtime</run_depend>
    <run_depend>mk</run_depend>
@@ -26,9 +26,9 @@ index 90adaa9..f36d702 100644
 +  <!-- <run_depend>python-dlib</run_depend> -->
 +  <!-- <run_depend>python-gdown</run_depend> -->
 +  <!-- <run_depend>python-sklearn</run_depend> -->
-   <run_depend>rosbuild</run_depend>
    <run_depend>roscpp</run_depend>
    <run_depend>roseus</run_depend>
+   <run_depend>rospack</run_depend>
 -- 
-1.9.1
+1.7.9.5
 
