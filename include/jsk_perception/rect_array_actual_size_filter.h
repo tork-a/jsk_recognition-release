@@ -34,58 +34,63 @@
  *********************************************************************/
 
 
-#ifndef JSK_PERCEPTION_BOUNDING_BOX_TO_RECT_H_
-#define JSK_PERCEPTION_BOUNDING_BOX_TO_RECT_H_
+#ifndef JSK_PERCEPTION_RECT_ARRAY_ACTUAL_SIZE_FILTER_H_
+#define JSK_PERCEPTION_RECT_ARRAY_ACTUAL_SIZE_FILTER_H_
 
-#include <jsk_recognition_msgs/BoundingBoxArray.h>
-#include <jsk_recognition_msgs/RectArray.h>
-#include <jsk_recognition_msgs/BoundingBoxArrayWithCameraInfo.h>
-#include <sensor_msgs/CameraInfo.h>
 #include <jsk_topic_tools/diagnostic_nodelet.h>
+#include <sensor_msgs/Image.h>
+#include <sensor_msgs/CameraInfo.h>
+#include <jsk_recognition_msgs/RectArray.h>
+#include <jsk_perception/RectArrayActualSizeFilterConfig.h>
+#include <dynamic_reconfigure/server.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/exact_time.h>
 #include <message_filters/sync_policies/approximate_time.h>
-#include <jsk_recognition_utils/tf_listener_singleton.h>
-#include <tf/message_filter.h>
+#include <opencv2/opencv.hpp>
 
 namespace jsk_perception
 {
-  class BoundingBoxToRect: public jsk_topic_tools::DiagnosticNodelet
+  class RectArrayActualSizeFilter: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    typedef boost::shared_ptr<BoundingBoxToRect> Ptr;
+    typedef boost::shared_ptr<RectArrayActualSizeFilter> Ptr;
+    typedef RectArrayActualSizeFilterConfig Config;
     typedef message_filters::sync_policies::ExactTime<
-      sensor_msgs::CameraInfo,
-      jsk_recognition_msgs::BoundingBoxArray > SyncPolicy;
+      jsk_recognition_msgs::RectArray,
+      sensor_msgs::Image,
+      sensor_msgs::CameraInfo> SyncPolicy;
     typedef message_filters::sync_policies::ApproximateTime<
-      sensor_msgs::CameraInfo,
-      jsk_recognition_msgs::BoundingBoxArray > ApproximateSyncPolicy;
+      jsk_recognition_msgs::RectArray,
+      sensor_msgs::Image,
+      sensor_msgs::CameraInfo> ApproxSyncPolicy;
 
-    BoundingBoxToRect(): DiagnosticNodelet("BoundingBoxToRect") {}
+    RectArrayActualSizeFilter(): DiagnosticNodelet("RectArrayActualSizeFilter") {}
   protected:
     virtual void onInit();
     virtual void subscribe();
     virtual void unsubscribe();
-    virtual void inputCallback(const sensor_msgs::CameraInfo::ConstPtr& info_msg,
-                               const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& box_msg);
-
-    virtual void internalCallback(const jsk_recognition_msgs::BoundingBoxArrayWithCameraInfo::ConstPtr& msg);
-
-    boost::mutex mutex_;
-    std::string frame_id_;
-    message_filters::Subscriber<sensor_msgs::CameraInfo> sub_info_;
-    message_filters::Subscriber<jsk_recognition_msgs::BoundingBoxArray> sub_box_;
-    message_filters::Subscriber<jsk_recognition_msgs::BoundingBoxArrayWithCameraInfo> sub_box_with_info_;
-    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> > sync_;
-    boost::shared_ptr<message_filters::Synchronizer<ApproximateSyncPolicy> > async_;
-    tf::TransformListener* tf_listener_;
-    bool approximate_sync_;
-    int tf_queue_size_;
-    int queue_size_;
-    boost::shared_ptr<tf::MessageFilter<jsk_recognition_msgs::BoundingBoxArrayWithCameraInfo> > tf_filter_;
+    virtual void filter(const jsk_recognition_msgs::RectArray::ConstPtr& rect_array_msg,
+                        const sensor_msgs::Image::ConstPtr& depth_image_msg,
+                        const sensor_msgs::CameraInfo::ConstPtr& info_msg);
+    virtual void configCallback(Config& config, uint32_t level);
+    virtual double averageDistance(const int center_x, const int center_y, const cv::Mat& img) const;
     ros::Publisher pub_;
-    ros::Publisher pub_internal_;
+    bool approximate_sync_;
+    message_filters::Subscriber<jsk_recognition_msgs::RectArray> sub_rect_array_;
+    message_filters::Subscriber<sensor_msgs::Image> sub_image_;
+    message_filters::Subscriber<sensor_msgs::CameraInfo> sub_info_;
+    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> > sync_;
+    boost::shared_ptr<message_filters::Synchronizer<ApproxSyncPolicy> > async_;
+    boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
+    boost::mutex mutex_;
+    int kernel_size_;
+    // filter parameters
+    double min_x_;
+    double max_x_;
+    double min_y_;
+    double max_y_;
+    
   private:
     
   };
