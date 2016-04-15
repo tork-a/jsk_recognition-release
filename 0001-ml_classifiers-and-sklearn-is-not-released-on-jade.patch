@@ -1,4 +1,4 @@
-From 07d74ee975f5b6aad538d653b35915206d53f232 Mon Sep 17 00:00:00 2001
+From 2bde905f7647ae7e859ce967848ecd348cdecb77 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Sun, 20 Dec 2015 13:04:12 +0900
 Subject: [PATCH] ml_classifiers and sklearn is not released on jade
@@ -8,7 +8,7 @@ Subject: [PATCH] ml_classifiers and sklearn is not released on jade
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 52cfcec..88215d3 100644
+index 2bf1c2f..7dc4214 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -37,7 +37,7 @@
