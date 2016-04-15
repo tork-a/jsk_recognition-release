@@ -1,32 +1,22 @@
-===============
-jsk_recognition
-===============
+===========
+jsk_pcl_ros
+===========
 
-jsk_recognition is a stack for the perception packages which are used in JSK lab.
+jsk_pcl_ros is a package to provide some programs using `pcl <http://pointclouds.org>`_.
 
-The code is open source, and `available on github`_.
+This package provides some programs as nodelet.
 
-.. _available on github: http://github.com/jsk-ros-pkg/jsk_recognition
-
-
-Contents:
 
 .. toctree::
+   :glob:
    :maxdepth: 1
 
-   overview
-   tips
-   install_softkinetic_camera
+   ./*
 
-
-ROS packages:
 
 .. toctree::
+   :glob:
    :maxdepth: 1
+   :caption: nodes and nodelets
 
-   checkerboard_detector/index
-   imagesift/index
-   jsk_perception/index
-   jsk_pcl_ros/index
-   jsk_pcl_ros_utils/index
-   jsk_recognition_utils/index
+   ./nodes/*
