@@ -1,19 +1,31 @@
-=========
-imagesift
-=========
+===============
+jsk_recognition
+===============
 
-ROS nodes to compute local features of 2-D images. It supports SIFT, SURF, STAR, BRISK.
+jsk_recognition is a stack for the perception packages which are used in JSK lab.
+
+The code is open source, and `available on github`_.
+
+.. _available on github: http://github.com/jsk-ros-pkg/jsk_recognition
+
+
+Contents:
 
 .. toctree::
-   :glob:
    :maxdepth: 1
-   :caption: python module
 
-   ./python/*
+   overview
+   tips
+
+
+ROS packages:
 
 .. toctree::
-   :glob:
    :maxdepth: 1
-   :caption: nodes and nodelets
 
-   ./nodes/*
+   checkerboard_detector/index
+   imagesift/index
+   jsk_perception/index
+   jsk_pcl_ros/index
+   jsk_pcl_ros_utils/index
+   jsk_recognition_utils/index
