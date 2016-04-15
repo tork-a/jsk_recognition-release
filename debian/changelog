@@ -1,0 +1,498 @@
+ros-jade-resized-image-transport (0.3.21-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 14 Apr 2016 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.20-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 13 Apr 2016 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.19-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Mon, 21 Mar 2016 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.18-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sun, 20 Mar 2016 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.17-0trusty) trusty; urgency=high
+
+  * remove dynamic_reconfigure.parameter_generator, which is only used for rosbuild
+  * Contributors: Kei Okada
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sat, 19 Mar 2016 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.16-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 10 Feb 2016 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.15-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Mon, 08 Feb 2016 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.14-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 03 Feb 2016 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.13-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Fri, 18 Dec 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.12-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Fri, 18 Dec 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.11-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 17 Dec 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.10-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 16 Dec 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.9-0trusty) trusty; urgency=high
+
+  * [resized_image_transport] Use jsk_topic_tools::DiagnosticNodelet to omit
+    meaningless computation
+  * Contributors: Ryohei Ueda
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sun, 13 Dec 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.8-0trusty) trusty; urgency=high
+
+  * Use ccache if installed to make it fast to generate object file
+  * Contributors: Kentaro Wada
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Mon, 07 Dec 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.7-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 18 Nov 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.6-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 10 Sep 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.5-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Tue, 08 Sep 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.4-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sun, 06 Sep 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.3-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sat, 05 Sep 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.2-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Fri, 04 Sep 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.1-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 03 Sep 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.3.0-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 03 Sep 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.18-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 03 Sep 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.17-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 20 Aug 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.16-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Tue, 18 Aug 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.15-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Mon, 17 Aug 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.14-0trusty) trusty; urgency=high
+
+  * src/log_polar_nodelet.cpp : convert fro milimage to cvmat
+  * [resized_image_transport] Initialize vital_checkers first
+  * [resized_image_transport] Add diagnostic information
+  * Contributors: Kei Okada, Ryohei Ueda
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 12 Aug 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.13-0trusty) trusty; urgency=high
+
+  * [resized_image_transport] Fix coding style of image_processing_nodelet.cpp
+  * [resized_image_transport] Do not require synchronized input topics of
+    camera info and image unless ~use_camera_subscriber is true
+  * [resized_image_transport] untabify source code
+  * [resized_image_transport] Advertise publishers before subscribing topics
+  * [resized_image_transport] Supress output from image_resizer
+  * Contributors: Ryohei Ueda
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 10 Jun 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.12-0trusty) trusty; urgency=high
+
+  * [resized_image_transport] Fix dynamic_reconfigure name in LogPolar
+  * [resized_image_transport] Pass private nodehandle to dynamic_reconfigure to set handle the name of dynamic_reconfigrue in nodelet correctly
+  * [resized_image_transport] change from linear to non-linear
+  * rename to NODELET info and short fix
+  * [resized_image_transport] image_resizer_nodelet resize rate feedback
+  * Contributors: Kamada Hitoshi, Ryohei Ueda
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sun, 03 May 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.11-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sun, 12 Apr 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.10-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 08 Apr 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.9-0trusty) trusty; urgency=high
+
+  * 0.2.8
+  * Update Changelog
+  * Contributors: Ryohei Ueda
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sat, 28 Mar 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.8-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sat, 28 Mar 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.7-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 25 Mar 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.6-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Tue, 24 Mar 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.5-0trusty) trusty; urgency=high
+
+  * [resized_image_transport] Fix ordert to read rosparam and set
+    dynamic_reconfigure to use initial value of dynamic_reconfigure correctly
+  * Contributors: Ryohei Ueda
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Mon, 16 Mar 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.4-0trusty) trusty; urgency=high
+
+  * [resized_image_transport] Publish scale information
+  * Contributors: Ryohei Ueda
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sat, 07 Mar 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.3-0trusty) trusty; urgency=high
+
+  * Remove rosbuild files
+  * Contributors: Ryohei Ueda
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sun, 01 Feb 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.2-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.1-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.2.0-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 28 Jan 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.34-0trusty) trusty; urgency=high
+
+  * depending on cv_bridge is recommended, see http://wiki.ros.org/indigo/Migration#OpenCV
+  * [jsk_pcl_ros, jsk_perception, resized_image_transport] Do not include
+    jsk_topic_tools/nodelet.cmake because it is exported by CFG_EXTRAS
+  * [resized_image_transport] Fix jsk_topic_tools/nodelet.cmake path
+  * Contributors: Ryohei Ueda, Kei Okada
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 28 Jan 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.33-0trusty) trusty; urgency=high
+
+  * add parameter to select interpolation method
+  * Contributors: Yusuke Furuta
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Fri, 23 Jan 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.32-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sun, 11 Jan 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.31-0trusty) trusty; urgency=high
+
+  * not include image prosessing config
+  * add log polar sample
+  * add include directory
+  * implement resize image processing
+  * implement log-polar processing
+  * add base class for processing image
+  * add sample launch file
+  * add LogPolar.cfg
+  * add first sample
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 07 Jan 2015 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.30-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Tue, 23 Dec 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.29-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Tue, 23 Dec 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.28-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Tue, 16 Dec 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.27-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Mon, 08 Dec 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.26-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sat, 22 Nov 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.25-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 20 Nov 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.24-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Fri, 14 Nov 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.23-0trusty) trusty; urgency=high
+
+  * Install nodelet executables
+  * Contributors: Ryohei Ueda
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 08 Oct 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.22-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Tue, 23 Sep 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.21-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Fri, 19 Sep 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.20-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Tue, 16 Sep 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.19-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sun, 14 Sep 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.18-0trusty) trusty; urgency=high
+
+  * Creating publisher before subscribe topics in resized_image_transport
+  * Supress messages from resized_image_transport
+  * Contributors: Ryohei Ueda
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Fri, 12 Sep 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.17-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sat, 06 Sep 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.16-0trusty) trusty; urgency=high
+
+  * remove static variables from ImageResizer because now it is used as
+    nodelet
+  * add client for resize image
+  * Contributors: Ryohei Ueda, Yusuke Furuta
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 03 Sep 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.14-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 31 Jul 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.13-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Mon, 28 Jul 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.12-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 23 Jul 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.11-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Mon, 07 Jul 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.10-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sun, 06 Jul 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.9-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Mon, 30 Jun 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.8-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Sat, 28 Jun 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.7-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Fri, 30 May 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.6-0trusty) trusty; urgency=high
+
+  * src/image_resizer.cpp: fix to compile on rosbuild
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 29 May 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.5-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 28 May 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.4-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 24 Apr 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.3-0trusty) trusty; urgency=high
+
+
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Fri, 11 Apr 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.2-0trusty) trusty; urgency=high
+
+  * use find_module to check catkin/rosbuild to pass git-buildpackage
+  * Contributors: Kei Okada
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Thu, 10 Apr 2014 15:00:00 -0000
+
+ros-jade-resized-image-transport (0.1.1-0trusty) trusty; urgency=high
+
+  * #11 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/11>: add depend tags
+  * add depend to driver_base
+  * add update with message
+  * simplify example and rename to example.launch
+  * fix bugs whcn resize paramater is 0, see issue #252 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/252>
+  * use Kbps not kB, issue #253 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/253>
+  * updating for catkin
+  * add option to change fps, rename image_type->image, see Issue 248
+  * mv resized_imagetransport resized_image_transport
+  * Contributors: Ryohei Ueda, Kei Okada, Youhei Kakiuchi
+
+ -- Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>  Wed, 09 Apr 2014 15:00:00 -0000
+
+
