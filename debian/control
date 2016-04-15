@@ -1,0 +1,12 @@
+Source: ros-jade-jsk-perception
+Section: misc
+Priority: extra
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), git-core, libeigen3-dev, libyaml-cpp-dev, ros-jade-angles, ros-jade-catkin, ros-jade-cmake-modules, ros-jade-cv-bridge, ros-jade-driver-base, ros-jade-dynamic-reconfigure, ros-jade-geometry-msgs, ros-jade-image-geometry, ros-jade-image-transport, ros-jade-image-view2, ros-jade-jsk-recognition-msgs, ros-jade-jsk-recognition-utils, ros-jade-jsk-topic-tools, ros-jade-message-generation, ros-jade-mk, ros-jade-nodelet, ros-jade-pcl-ros, ros-jade-posedetection-msgs, ros-jade-robot-self-filter, ros-jade-roscpp, ros-jade-roseus, ros-jade-roslint, ros-jade-rospack, ros-jade-rostest, ros-jade-sensor-msgs, ros-jade-std-msgs, ros-jade-tf
+Homepage: http://ros.org/wiki/jsk_perception
+Standards-Version: 3.9.2
+
+Package: ros-jade-jsk-perception
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeigen3-dev, libyaml-cpp-dev, ros-jade-angles, ros-jade-cv-bridge, ros-jade-driver-base, ros-jade-dynamic-reconfigure, ros-jade-geometry-msgs, ros-jade-image-geometry, ros-jade-image-transport, ros-jade-image-view2, ros-jade-jsk-recognition-msgs, ros-jade-jsk-recognition-utils, ros-jade-jsk-topic-tools, ros-jade-message-runtime, ros-jade-mk, ros-jade-nodelet, ros-jade-pcl-ros, ros-jade-posedetection-msgs, ros-jade-robot-self-filter, ros-jade-roscpp, ros-jade-roseus, ros-jade-rospack, ros-jade-rospy, ros-jade-sensor-msgs, ros-jade-std-msgs, ros-jade-tf
+Description: jsk_perception
