@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2016, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,38 +33,37 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-
-#ifndef JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
-#define JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
-
-#include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
+#include <jsk_recognition_utils/pcl_conversion_util.h>
+#include "jsk_pcl_ros_utils/point_indices_to_cluster_point_indices.h"
 
 namespace jsk_pcl_ros_utils
 {
+  void PointIndicesToClusterPointIndices::onInit()
+  {
+    DiagnosticNodelet::onInit();
+    pub_ = advertise<jsk_recognition_msgs::ClusterPointIndices>(*pnh_, "output", 1);
+  }
 
-class LabelToClusterPointIndices: public jsk_topic_tools::DiagnosticNodelet
-{
-public:
-  LabelToClusterPointIndices(): DiagnosticNodelet("LabelToClusterPointIndices") { }
-protected:
-  ////////////////////////////////////////////////////////
-  // methods
-  ////////////////////////////////////////////////////////
-  virtual void onInit();
-  virtual void subscribe();
-  virtual void unsubscribe();
-  virtual void convert(const sensor_msgs::Image::ConstPtr& label_msg);
+  void PointIndicesToClusterPointIndices::subscribe()
+  {
+    sub_ = pnh_->subscribe(
+      "input", 1, &PointIndicesToClusterPointIndices::convert, this);
+  }
 
-  ////////////////////////////////////////////////////////
-  // ROS variables
-  ////////////////////////////////////////////////////////
-  ros::Subscriber sub_;
-  ros::Publisher pub_;
-  ros::Publisher pub_bg_;
-private:
-};
+  void PointIndicesToClusterPointIndices::unsubscribe()
+  {
+    sub_.shutdown();
+  }
 
-}  // namespace jsk_pcl_ros_utils
+  void PointIndicesToClusterPointIndices::convert(
+    const PCLIndicesMsg::ConstPtr& indices_msg)
+  {
+    jsk_recognition_msgs::ClusterPointIndices cluster_indices_msg;
+    cluster_indices_msg.header = indices_msg->header;
+    cluster_indices_msg.cluster_indices.push_back(*indices_msg);
+    pub_.publish(cluster_indices_msg);
+  }
+}
 
-#endif  // JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS(jsk_pcl_ros_utils::PointIndicesToClusterPointIndices, nodelet::Nodelet);
