@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2016, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,37 +34,36 @@
  *********************************************************************/
 
 
-#ifndef JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
-#define JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
+#ifndef JSK_PCL_ROS_UTILS_POINTCLOUD_TO_MASK_IMAGE_H_
+#define JSK_PCL_ROS_UTILS_POINTCLOUD_TO_MASK_IMAGE_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
+#include <sensor_msgs/PointCloud2.h>
 
 namespace jsk_pcl_ros_utils
 {
+  class PointCloudToMaskImage: public jsk_topic_tools::DiagnosticNodelet
+  {
+  public:
+    PointCloudToMaskImage(): DiagnosticNodelet("PointCloudToMaskImage") { }
+  protected:
+    ////////////////////////////////////////////////////////
+    // methods
+    ////////////////////////////////////////////////////////
+    virtual void onInit();
+    virtual void subscribe();
+    virtual void unsubscribe();
+    virtual void updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper &stat);
+    virtual void convert(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
 
-class LabelToClusterPointIndices: public jsk_topic_tools::DiagnosticNodelet
-{
-public:
-  LabelToClusterPointIndices(): DiagnosticNodelet("LabelToClusterPointIndices") { }
-protected:
-  ////////////////////////////////////////////////////////
-  // methods
-  ////////////////////////////////////////////////////////
-  virtual void onInit();
-  virtual void subscribe();
-  virtual void unsubscribe();
-  virtual void convert(const sensor_msgs::Image::ConstPtr& label_msg);
+    ////////////////////////////////////////////////////////
+    // ROS variables
+    ////////////////////////////////////////////////////////
+    ros::Subscriber sub_;
+    ros::Publisher pub_;
+  private:
 
-  ////////////////////////////////////////////////////////
-  // ROS variables
-  ////////////////////////////////////////////////////////
-  ros::Subscriber sub_;
-  ros::Publisher pub_;
-  ros::Publisher pub_bg_;
-private:
-};
-
+  };
 }  // namespace jsk_pcl_ros_utils
 
-#endif  // JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
+#endif  // JSK_PCL_ROS_UTILS_POINTCLOUD_TO_MASK_IMAGE_H_
