@@ -38,8 +38,11 @@
 #define JSK_PCL_ROS_POINTCLOUD_DATABASE_SERVER_H_
 
 #include <pcl_ros/pcl_nodelet.h>
+#include <dynamic_reconfigure/server.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <pcl/PolygonMesh.h>
 #include <jsk_recognition_msgs/PointsArray.h>
+#include "jsk_pcl_ros/PointcloudDatabaseServerConfig.h"
 
 namespace jsk_pcl_ros
 {
@@ -56,6 +59,9 @@ namespace jsk_pcl_ros
 
   protected:
     const std::string file_name_;
+    std::string ext_;
+    pcl::PolygonMesh mesh_;
+    std::string stem_;
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_;
   private:
   };
@@ -64,15 +70,21 @@ namespace jsk_pcl_ros
   {
   public:
     virtual ~PointcloudDatabaseServer();
+    typedef jsk_pcl_ros::PointcloudDatabaseServerConfig Config;
   protected:
     virtual void onInit();
     virtual void timerCallback(const ros::TimerEvent& event);
+    virtual void configCallback(Config &config, uint32_t level);
+    std::vector<std::string> files_;
     // virtual void registerPointcloud();
     // virtual void removePointcloud();
     // virtual void listPointcloud();
+    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
+    boost::mutex mutex_;
     ros::Publisher pub_points_;
     ros::Timer timer_;
     std::vector<PointCloudData::Ptr> point_clouds_;
+    double duration_;
 
   private:
   };
