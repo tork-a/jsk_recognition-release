@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2016, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,38 +33,41 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
+#ifndef JSK_PCL_POINTCLOUD_TO_PCD_H_
+#define JSK_PCL_POINTCLOUD_TO_PCD_H_
 
-#ifndef JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
-#define JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
+#include <pcl_ros/pcl_nodelet.h>
+#include <pcl/point_types.h>
+#include <jsk_recognition_utils/tf_listener_singleton.h>
 
-#include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <dynamic_reconfigure/server.h>
+#include <jsk_pcl_ros_utils/PointCloudToPCDConfig.h>
 
 namespace jsk_pcl_ros_utils
 {
+  class PointCloudToPCD: public pcl_ros::PCLNodelet
+  {
+  public:
+    virtual ~PointCloudToPCD();
+    typedef PointCloudToPCDConfig Config;
+  protected:
+    virtual void onInit();
+    virtual void timerCallback (const ros::TimerEvent& event);
+    virtual void configCallback(Config &config, uint32_t level);
+    boost::mutex mutex_;
+    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
+    ros::Timer timer_;
+    std::string filename_;
+    std::string ext_;
+    double duration_;
+    std::string prefix_;
+    bool binary_;
+    bool compressed_;
+    std::string fixed_frame_;
+    tf::TransformListener* tf_listener_;
+  private:
+  };
+}
 
-class LabelToClusterPointIndices: public jsk_topic_tools::DiagnosticNodelet
-{
-public:
-  LabelToClusterPointIndices(): DiagnosticNodelet("LabelToClusterPointIndices") { }
-protected:
-  ////////////////////////////////////////////////////////
-  // methods
-  ////////////////////////////////////////////////////////
-  virtual void onInit();
-  virtual void subscribe();
-  virtual void unsubscribe();
-  virtual void convert(const sensor_msgs::Image::ConstPtr& label_msg);
-
-  ////////////////////////////////////////////////////////
-  // ROS variables
-  ////////////////////////////////////////////////////////
-  ros::Subscriber sub_;
-  ros::Publisher pub_;
-  ros::Publisher pub_bg_;
-private:
-};
-
-}  // namespace jsk_pcl_ros_utils
-
-#endif  // JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
+#endif
