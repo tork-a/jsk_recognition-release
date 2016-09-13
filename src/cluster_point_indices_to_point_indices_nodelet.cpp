@@ -1,8 +1,8 @@
-// -*- mode: C++ -*-
+// -*- mode: c++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2014, JSK Lab
+ *  Copyright (c) 2016, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,52 +32,68 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
-
-#include "jsk_pcl_ros_utils/delay_pointcloud.h"
-#include <pluginlib/class_list_macros.h>
+#include "jsk_pcl_ros_utils/cluster_point_indices_to_point_indices.h"
+#include <jsk_recognition_utils/pcl_conversion_util.h>
+#include <jsk_topic_tools/log_utils.h>
+#include <jsk_recognition_msgs/ClusterPointIndices.h>
+#include <boost/assign.hpp>
 
 namespace jsk_pcl_ros_utils
 {
-  void DelayPointCloud::onInit()
-  {
-    ConnectionBasedNodelet::onInit();
 
+  void ClusterPointIndicesToPointIndices::onInit()
+  {
+    DiagnosticNodelet::onInit();
+    // dynamic_reconfigure
     srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
     dynamic_reconfigure::Server<Config>::CallbackType f =
-        boost::bind (&DelayPointCloud::configCallback, this, _1, _2);
-    srv_->setCallback (f);
+      boost::bind(&ClusterPointIndicesToPointIndices::configCallback, this, _1, _2);
+    srv_->setCallback(f);
 
-    pnh_->param("delay_time", delay_time_, 0.1);
-    pnh_->param("queue_size", queue_size_, 1000);
-    pub_ = advertise<sensor_msgs::PointCloud2>(*pnh_, "output", queue_size_);
+    pub_ = advertise<PCLIndicesMsg>(*pnh_, "output", 1);
+    onInitPostProcess();
   }
 
-  void DelayPointCloud::configCallback(Config &config, uint32_t level)
+  void ClusterPointIndicesToPointIndices::configCallback(
+    Config &config, uint32_t level)
   {
     boost::mutex::scoped_lock lock(mutex_);
-
-    delay_time_ = config.delay_time;
-    DelayPointCloud::subscribe();
+    index_ = config.index;
   }
 
-  void DelayPointCloud::delay(const sensor_msgs::PointCloud2::ConstPtr& msg)
+  void ClusterPointIndicesToPointIndices::subscribe()
   {
-    sensor_msgs::PointCloud2 out_cloud_msg = *msg;
-    out_cloud_msg.header.stamp = ros::Time::now();
-    pub_.publish(out_cloud_msg);
+    sub_ = pnh_->subscribe("input", 1,
+                           &ClusterPointIndicesToPointIndices::convert,
+                           this);
+    ros::V_string names = boost::assign::list_of("~input");
+    jsk_topic_tools::warnNoRemap(names);
   }
 
-  void DelayPointCloud::subscribe()
+  void ClusterPointIndicesToPointIndices::unsubscribe()
   {
-    sub_.subscribe(*pnh_, "input", 1);
-    time_sequencer_ = boost::make_shared<message_filters::TimeSequencer<sensor_msgs::PointCloud2> >(ros::Duration(delay_time_), ros::Duration(0.01), queue_size_);
-    time_sequencer_->connectInput(sub_);
-    time_sequencer_->registerCallback(boost::bind(&DelayPointCloud::delay, this, _1));
+    sub_.shutdown();
   }
-  void DelayPointCloud::unsubscribe()
-  {
-    sub_.unsubscribe();
-  }
-}
 
-PLUGINLIB_EXPORT_CLASS (jsk_pcl_ros_utils::DelayPointCloud, nodelet::Nodelet);
+  void ClusterPointIndicesToPointIndices::convert(
+    const jsk_recognition_msgs::ClusterPointIndices::ConstPtr& cluster_indices_msg)
+  {
+    PCLIndicesMsg indices_msg;
+    indices_msg.header = cluster_indices_msg->header;
+
+    int cluster_size = cluster_indices_msg->cluster_indices.size();
+    if (index_ < 0) {
+      // skipped silently
+      return;
+    } else if (index_ < cluster_size) {
+      indices_msg.indices = cluster_indices_msg->cluster_indices[index_].indices;
+    } else {
+      NODELET_ERROR_THROTTLE(10, "Invalid ~index %d is specified for cluster size %d.", index_, cluster_size);
+    }
+    pub_.publish(indices_msg);
+  }
+
+}  // namespace jsk_pcl_ros_utils
+
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS(jsk_pcl_ros_utils::ClusterPointIndicesToPointIndices, nodelet::Nodelet);
