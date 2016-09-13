@@ -1,25 +1,16 @@
 <launch>
 
-  <node name="image_publisher"
-        pkg="jsk_perception" type="image_publisher.py">
-    <param name="file_name" value="$(find jsk_perception)/sample/oreo_mega_stuf.jpg" />
-    <rosparam>
-      publish_info: false
-    </rosparam>
-  </node>
-
-  <node name="selective_search"
-        pkg="jsk_perception" type="selective_search.py">
-    <remap from="~input" to="image_publisher/output" />
-  </node>
+  <include file="$(find jsk_perception)/sample/sample_selective_search.launch">
+    <arg name="gui" value="false" />
+  </include>
 
   <test test-name="test_selective_search"
         name="test_selective_search"
         pkg="jsk_tools" type="test_topic_published.py"
-        time-limit="360">
+        retry="3">
     <rosparam>
       topic_0: /selective_search/output
-      timeout_0: 10
+      timeout_0: 20
     </rosparam>
   </test>
 
