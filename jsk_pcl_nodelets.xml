@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <library path="libjsk_pcl_ros_utils">
   <class name="jsk_pcl/PCDReaderWithPose" type="jsk_pcl_ros_utils::PCDReaderWithPose"
          base_class_type="nodelet::Nodelet">
@@ -159,6 +160,10 @@
     <description>
     </description>
   </class>
+  <class name="jsk_pcl/OrganizedPointCloudToPointIndices"
+         type="jsk_pcl_ros_utils::PointCloudToPointIndices"
+         base_class_type="nodelet::Nodelet">
+  </class>
 </library>
 <library path="libjsk_pcl_ros">
   <class name="jsk_pcl/InteractiveCuboidLikelihood"
@@ -213,10 +218,6 @@
          type="jsk_pcl_ros::SupervoxelSegmentation"
          base_class_type="nodelet::Nodelet">
   </class>
-  <class name="jsk_pcl/OrganizedPointCloudToPointIndices"
-         type="jsk_pcl_ros::OrganizedPointCloudToPointIndices"
-         base_class_type="nodelet::Nodelet">
-  </class>
   <class name="jsk_pcl/IncrementalModelRegistration"
          type="jsk_pcl_ros::IncrementalModelRegistration"
          base_class_type="nodelet::Nodelet">
@@ -255,6 +256,11 @@
          type="jsk_pcl_ros::AttentionClipper"
          base_class_type="nodelet::Nodelet">
     Publish ROI of attention reagion
+  </class>
+  <class name="jsk_pcl/PeopleDetection"
+         type="jsk_pcl_ros::PeopleDetection"
+         base_class_type="nodelet::Nodelet">
+    People Detection
   </class>
   <class name="jsk_pcl/BoundingBoxOcclusionRejector"
          type="jsk_pcl_ros::BoundingBoxOcclusionRejector"
@@ -401,6 +407,11 @@
          base_class_type="nodelet::Nodelet">
     <description>segment pointcloud by region growing</description>
   </class>
+  <class name="jsk_pcl/ColorBasedRegionGrowingSegmentation" type="jsk_pcl_ros::ColorBasedRegionGrowingSegmentation"
+         base_class_type="nodelet::Nodelet">
+    <description>segment pointcloud by color-based region growing</description>
+  </class>
+
   <class name="jsk_pcl/ImageRotateNodelet" type="jsk_pcl_ros::ImageRotateNodelet"
          base_class_type="nodelet::Nodelet">
     <description>Nodelet to rotate sensor_msgs/Image</description>
@@ -459,6 +470,13 @@
          base_class_type="nodelet::Nodelet">
     <description>
       Resize PointCloud
+    </description>
+  </class>
+  <class name="jsk_pcl/RearrangeBoundingBox"
+         type="jsk_pcl_ros::RearrangeBoundingBox"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Rearrange and Rescale BoundingBoxArray
     </description>
   </class>
 
@@ -613,8 +631,15 @@
   <class name="jsk_pcl/CollisionDetector"
          type="jsk_pcl_ros::CollisionDetector"
          base_class_type="nodelet::Nodelet">
+
+  <class name="jsk_pcl/TargetAdaptiveTracking" type="jsk_pcl_ros::TargetAdaptiveTracking"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Nodelet to track object and update the appearance model online
+    </description>
   </class>
 </library>
+
 <library path="libjsk_pcl_ros_moveit">
   <class name="jsk_pcl/PointCloudMoveitFilter"
          type="jsk_pcl_ros::PointCloudMoveitFilter"
