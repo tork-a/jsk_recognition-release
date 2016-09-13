@@ -28,6 +28,10 @@ catkin_package(
     LIBRARIES # TODO
 )
 
+if("${jsk_topic_tools_VERSION}" VERSION_LESS 2.0.10) # https://github.com/jsk-ros-pkg/jsk_common/pull/1346 changed since >= 2.0.10
+  add_definitions("-DUSE_2_0_9_ADVERTISE_CAMERA")
+endif()
+
 jsk_nodelet(src/image_resizer_nodelet.cpp
   "resized_image_transport/ImageResizer"
   "image_resizer"
@@ -61,3 +65,16 @@ install(DIRECTORY launch/
         )
 install(FILES nodelet.xml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
+# check ros distro >= indigo
+execute_process(
+  COMMAND python -c "import sys; sys.exit(ord('$ENV{ROS_DISTRO}'[0]) >= ord('indigo'[0]))"
+  RESULT_VARIABLE DISTRO_GE_INDIGO
+)
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  if(${DISTRO_GE_INDIGO})
+    # FIXME: jsk_tools/test_topic_published.py does not work on hydro travis/jenkins
+    # https://github.com/jsk-ros-pkg/jsk_common/pull/1293#issuecomment-164158260
+    add_rostest(test/image_resizer.test)
+  endif()
+endif()
