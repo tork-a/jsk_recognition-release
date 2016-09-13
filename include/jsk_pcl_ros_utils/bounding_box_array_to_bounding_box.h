@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2016, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,37 +34,38 @@
  *********************************************************************/
 
 
-#ifndef JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
-#define JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
+#ifndef JSK_PCL_ROS_UTILS_BOUNDING_BOX_ARRAY_TO_BOUNDING_BOX_H_
+#define JSK_PCL_ROS_UTILS_BOUNDING_BOX_ARRAY_TO_BOUNDING_BOX_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
+#include <dynamic_reconfigure/server.h>
+#include <jsk_pcl_ros_utils/BoundingBoxArrayToBoundingBoxConfig.h>
+#include <jsk_recognition_msgs/BoundingBoxArray.h>
 
 namespace jsk_pcl_ros_utils
 {
 
-class LabelToClusterPointIndices: public jsk_topic_tools::DiagnosticNodelet
+class BoundingBoxArrayToBoundingBox: public jsk_topic_tools::DiagnosticNodelet
 {
 public:
-  LabelToClusterPointIndices(): DiagnosticNodelet("LabelToClusterPointIndices") { }
+  typedef jsk_pcl_ros_utils::BoundingBoxArrayToBoundingBoxConfig Config;
+  BoundingBoxArrayToBoundingBox(): DiagnosticNodelet("BoundingBoxArrayToBoundingBox") { }
 protected:
-  ////////////////////////////////////////////////////////
-  // methods
-  ////////////////////////////////////////////////////////
   virtual void onInit();
   virtual void subscribe();
   virtual void unsubscribe();
-  virtual void convert(const sensor_msgs::Image::ConstPtr& label_msg);
+  virtual void convert(const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& bbox_array_msg);
+  virtual void configCallback(Config &config, uint32_t level);
 
-  ////////////////////////////////////////////////////////
-  // ROS variables
-  ////////////////////////////////////////////////////////
+  boost::mutex mutex_;
+
   ros::Subscriber sub_;
   ros::Publisher pub_;
-  ros::Publisher pub_bg_;
+  boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
+  int index_;
 private:
 };
 
 }  // namespace jsk_pcl_ros_utils
 
-#endif  // JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
+#endif  // JSK_PCL_ROS_UTILS_BOUNDING_BOX_ARRAY_TO_BOUNDING_BOX_H_
