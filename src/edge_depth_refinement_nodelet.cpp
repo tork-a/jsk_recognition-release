@@ -134,7 +134,7 @@ namespace jsk_pcl_ros
         min_x_index = index;
       }
       if (y > max_y) {
-        max_y = max_y;
+        max_y = y;
         max_y_index = index;
       }
       if (y < min_y) {
@@ -143,13 +143,13 @@ namespace jsk_pcl_ros
       }
     }
 
-    if (max_x_index != max_x_index) {
+    if (min_x_index != max_x_index) {
       return boost::make_tuple(
-        max_x_index, min_x_index);
+        min_x_index, max_x_index);
     }
     else {
       return boost::make_tuple(
-        max_y_index, min_y_index);
+        min_y_index, max_y_index);
     }
   }
 
@@ -199,8 +199,6 @@ namespace jsk_pcl_ros
       JSK_NODELET_ERROR("no edges are specified");
       return;
     }
-    std::vector<pcl::PointIndices::Ptr> nonduplicated_inliers;
-    std::vector<pcl::ModelCoefficients::Ptr> cnonduplicated_oefficients;
 
     // buildup Lines and Segments
     std::vector<jsk_recognition_utils::Line::Ptr> lines;
@@ -244,13 +242,19 @@ namespace jsk_pcl_ros
     ////////////////////////////////////////////////////////
     std::vector<std::set<int> > duplication_set_list;
     std::set<int> duplicated_indices;
-    for (size_t i = 0; i < all_inliers.size() - 1; i++) {
-      std::vector<int> duplication_list = duplication_map[i];
+    for (size_t i = 0; i < all_inliers.size(); i++) {
+      std::vector<int> duplication_list;
+      if (i < all_inliers.size() - 1) {
+        duplication_list = duplication_map[i];
+      }
       if (duplicated_indices.find(i) == duplicated_indices.end()) {
-        if (duplication_list.size() == 0) {
-          // nothing to do...
+        if (i == all_inliers.size() - 1 || duplication_list.size() == 0) { // no duplication found
+          std::set<int> no_duplication_set;
+          no_duplication_set.insert(i);
+          duplication_set_list.push_back(no_duplication_set);
+          jsk_recognition_utils::addSet<int>(duplicated_indices, no_duplication_set);
         }
-        else {
+        else { // some duplication found
           std::set<int> new_duplication_set;
           jsk_recognition_utils::buildGroupFromGraphMap(duplication_map,
                                  i,
