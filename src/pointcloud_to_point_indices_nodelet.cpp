@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2016, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,39 +32,59 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
-
-
-#ifndef JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
-#define JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
-
-#include <jsk_topic_tools/diagnostic_nodelet.h>
-#include <sensor_msgs/Image.h>
+#define BOOST_PARAMETER_MAX_ARITY 7
+#include "jsk_pcl_ros_utils/pointcloud_to_point_indices.h"
+#include <jsk_recognition_utils/pcl_conversion_util.h>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 
 namespace jsk_pcl_ros_utils
 {
+  void PointCloudToPointIndices::onInit()
+  {
+    DiagnosticNodelet::onInit();
+    pub_ = advertise<PCLIndicesMsg>(*pnh_, "output", 1);
+    onInitPostProcess();
+  }
 
-class LabelToClusterPointIndices: public jsk_topic_tools::DiagnosticNodelet
-{
-public:
-  LabelToClusterPointIndices(): DiagnosticNodelet("LabelToClusterPointIndices") { }
-protected:
-  ////////////////////////////////////////////////////////
-  // methods
-  ////////////////////////////////////////////////////////
-  virtual void onInit();
-  virtual void subscribe();
-  virtual void unsubscribe();
-  virtual void convert(const sensor_msgs::Image::ConstPtr& label_msg);
+  void PointCloudToPointIndices::subscribe()
+  {
+    sub_ = pnh_->subscribe("input", 1, &PointCloudToPointIndices::convert, this);
+  }
 
-  ////////////////////////////////////////////////////////
-  // ROS variables
-  ////////////////////////////////////////////////////////
-  ros::Subscriber sub_;
-  ros::Publisher pub_;
-  ros::Publisher pub_bg_;
-private:
-};
+  void PointCloudToPointIndices::unsubscribe()
+  {
+    sub_.shutdown();
+  }
 
-}  // namespace jsk_pcl_ros_utils
+  void PointCloudToPointIndices::updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper &stat)
+  {
+    if (vital_checker_->isAlive())
+    {
+      stat.summary(diagnostic_msgs::DiagnosticStatus::OK, "PointCloudToPointIndices running");
+    }
+    else
+    {
+      jsk_topic_tools::addDiagnosticErrorSummary("PointCloudToPointIndices", vital_checker_, stat);
+    }
+  }
 
-#endif  // JSK_PCL_ROS_UTILS_LABEL_TO_CLUSTER_POINT_INDICES_H_
+  void PointCloudToPointIndices::convert(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg)
+  {
+    pcl::PointCloud<pcl::PointXYZ>::Ptr pc(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::fromROSMsg(*cloud_msg, *pc);
+    PCLIndicesMsg indices_msg;
+    for (size_t i = 0; i < pc->points.size(); i++)
+    {
+      if (!isnan(pc->points[i].x) && !isnan(pc->points[i].y) && !isnan(pc->points[i].z))
+      {
+        indices_msg.indices.push_back(i);
+      }
+    }
+    indices_msg.header = cloud_msg->header;
+    pub_.publish(indices_msg);
+  }
+}
+
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS(jsk_pcl_ros_utils::PointCloudToPointIndices, nodelet::Nodelet);
