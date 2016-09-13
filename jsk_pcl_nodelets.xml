@@ -1,4 +1,7 @@
 <library path="libjsk_pcl_ros_utils">
+  <class name="jsk_pcl_utils/BoundingBoxArrayToBoundingBox" type="jsk_pcl_ros_utils::BoundingBoxArrayToBoundingBox"
+         base_class_type="nodelet::Nodelet">
+  </class>
   <class name="jsk_pcl_utils/PCDReaderWithPose" type="jsk_pcl_ros_utils::PCDReaderWithPose"
          base_class_type="nodelet::Nodelet">
     <description>
@@ -32,6 +35,11 @@
          type="jsk_pcl_ros_utils::PointIndicesToMaskImage"
          base_class_type="nodelet::Nodelet">
     Generate mask image out of point indices
+  </class>
+  <class name="jsk_pcl_utils/PointIndicesToClusterPointIndices"
+         type="jsk_pcl_ros_utils::PointIndicesToClusterPointIndices"
+         base_class_type="nodelet::Nodelet">
+    Convert point indices to cluster of point indices
   </class>
   <class name="jsk_pcl_utils/DepthImageError" type="jsk_pcl_ros_utils::DepthImageError"
          base_class_type="nodelet::Nodelet">
@@ -163,7 +171,30 @@
     <description>
     </description>
   </class>
+  <class name="jsk_pcl_utils/PointCloudToMaskImage" type="jsk_pcl_ros_utils::PointCloudToMaskImage"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Convert point cloud to mask image with skipping nan region of xyz.
+    </description>
+  </class>
+  <class name="jsk_pcl_utils/ClusterPointIndicesToPointIndices" type="jsk_pcl_ros_utils::ClusterPointIndicesToPointIndices"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Convert cluster indices to point indices for specified index value with ROS param.
+    </description>
+  </class>
+  <class name="jsk_pcl_utils/PointCloudToPointIndices" type="jsk_pcl_ros_utils::PointCloudToPointIndices"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Convert point cloud to point indices with skipping nan region of xyz.
+    </description>
+  </class>
   <class name="jsk_pcl_utils/PointCloudRelativeFromPoseStamped" type="jsk_pcl_ros_utils::PointCloudRelativeFromPoseStamped"
+         base_class_type="nodelet::Nodelet">
+    <description>
+    </description>
+  </class>
+  <class name="jsk_pcl_utils/PointCloudToPCD" type="jsk_pcl_ros_utils::PointCloudToPCD"
          base_class_type="nodelet::Nodelet">
     <description>
     </description>

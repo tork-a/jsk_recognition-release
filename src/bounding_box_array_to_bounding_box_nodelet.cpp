@@ -1,8 +1,7 @@
-// -*- mode: C++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2014, JSK Lab
+ *  Copyright (c) 2016, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,51 +32,66 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include "jsk_pcl_ros_utils/delay_pointcloud.h"
-#include <pluginlib/class_list_macros.h>
+#define BOOST_PARAMETER_MAX_ARITY 7
+
+#include "jsk_pcl_ros_utils/bounding_box_array_to_bounding_box.h"
+#include <jsk_recognition_utils/pcl_conversion_util.h>
+#include <jsk_recognition_msgs/BoundingBox.h>
 
 namespace jsk_pcl_ros_utils
 {
-  void DelayPointCloud::onInit()
-  {
-    ConnectionBasedNodelet::onInit();
 
+  void BoundingBoxArrayToBoundingBox::onInit()
+  {
+    DiagnosticNodelet::onInit();
+
+    // dynamic_reconfigure
     srv_ = boost::make_shared <dynamic_reconfigure::Server<Config> > (*pnh_);
     dynamic_reconfigure::Server<Config>::CallbackType f =
-        boost::bind (&DelayPointCloud::configCallback, this, _1, _2);
-    srv_->setCallback (f);
+      boost::bind(&BoundingBoxArrayToBoundingBox::configCallback, this, _1, _2);
+    srv_->setCallback(f);
 
-    pnh_->param("delay_time", delay_time_, 0.1);
-    pnh_->param("queue_size", queue_size_, 1000);
-    pub_ = advertise<sensor_msgs::PointCloud2>(*pnh_, "output", queue_size_);
+    pub_ = advertise<jsk_recognition_msgs::BoundingBox>(*pnh_, "output", 1);
+    onInitPostProcess();
   }
 
-  void DelayPointCloud::configCallback(Config &config, uint32_t level)
+  void BoundingBoxArrayToBoundingBox::configCallback(
+    Config &config, uint32_t level)
   {
     boost::mutex::scoped_lock lock(mutex_);
-
-    delay_time_ = config.delay_time;
-    DelayPointCloud::subscribe();
+    index_ = config.index;
   }
 
-  void DelayPointCloud::delay(const sensor_msgs::PointCloud2::ConstPtr& msg)
+  void BoundingBoxArrayToBoundingBox::subscribe()
   {
-    sensor_msgs::PointCloud2 out_cloud_msg = *msg;
-    out_cloud_msg.header.stamp = ros::Time::now();
-    pub_.publish(out_cloud_msg);
+    sub_ = pnh_->subscribe("input", 1, &BoundingBoxArrayToBoundingBox::convert, this);
   }
 
-  void DelayPointCloud::subscribe()
+  void BoundingBoxArrayToBoundingBox::unsubscribe()
   {
-    sub_.subscribe(*pnh_, "input", 1);
-    time_sequencer_ = boost::make_shared<message_filters::TimeSequencer<sensor_msgs::PointCloud2> >(ros::Duration(delay_time_), ros::Duration(0.01), queue_size_);
-    time_sequencer_->connectInput(sub_);
-    time_sequencer_->registerCallback(boost::bind(&DelayPointCloud::delay, this, _1));
+    sub_.shutdown();
   }
-  void DelayPointCloud::unsubscribe()
+
+  void BoundingBoxArrayToBoundingBox::convert(
+    const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& bbox_array_msg)
   {
-    sub_.unsubscribe();
+    vital_checker_->poke();
+
+    jsk_recognition_msgs::BoundingBox bbox_msg;
+    bbox_msg.header = bbox_array_msg->header;
+
+    int array_size = bbox_array_msg->boxes.size();
+    if (index_ < 0) {
+      return;
+    } else if (index_ < array_size) {
+      bbox_msg = bbox_array_msg->boxes[index_];
+    } else {
+      NODELET_ERROR_THROTTLE(10, "Invalid ~index %d is specified for array size %d.", index_, array_size);
+    }
+
+    pub_.publish(bbox_msg);
   }
+
 }
-
-PLUGINLIB_EXPORT_CLASS (jsk_pcl_ros_utils::DelayPointCloud, nodelet::Nodelet);
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS(jsk_pcl_ros_utils::BoundingBoxArrayToBoundingBox, nodelet::Nodelet);
