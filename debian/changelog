@@ -1,0 +1,498 @@
+ros-indigo-jsk-recognition-msgs (0.3.22-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 12 Sep 2016 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.21-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 14 Apr 2016 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.20-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 13 Apr 2016 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.19-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 21 Mar 2016 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.18-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 20 Mar 2016 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.17-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 19 Mar 2016 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.16-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 10 Feb 2016 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.15-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 08 Feb 2016 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.14-0trusty) trusty; urgency=high
+
+  * [jsk_perception] BoundingBoxToRectArray and rect_array_to_image_marker.py
+  * [jsk_pcl_ros] Publish current tracking status (running or idle)
+    from particle_fitler_tracking.
+    And add some scripts to visualize them.
+  * [jsk_recognition_msgs] Add min/max fields to  PlotDataArray
+  * [jsk_recognition_msgs] Update PlotData message to support more 2d plotting
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 03 Feb 2016 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.13-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 18 Dec 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.12-0trusty) trusty; urgency=high
+
+  * [jsk_pcl_ros_utils] Introduce new package called jsk_pcl_ros_utils
+    in order to speed-up compilation of jsk_pcl_ros
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 18 Dec 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.11-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 17 Dec 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.10-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 16 Dec 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.9-0trusty) trusty; urgency=high
+
+  * [jsk_perception] Add PolygonArrayColorHistogram
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 13 Dec 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.8-0trusty) trusty; urgency=high
+
+  * [jsk_pcl_ros] Add Failure flag to Torus message
+  * Remove types on docs for jsk_pcl_ros
+    See http://docs.ros.org/indigo/api/jsk_recognition_msgs/html/index-msg.html for message types
+  * Contributors: Kentaro Wada, Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 07 Dec 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.7-0trusty) trusty; urgency=high
+
+  * Merge pull request #1276 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1276> from mmurooka/add-octomap-contact
+    [jsk_pcl_ros] Add octomap contact
+  * [jsk_recognition_msgs] Add VectorArray.msg
+  * add message for octomap_server_contact
+  * [jsk_recognition_msgs] Add new msg ClassificationResult
+  * [jsk_recognition_msgs] Sort msg files in CMakeLists.txt
+  * [jsk_recognition_msgs] Add WeightedPoseArray
+  * add new output msg for handle estimate
+  * Contributors: Kentaro Wada, Masaki Murooka, Ryohei Ueda, Yu Ohara
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 18 Nov 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.6-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 10 Sep 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.5-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 08 Sep 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.4-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 06 Sep 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.3-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 05 Sep 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.2-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 04 Sep 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.1-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 03 Sep 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.3.0-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 03 Sep 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.18-0trusty) trusty; urgency=high
+
+  * [jsk_recognition_msgs] Add script to convert
+    jsk_recognition_msgs/PlotData into csv
+  * [jsk_pcl_ros] Add tool to visualize variance of raser scan
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 03 Sep 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.17-0trusty) trusty; urgency=high
+
+  * [jsk_recognition_msgs/PolygonArray] Add lebels and likelihood for
+    colorizing on rviz
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 20 Aug 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.16-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 18 Aug 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.15-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 17 Aug 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.14-0trusty) trusty; urgency=high
+
+  * [jsk_recognition_msgs] Add value field to BoundingBox to represent likelihood
+  * [jsk_recognition_msgs] HistogramWithRange message to represent rich histogram
+    data
+  * [jsk_pcl_ros] Add config topic to chain heightmap configuration
+  * [jsk_perception] Scripts for bof and its hist extractor
+  * Contributors: Kentaro Wada, Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 12 Aug 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.13-0trusty) trusty; urgency=high
+
+  * [jsk_perception] Use ImageDifferenceValue.msg instead of Float32Stamped.msg
+  * [jsk_recognition_msgs] Add Float32Stamped.msg
+  * Contributors: Kentaro Wada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 10 Jun 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.12-0trusty) trusty; urgency=high
+
+  * JSK Recognition Msg for handling Array of 2D Rects
+  * Contributors: iKrishneel
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 03 May 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.11-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 12 Apr 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.10-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 08 Apr 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.9-0trusty) trusty; urgency=high
+
+  * 0.2.8
+  * Update Changelog
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 28 Mar 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.8-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 28 Mar 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.7-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 25 Mar 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.6-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 24 Mar 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.5-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 16 Mar 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.4-0trusty) trusty; urgency=high
+
+  * [jsk_recognition_msgs] Add resolution to SimpleOccupancyGrid
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 07 Mar 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.3-0trusty) trusty; urgency=high
+
+  * add CATKIN_DEPENDS
+  * [jsk_recognition_msgs] Add new message for occupancy grid for more
+    simple usage
+  * Contributors: Ryohei Ueda, Kei Okada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 01 Feb 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.2-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.1-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.2.0-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 28 Jan 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.34-0trusty) trusty; urgency=high
+
+  * [jsk_pcl_ros, jsk_perception] Use jsk_recognition_msgs
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 28 Jan 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.33-0trusty) trusty; urgency=high
+
+  * [jsk_recognition_msgs] Add jsk_recognition_msgs
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 23 Jan 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.32-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 11 Jan 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.31-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 07 Jan 2015 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.30-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 24 Dec 2014 07:45:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.29-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 24 Dec 2014 03:43:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.28-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 16 Dec 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.27-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 08 Dec 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.26-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 22 Nov 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.25-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 20 Nov 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.24-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 14 Nov 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.23-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 08 Oct 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.22-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 23 Sep 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.21-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 19 Sep 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.20-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 16 Sep 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.19-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 14 Sep 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.18-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 12 Sep 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.17-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 06 Sep 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.16-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 03 Sep 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.15-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 25 Aug 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.14-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 31 Jul 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.13-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 28 Jul 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.12-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 23 Jul 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.11-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 07 Jul 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.10-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 06 Jul 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.9-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 30 Jun 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.8-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 28 Jun 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.7-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 30 May 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.6-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 May 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.5-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 28 May 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.4-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 24 Apr 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.3-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 11 Apr 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.2-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 10 Apr 2014 15:00:00 -0000
+
+ros-indigo-jsk-recognition-msgs (0.1.1-0trusty) trusty; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 09 Apr 2014 15:00:00 -0000
+
+
