@@ -81,7 +81,10 @@ ENDIF()
 # generate the dynamic_reconfigure config file
 generate_dynamic_reconfigure_options(
   #   cfg/VoxelGridLargeScale.cfg
+  cfg/BoundingBoxArrayToBoundingBox.cfg
   cfg/CloudOnPlane.cfg
+  cfg/ClusterPointIndicesToPointIndices.cfg
+  cfg/DelayPointCloud.cfg
   cfg/PolygonArrayAreaLikelihood.cfg
 #   cfg/PlaneSupportedCuboidEstimator.cfg
 #   cfg/InteractiveCuboidLikelihood.cfg
@@ -139,6 +142,8 @@ generate_dynamic_reconfigure_options(
 #   cfg/MovingLeastSquareSmoothing.cfg
 #   cfg/OctreeVoxelGrid.cfg
 #   cfg/OctreeChangePublisher.cfg
+    cfg/PointCloudToPCD.cfg
+    cfg/PolygonArrayUnwrapper.cfg
   )
 
 generate_messages(DEPENDENCIES
@@ -147,7 +152,9 @@ find_package(OpenCV REQUIRED core imgproc)
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS} ${Boost_LIBRARY_DIRS})
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -z defs")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -z defs")
+endif()
 
 macro(jsk_pcl_util_nodelet _nodelet_cpp _nodelet_class _single_nodelet_exec_name)
   message("util: ${_nodelet_cpp}")
@@ -161,6 +168,8 @@ else ($ENV{TRAVIS_JOB_ID})
   add_definitions("-O2 -g")
 endif ($ENV{TRAVIS_JOB_ID})
 
+jsk_pcl_util_nodelet(src/bounding_box_array_to_bounding_box_nodelet.cpp "jsk_pcl_utils/BoundingBoxArrayToBoundingBox"
+  "bounding_box_array_to_bounding_box")
 jsk_pcl_util_nodelet(src/normal_flip_to_frame_nodelet.cpp "jsk_pcl_utils/NormalFlipToFrame"
   "normal_flip_to_frame")
 jsk_pcl_util_nodelet(src/centroid_publisher_nodelet.cpp "jsk_pcl_utils/CentroidPublisher" "centroid_publisher")
@@ -196,14 +205,22 @@ jsk_pcl_util_nodelet(src/planar_pointcloud_simulator_nodelet.cpp
   "jsk_pcl_utils/PlanarPointCloudSimulator" "planar_pointcloud_simulator")
 jsk_pcl_util_nodelet(src/plane_rejector_nodelet.cpp
   "jsk_pcl_utils/PlaneRejector" "plane_rejector")
+if("$ENV{ROS_DISTRO}" STRGREATER "hydro")
+  jsk_pcl_util_nodelet(src/cluster_point_indices_to_point_indices_nodelet.cpp
+    "jsk_pcl_utils/ClusterPointIndicesToPointIndices" "cluster_point_indices_to_point_indices")
+endif()
 jsk_pcl_util_nodelet(src/pointcloud_to_cluster_point_indices_nodelet.cpp
   "jsk_pcl_utils/PointCloudToClusterPointIndices" "pointcloud_to_cluster_point_indices")
+jsk_pcl_util_nodelet(src/pointcloud_to_mask_image_nodelet.cpp
+  "jsk_pcl_utils/PointCloudToMaskImage" "pointcloud_to_mask_image")
 jsk_pcl_util_nodelet(src/static_polygon_array_publisher_nodelet.cpp
   "jsk_pcl_utils/StaticPolygonArrayPublisher" "static_polygon_array_publisher")
 jsk_pcl_util_nodelet(src/polygon_array_transformer_nodelet.cpp
   "jsk_pcl_utils/PolygonArrayTransformer" "polygon_array_transformer")
 jsk_pcl_util_nodelet(src/pointcloud_to_stl_nodelet.cpp
   "jsk_pcl_utils/PointCloudToSTL" "pointcloud_to_stl")
+jsk_pcl_util_nodelet(src/pointcloud_to_point_indices_nodelet.cpp
+  "jsk_pcl_utils/PointCloudToPointIndices" "pointcloud_to_point_indices")
 jsk_pcl_util_nodelet(src/polygon_appender_nodelet.cpp
   "jsk_pcl_utils/PolygonAppender" "polygon_appender")
 jsk_pcl_util_nodelet(src/delay_pointcloud_nodelet.cpp
@@ -222,6 +239,8 @@ jsk_pcl_util_nodelet(src/plane_reasoner_nodelet.cpp
   "jsk_pcl_utils/PlaneReasoner" "plane_reasoner")
 jsk_pcl_util_nodelet(src/transform_pointcloud_in_bounding_box_nodelet.cpp
   "jsk_pcl_utils/TransformPointcloudInBoundingBox" "transform_pointcloud_in_bounding_box")
+jsk_pcl_util_nodelet(src/point_indices_to_cluster_point_indices_nodelet.cpp
+  "jsk_pcl_utils/PointIndicesToClusterPointIndices" "point_indices_to_cluster_point_indices")
 jsk_pcl_util_nodelet(src/point_indices_to_mask_image_nodelet.cpp
   "jsk_pcl_utils/PointIndicesToMaskImage" "point_indices_to_mask_image")
 jsk_pcl_util_nodelet(src/mask_image_to_depth_considered_mask_image_nodelet.cpp
@@ -238,6 +257,8 @@ jsk_pcl_util_nodelet(src/pcd_reader_with_pose_nodelet.cpp
   "jsk_pcl_utils/PCDReaderWithPose" "pcd_reader_with_pose")
 jsk_pcl_util_nodelet(src/pointcloud_relative_from_pose_stamped_nodelet.cpp
   "jsk_pcl_utils/PointCloudRelativeFromPoseStamped" "pointcloud_relative_from_pose_stamped")
+jsk_pcl_util_nodelet(src/pointcloud_to_pcd_nodelet.cpp
+  "jsk_pcl_utils/PointCloudToPCD" "pointcloud_to_pcd")
 add_library(jsk_pcl_ros_utils SHARED ${jsk_pcl_util_nodelet_sources})
 add_dependencies(jsk_pcl_ros_utils ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 target_link_libraries(jsk_pcl_ros_utils
@@ -266,3 +287,26 @@ install(TARGETS jsk_pcl_ros_utils
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 
 install(FILES jsk_pcl_nodelets.xml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+if (CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_custom_target(install_test_data COMMAND ${PROJECT_SOURCE_DIR}/scripts/install_test_data.py)
+  if(TARGET tests)
+    add_dependencies(tests install_test_data)
+  endif()
+  # Naming Rule: filename of rostest should be {EXECUTABLE_NAME}.test
+  add_rostest(test/point_indices_to_cluster_point_indices.test)
+  if("$ENV{ROS_DISTRO}" STRGREATER "hydro")
+    # not build on hydro
+    add_rostest(test/cluster_point_indices_to_point_indices.test)
+    # unexpected error
+    add_rostest(test/point_indices_to_mask_image.test)
+    # because of unreleased topic_tools/transform on hydro
+    add_rostest(test/pointcloud_to_pcd.test DEPENDENCIES install_test_data)
+    add_rostest(test/pointcloud_to_point_indices.test DEPENDENCIES install_test_data)
+    # because of unreleased jsk_tools/test_topic_published.py on hydro
+    add_rostest(test/bounding_box_array_to_bounding_box.test)
+    add_rostest(test/pointcloud_to_mask_image.test install_test_data)
+    add_rostest(test/polygon_array_unwrapper.test)
+  endif()
+endif()
