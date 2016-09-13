@@ -1,14 +1,14 @@
-From f3a9d4071cbd22df3b822e6cd252e93e1e2cda2c Mon Sep 17 00:00:00 2001
+From d859c84e91c0c4f2f42ce37cbc803ee643e9f69b Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 19:55:50 +0900
 Subject: [PATCH] comment out un released depends
 
 ---
- package.xml |    8 ++++----
+ package.xml | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 5297bf7..b55d41b 100644
+index a9435a4..8a9be10 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -60,13 +60,13 @@
@@ -30,5 +30,5 @@ index 5297bf7..b55d41b 100644
    <run_depend>roseus</run_depend>
    <run_depend>rospack</run_depend>
 -- 
-1.7.9.5
+1.9.1
 
