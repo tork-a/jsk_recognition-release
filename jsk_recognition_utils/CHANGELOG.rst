@@ -2,6 +2,9 @@
 Changelog for package jsk_recognition_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.23 (2016-09-14)
+-------------------
+
 0.3.22 (2016-09-13)
 -------------------
 * Merge pull request #1826 from mmurooka/polyarr-to-poly2
