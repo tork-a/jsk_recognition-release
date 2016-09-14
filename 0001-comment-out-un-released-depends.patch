@@ -1,4 +1,4 @@
-From 47c4dbc02d970448040b984c50ba3b60fad30ac6 Mon Sep 17 00:00:00 2001
+From 57ecf73821982a06d6fe665eec73e2dae3e711ec Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 19:22:47 +0900
 Subject: [PATCH] comment out un released depends
@@ -8,7 +8,7 @@ Subject: [PATCH] comment out un released depends
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 14e2d4d..4ef19eb 100644
+index bb5a0d5..154d50b 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -38,14 +38,14 @@
@@ -28,7 +28,7 @@ index 14e2d4d..4ef19eb 100644
    <run_depend>roscpp_tutorials</run_depend>
    <run_depend>jsk_topic_tools</run_depend>
    <build_depend>kdl_parser</build_depend>
-@@ -81,11 +81,11 @@
+@@ -82,11 +82,11 @@
    <run_depend>boost</run_depend>
    <run_depend>rosboost_cfg</run_depend>
    <run_depend>cv_bridge</run_depend>
@@ -43,7 +43,7 @@ index 14e2d4d..4ef19eb 100644
    <build_depend>laser_assembler</build_depend>
    <run_depend>laser_assembler</run_depend>
    <build_depend>moveit_ros_perception</build_depend>
-@@ -101,7 +101,7 @@
+@@ -102,7 +102,7 @@
    <build_depend>interactive_markers</build_depend>
    <run_depend>interactive_markers</run_depend>
    <run_depend>jsk_recognition_utils</run_depend>
@@ -53,5 +53,5 @@ index 14e2d4d..4ef19eb 100644
    <run_depend>kdl_conversions</run_depend>
    <run_depend>nav_msgs</run_depend>
 -- 
-1.9.1
+1.9.0
 
