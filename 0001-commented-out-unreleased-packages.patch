@@ -1,0 +1,44 @@
+From 28ce6b1e3e37f7f73ba86b29dd1c33b08e129d69 Mon Sep 17 00:00:00 2001
+From: Kei Okada <kei.okada@gmail.com>
+Date: Tue, 13 Sep 2016 17:52:58 +0900
+Subject: [PATCH] commented out unreleased packages
+
+---
+ package.xml | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/package.xml b/package.xml
+index 26d1db9..08a068b 100644
+--- a/package.xml
++++ b/package.xml
+@@ -60,20 +60,20 @@
+   <run_depend>imagesift</run_depend>
+   <run_depend>jsk_recognition_msgs</run_depend>
+   <run_depend>jsk_recognition_utils</run_depend>
+-  <run_depend>jsk_rqt_plugins</run_depend>
++  <!-- <run_depend>jsk_rqt_plugins</run_depend> -->
+   <run_depend>jsk_topic_tools</run_depend>
+   <run_depend>message_runtime</run_depend>
+   <run_depend>mk</run_depend>
+-  <run_depend>ml_classifiers</run_depend>
++  <!-- <run_depend>ml_classifiers</run_depend> -->
+   <run_depend>nodelet</run_depend>
+   <run_depend>opencv_apps</run_depend>
+   <run_depend>pcl_ros</run_depend>
+   <run_depend>posedetection_msgs</run_depend>
+-  <run_depend>python-chainer</run_depend>
+-  <run_depend>python-dlib</run_depend>
+-  <run_depend>python-fcn-pip</run_depend>
+-  <run_depend>python-gdown</run_depend>
+-  <run_depend>python-h5py</run_depend>
++  <!-- <run_depend>python-chainer</run_depend> -->
++  <!-- <run_depend>python-dlib</run_depend> -->
++  <!-- <run_depend>python-fcn-pip</run_depend> -->
++  <!-- <run_depend>python-gdown</run_depend> -->
++  <!-- <run_depend>python-h5py</run_depend> -->
+   <run_depend>python-sklearn</run_depend>
+   <run_depend>rosbag</run_depend>
+   <run_depend>roscpp</run_depend>
+-- 
+1.9.0
+
