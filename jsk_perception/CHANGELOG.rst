@@ -2,6 +2,9 @@
 Changelog for package jsk_perception
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.25 (2016-09-16)
+-------------------
+
 0.3.24 (2016-09-15)
 -------------------
 * CMakeLists.txt : jsk_data is required in build time, used in scripts/install_sample_data
