@@ -1,4 +1,4 @@
-From cb454716c8d2783bb0de34de700dbbbe005b078a Mon Sep 17 00:00:00 2001
+From 7e0b656869ae5bab85527fd1df64d954859afda6 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 15:02:36 +0900
 Subject: [PATCH] comment out pip depends
@@ -8,7 +8,7 @@ Subject: [PATCH] comment out pip depends
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 26d1db9..d87c042 100644
+index a89f682..c7994b2 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -69,11 +69,11 @@
