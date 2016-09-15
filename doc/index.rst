@@ -1,32 +1,19 @@
-===============
-jsk_recognition
-===============
+=========
+imagesift
+=========
 
-jsk_recognition is a stack for the perception packages which are used in JSK lab.
-
-The code is open source, and `available on github`_.
-
-.. _available on github: http://github.com/jsk-ros-pkg/jsk_recognition
-
+ROS nodes to compute local features of 2-D images. It supports SIFT, SURF, STAR, BRISK.
 
 .. toctree::
+   :glob:
    :maxdepth: 1
-   :caption: Contents
+   :caption: python module
 
-   overview
-   tips
-   install_astra_camera
-   install_softkinetic_camera
-
+   ./python/*
 
 .. toctree::
+   :glob:
    :maxdepth: 1
-   :caption: ROS Packages
+   :caption: nodes and nodelets
 
-   checkerboard_detector/index
-   imagesift/index
-   jsk_perception/index
-   jsk_pcl_ros/index
-   jsk_pcl_ros_utils/index
-   jsk_recognition_utils/index
-   resized_image_transport/index
+   ./nodes/*
