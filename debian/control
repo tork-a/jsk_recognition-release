@@ -1,0 +1,12 @@
+Source: ros-indigo-jsk-perception
+Section: misc
+Priority: extra
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), git-core, libeigen3-dev, libyaml-cpp-dev, ros-indigo-angles, ros-indigo-catkin, ros-indigo-cmake-modules, ros-indigo-cv-bridge, ros-indigo-driver-base, ros-indigo-dynamic-reconfigure, ros-indigo-geometry-msgs, ros-indigo-image-geometry, ros-indigo-image-transport, ros-indigo-image-view2, ros-indigo-jsk-data, ros-indigo-jsk-recognition-msgs, ros-indigo-jsk-recognition-utils, ros-indigo-jsk-tools, ros-indigo-jsk-topic-tools, ros-indigo-message-generation, ros-indigo-mk, ros-indigo-nodelet, ros-indigo-opencv-apps, ros-indigo-pcl-ros, ros-indigo-posedetection-msgs, ros-indigo-robot-self-filter, ros-indigo-roscpp, ros-indigo-roseus, ros-indigo-roslaunch, ros-indigo-roslint, ros-indigo-rospack, ros-indigo-rostest, ros-indigo-sensor-msgs, ros-indigo-std-msgs, ros-indigo-tf
+Homepage: http://ros.org/wiki/jsk_perception
+Standards-Version: 3.9.2
+
+Package: ros-indigo-jsk-perception
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeigen3-dev, libyaml-cpp-dev, python-sklearn, ros-indigo-angles, ros-indigo-cv-bridge, ros-indigo-driver-base, ros-indigo-dynamic-reconfigure, ros-indigo-geometry-msgs, ros-indigo-image-geometry, ros-indigo-image-transport, ros-indigo-image-view, ros-indigo-image-view2, ros-indigo-imagesift, ros-indigo-jsk-data, ros-indigo-jsk-recognition-msgs, ros-indigo-jsk-recognition-utils, ros-indigo-jsk-rqt-plugins, ros-indigo-jsk-topic-tools, ros-indigo-message-runtime, ros-indigo-mk, ros-indigo-ml-classifiers, ros-indigo-nodelet, ros-indigo-opencv-apps, ros-indigo-pcl-ros, ros-indigo-posedetection-msgs, ros-indigo-robot-self-filter, ros-indigo-rosbag, ros-indigo-roscpp, ros-indigo-roseus, ros-indigo-rospack, ros-indigo-rospy, ros-indigo-rqt-gui, ros-indigo-sensor-msgs, ros-indigo-std-msgs, ros-indigo-tf
+Description: jsk_perception
