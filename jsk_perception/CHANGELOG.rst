@@ -2,6 +2,11 @@
 Changelog for package jsk_perception
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.24 (2016-09-15)
+-------------------
+* CMakeLists.txt : jsk_data is required in build time, used in scripts/install_sample_data
+* Contributors: Kei Okada
+
 0.3.23 (2016-09-14)
 -------------------
 * euslisp/eusmodel_template_gen_utils.l: create directory if tepmlate path is not found
