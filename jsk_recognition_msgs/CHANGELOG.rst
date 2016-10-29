@@ -2,6 +2,25 @@
 Changelog for package jsk_recognition_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.28 (2016-10-29)
+-------------------
+* [Major Release] Copy jsk_pcl_ros/srv and  jsk_perception/srv files to jsk_recognition_msgs (`#1914 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1914>`_ )
+* Copy deprecated srv files to jsk_recognition_msgs
+  - jsk_pcl_ros/srv -> jsk_recognition_msgs/srv
+  - jsk_perception/srv -> jsk_recognition_msgs/srv
+  TODO
+  - 1. Migrate current code for srv files in jsk_recognition_msgs
+  - 2. Remove srv files in jsk_pcl_ros and jsk_perception
+* Contributors: Kei Okada, Kentaro Wada
+
+0.3.27 (2016-10-29)
+-------------------
+
+0.3.26 (2016-10-27)
+-------------------
+* Apply context to label probability (`#1901 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1901>`_)
+* Contributors: Kentaro Wada
+
 0.3.25 (2016-09-16)
 -------------------
 
