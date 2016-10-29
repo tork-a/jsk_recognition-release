@@ -82,26 +82,15 @@ namespace jsk_pcl_ros
   {
     boost::mutex::scoped_lock lock(mutex_);
     if (!config_msg_) {
-      JSK_NODELET_ERROR("no ~input/config is yet available");
+      NODELET_ERROR("no ~input/config is yet available");
       return;
     }
-    cv::Mat float_image = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::TYPE_32FC1)->image;
-    pcl::PointCloud<pcl::PointXYZ> cloud;
-    cloud.points.reserve(float_image.rows * float_image.cols);
-    double dx = (max_x_ - min_x_) / float_image.cols;
-    double dy = (max_y_ - min_y_) / float_image.rows;
-    for (size_t j = 0; j < float_image.rows; j++) {
-      for (size_t i = 0; i < float_image.cols; i++) {
-        float v = float_image.at<float>(j, i);
-        pcl::PointXYZ p;
-        if (v != -FLT_MAX) {
-          p.y = j * dy + min_y_ + dy / 2.0;
-          p.x = i * dx + min_x_ + dx / 2.0;
-          p.z = v;
-          cloud.points.push_back(p);
-        }
-      }
-    }
+
+    cv::Mat float_image = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::TYPE_32FC2)->image;
+    pcl::PointCloud<HeightMapPointType > cloud;
+
+    convertHeightMapToPCL(float_image, cloud, max_x_, min_x_, max_y_, min_y_);
+
     sensor_msgs::PointCloud2 ros_cloud;
     pcl::toROSMsg(cloud, ros_cloud);
     ros_cloud.header = msg->header;

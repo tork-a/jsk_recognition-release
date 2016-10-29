@@ -2,6 +2,21 @@
 Changelog for package jsk_recognition_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.28 (2016-10-29)
+-------------------
+
+0.3.27 (2016-10-29)
+-------------------
+
+0.3.26 (2016-10-27)
+-------------------
+* Stop using deprecated jsk_topic_tools/log_utils.h (`#1933 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1933>`_)
+* [heightmap] change type of heightmap to image/32FC2 (`#1886 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1886>`_)
+* Prettify the style of rosparam for bbox publisher (`#1885 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1885>`_)
+  This shows deprecation warning and does not break the current api.
+  (BTW, this code is quite new and I think no one use this other than me.)
+* Contributors: Kentaro Wada, Yohei Kakiuchi
+
 0.3.25 (2016-09-16)
 -------------------
 
