@@ -2,6 +2,84 @@
 Changelog for package jsk_perception
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.28 (2016-10-29)
+-------------------
+* [Major Release] Copy jsk_pcl_ros/srv and  jsk_perception/srv files to jsk_recognition_msgs (`#1914 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1914>`_ )
+* Copy deprecated srv files to jsk_recognition_msgs
+  - jsk_pcl_ros/srv -> jsk_recognition_msgs/srv
+  - jsk_perception/srv -> jsk_recognition_msgs/srv
+  TODO
+  - 1. Migrate current code for srv files in jsk_recognition_msgs
+  - 2. Remove srv files in jsk_pcl_ros and jsk_perception
+* Contributors: Kei Okada, Kentaro Wada
+
+0.3.27 (2016-10-29)
+-------------------
+* Fix rosdep installation for jsk_perception with pip (`#1883 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1883>`_ )
+  * Fix pip installation with libleveldb-dev installation
+* Publish only masks by split_fore_background.py (`#1791 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1791>`_ )
+
+  * Stabilize split_fore_background.test
+  * Fix nan region as mask 0 region
+  * Remove synchronization in split_fore_background.py
+
+* Remove extract_images_sync that merged in image_view (`#1633 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1633>`_ )
+* Remove not used codes: image_saver_sync, publish_header (`#1651 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1651>`_ )
+
+   * they will be merged in image_view package.
+   * for https://github.com/jsk-ros-pkg/jsk_recognition/issues/1648#issuecomment-217344813
+
+* Contributors: Kei Okada, Kentaro Wada
+
+0.3.26 (2016-10-27)
+-------------------
+* Stop using deprecated jsk_topic_tools/log_utils.h (`#1933 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1933>`_)
+* Fix unparsable nodelet pluginlib xml file (`#1929 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1929>`_)
+
+* libcmt: Node to track object on 2D image: ConsensusTracking (`#1918 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1918>`_)
+
+  * jsk_perception ConsensusTracking depends on libcmt which is not released on hydro
+  * libcmt 2.0.17 has been released (`#1924 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1924>`_)
+  * check if header file is installed, before 2.0.17
+  * Fix encoding conversion of ROSMsg <-> cv::Mat
+  * Add test for consensus_tracking
+  * Install sample data for consensus_tracking
+  * Add sample of consensus tracking
+  * Check window is initialized to start tracking
+  * Synchronize polygon and image to set initial tracking window
+  * Rename to sample/sample_consensus_tracking.launch
+  * Fix coding style of consensus_tracking (follow existing code)
+  * Fix year for license
+  * Fix name of nodelet of ConsensusTracking
+  * Fix place of pkg_check_modules in CMakeLists
+  * use package-config version libcmt
+  * publish mask image generated from result
+  * [jsk_perception] add README and set_rect subscriber which will restart tracking
+  * [jsk_perception] add cmt_nodelet depending on libcmt
+
+* Fix for alphabetical order in package.xml (`#1908 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1908>`_)
+
+* apply_context_to_label_probability: Node to apply context to label probability (`#1901 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1901>`_)
+  * Add sample for apply_context_to_label_probability
+  * Visualize label_names in label_image_decomposer
+  * Use default GPU=0 in sample_fcn_object_segmentation.launch
+    Because it does not work with GPU=-1, CPU mode.
+  * Apply context to label probability
+
+* Stabilize jsk_perception/sklearn_classifier.test (`#1877 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1877>`_)
+* Stabilize jsk_perception/bing.test (`#1877 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1877>`_)
+* label_image_decomposer.py: Stop using scipy fromimage that is not supported by apt version (`#1890 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1890>`_)
+* Make the test pass (`#1897 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1897>`_)
+  * Stabilize test for label_image_decomposer
+  * Stabilize test for sklearn_classifer
+  * Stabilize test for bof_histogram_extractor
+  * Comment out unstable test on travis
+* Add quality to heightmap (`#1886 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1886>`_)
+  * [colorize_float_image] fix document and change parameter name.
+  * [jsk_perception, colorize_float_image] fix to handle multi channel image
+* fcn_object_segmentation.py: Set bg label for uncertain region of FCN prediction (`#1881 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1881>`_)
+* Contributors: Kei Okada, Kentaro Wada, Yohei Kakiuchi, Yuto Inagaki
+
 0.3.25 (2016-09-16)
 -------------------
 
