@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2016, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,52 +33,51 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include "jsk_perception/colorize_labels.h"
-#include <jsk_recognition_utils/cv_utils.h>
-#include <jsk_topic_tools/log_utils.h>
-#include <boost/assign.hpp>
-#include <cv_bridge/cv_bridge.h>
-#include <opencv2/opencv.hpp>
-#include <sensor_msgs/image_encodings.h>
+#ifndef JSK_PERCEPTION_CONSENSUS_TRACKING_H_
+#define JSK_PERCEPTION_CONSENSUS_TRACKING_H_
+
+#include <geometry_msgs/PolygonStamped.h>
+#include <libcmt/CMT.h>
+#include <message_filters/subscriber.h>
+#include <message_filters/synchronizer.h>
+#include <message_filters/sync_policies/exact_time.h>
+#include <jsk_topic_tools/diagnostic_nodelet.h>
+#include <sensor_msgs/Image.h>
 
 namespace jsk_perception
 {
-  void ColorizeLabels::onInit()
+  class ConsensusTracking : public jsk_topic_tools::DiagnosticNodelet
   {
-    DiagnosticNodelet::onInit();
-    pub_ = advertise<sensor_msgs::Image>(
-      *pnh_, "output", 1);
-    onInitPostProcess();
-  }
+  public:
+    ConsensusTracking() :
+      DiagnosticNodelet("ConsensusTracking"),
+      window_initialized_(false) {}
+    typedef message_filters::sync_policies::ExactTime<
+      sensor_msgs::Image,
+      geometry_msgs::PolygonStamped> ExactSyncPolicy;
+  protected:
+    virtual void onInit();
+    virtual void subscribe();
+    virtual void unsubscribe();
+    virtual void getTrackingResult(const sensor_msgs::Image::ConstPtr& image_msg);
+    void setInitialWindow(const sensor_msgs::Image::ConstPtr& img_msg,
+                          const geometry_msgs::PolygonStamped::ConstPtr& poly_msg);
 
-  void ColorizeLabels::subscribe()
-  {
-    sub_ = pnh_->subscribe("input", 1, &ColorizeLabels::colorize, this);
-    ros::V_string names = boost::assign::list_of("~input");
-    jsk_topic_tools::warnNoRemap(names);
-  }
+    ros::Publisher pub_mask_image_;
+    ros::Publisher pub_debug_image_;
 
-  void ColorizeLabels::unsubscribe()
-  {
-    sub_.shutdown();
-  }
+    ros::Subscriber sub_image_;
+    boost::shared_ptr<message_filters::Synchronizer<ExactSyncPolicy> > sync_;
+    message_filters::Subscriber<sensor_msgs::Image> sub_image_to_init_;
+    message_filters::Subscriber<geometry_msgs::PolygonStamped> sub_polygon_to_init_;
 
-  void ColorizeLabels::colorize(
-    const sensor_msgs::Image::ConstPtr& label_image_msg)
-  {
-    cv::Mat label_image = cv_bridge::toCvShare(
-      label_image_msg, label_image_msg->encoding)->image;
-    ROS_DEBUG("%dx%d", label_image_msg->width, label_image_msg->height);
-    cv::Mat output_image;
-    jsk_recognition_utils::labelToRGB(label_image, output_image);
-    cv::cvtColor(output_image, output_image, CV_RGB2BGR);
-    pub_.publish(
-      cv_bridge::CvImage(
-        label_image_msg->header,
-        sensor_msgs::image_encodings::BGR8,
-        output_image).toImageMsg());
-  }
-}
+    CMT cmt;
 
-#include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS (jsk_perception::ColorizeLabels, nodelet::Nodelet);
+    boost::mutex mutex_;
+    bool window_initialized_;
+    int queue_size_;
+  private:
+  };
+}  // namespace jsk_perception
+
+#endif // JSK_PERCEPTION_CONSENSUS_TRACKING_H_
