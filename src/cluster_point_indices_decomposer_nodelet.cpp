@@ -67,7 +67,7 @@ namespace jsk_pcl_ros
     if (!pnh_->getParam("tf_prefix", tf_prefix_))
     {
       if (publish_tf_) {
-        JSK_ROS_WARN("~tf_prefix is not specified, using %s", getName().c_str());
+        ROS_WARN("~tf_prefix is not specified, using %s", getName().c_str());
       }
       tf_prefix_ = getName();
     }
@@ -77,7 +77,7 @@ namespace jsk_pcl_ros
     pnh_->param("queue_size", queue_size_, 100);
     pnh_->param("publish_clouds", publish_clouds_, false);
     if (publish_clouds_) {
-      JSK_ROS_WARN("~output%%02d are not published before subscribed, you should subscribe ~debug_output in debuging.");
+      ROS_WARN("~output%%02d are not published before subscribed, you should subscribe ~debug_output in debuging.");
     }
     pnh_->param("align_boxes", align_boxes_, false);
     if (align_boxes_) {
@@ -86,10 +86,10 @@ namespace jsk_pcl_ros
     if (align_boxes_ && !align_boxes_with_plane_) {
       tf_listener_ = jsk_recognition_utils::TfListenerSingleton::getInstance();
       if (!pnh_->getParam("target_frame_id", target_frame_id_)) {
-        JSK_ROS_FATAL("~target_frame_id is not specified");
+        ROS_FATAL("~target_frame_id is not specified");
         return;
       }
-      JSK_ROS_INFO("Aligning bboxes with '%s' using tf transform.", target_frame_id_.c_str());
+      ROS_INFO("Aligning bboxes with '%s' using tf transform.", target_frame_id_.c_str());
     }
     pnh_->param("use_pca", use_pca_, false);
     pnh_->param("force_to_flip_z_axis", force_to_flip_z_axis_, true);
@@ -223,7 +223,7 @@ namespace jsk_pcl_ros
     int nearest_plane_index = findNearestPlane(center, planes, coefficients);
     if (nearest_plane_index == -1) {
       segmented_cloud_transformed = segmented_cloud;
-      JSK_NODELET_ERROR("no planes to align boxes are given");
+      NODELET_ERROR("no planes to align boxes are given");
     }
     else {
       Eigen::Vector3f normal, z_axis;
@@ -248,7 +248,7 @@ namespace jsk_pcl_ros
           isnan(rotation_axis[1]) ||
           isnan(rotation_axis[2])) {
         segmented_cloud_transformed = segmented_cloud;
-        JSK_NODELET_ERROR("cannot compute angle to align the point cloud: [%f, %f, %f], [%f, %f, %f]",
+        NODELET_ERROR("cannot compute angle to align the point cloud: [%f, %f, %f], [%f, %f, %f]",
                       z_axis[0], z_axis[1], z_axis[2],
                       normal[0], normal[1], normal[2]);
       }
@@ -283,7 +283,7 @@ namespace jsk_pcl_ros
             }
           }
           else {
-            JSK_NODELET_ERROR("Too small indices for PCA computation");
+            NODELET_ERROR("Too small indices for PCA computation");
             return false;
           }
         }
@@ -311,6 +311,7 @@ namespace jsk_pcl_ros
   {
     bounding_box.header = header;
 
+    bool is_center_valid = false;
     Eigen::Vector4f center;
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr
       segmented_cloud_transformed (new pcl::PointCloud<pcl::PointXYZRGB>);
@@ -319,7 +320,7 @@ namespace jsk_pcl_ros
     Eigen::Quaternionf q = Eigen::Quaternionf::Identity();
     if (align_boxes_) {
       if (align_boxes_with_plane_) {
-        pcl::compute3DCentroid(*segmented_cloud, center);
+        is_center_valid = pcl::compute3DCentroid(*segmented_cloud, center) != 0;
         bool success = transformPointCloudToAlignWithPlane(segmented_cloud, segmented_cloud_transformed,
                                                            center, planes, coefficients, m4, q);
         if (!success) {
@@ -337,19 +338,19 @@ namespace jsk_pcl_ros
             /*duration=*/ros::Duration(1.0));
         }
         catch (tf2::TransformException &e) {
-          JSK_NODELET_ERROR("Transform error: %s", e.what());
+          NODELET_ERROR("Transform error: %s", e.what());
           return false;
         }
         Eigen::Affine3f transform;
         tf::transformTFToEigen(tf_transform, transform);
         pcl::transformPointCloud(*segmented_cloud, *segmented_cloud_transformed, transform);
-        pcl::compute3DCentroid(*segmented_cloud_transformed, center);
+        is_center_valid = pcl::compute3DCentroid(*segmented_cloud_transformed, center) != 0;
         bounding_box.header.frame_id = target_frame_id_;
       }
     }
     else {
       segmented_cloud_transformed = segmented_cloud;
-      pcl::compute3DCentroid(*segmented_cloud_transformed, center);
+      is_center_valid = pcl::compute3DCentroid(*segmented_cloud_transformed, center) != 0;
     }
       
     // create a bounding box
@@ -364,13 +365,19 @@ namespace jsk_pcl_ros
     Eigen::Vector4f center_transformed = m4 * center2;
       
     // set centroid pose msg
-    center_pose_msg.position.x = center[0];
-    center_pose_msg.position.y = center[1];
-    center_pose_msg.position.z = center[2];
-    center_pose_msg.orientation.x = 0;
-    center_pose_msg.orientation.y = 0;
-    center_pose_msg.orientation.z = 0;
-    center_pose_msg.orientation.w = 1;
+    if (is_center_valid) {
+      center_pose_msg.position.x = center[0];
+      center_pose_msg.position.y = center[1];
+      center_pose_msg.position.z = center[2];
+      center_pose_msg.orientation.x = 0;
+      center_pose_msg.orientation.y = 0;
+      center_pose_msg.orientation.z = 0;
+      center_pose_msg.orientation.w = 1;
+    }
+    else {
+      // set invalid pose for invalid center
+      center_pose_msg = geometry_msgs::Pose();
+    }
     
     // set bounding_box msg
     bounding_box.pose.position.x = center_transformed[0];
@@ -453,10 +460,14 @@ namespace jsk_pcl_ros
       // skip indices with points size
       if (min_size_ > 0 &&
           indices_input->cluster_indices[i].indices.size() < min_size_) {
+        vindices.reset (new std::vector<int> ());
+        converted_indices.push_back(vindices);
         continue;
       }
       if (max_size_ > 0 &&
           indices_input->cluster_indices[i].indices.size() > max_size_) {
+        vindices.reset (new std::vector<int> ());
+        converted_indices.push_back(vindices);
         continue;
       }
       vindices.reset (new std::vector<int> (indices_input->cluster_indices[i].indices));
@@ -575,7 +586,7 @@ namespace jsk_pcl_ros
         for (size_t i = publishers_.size(); i < num; i++)
         {
             std::string topic_name = (boost::format("output%02u") % (i)).str();
-            JSK_ROS_INFO("advertising %s", topic_name.c_str());
+            ROS_INFO("advertising %s", topic_name.c_str());
             ros::Publisher publisher = pnh_->advertise<sensor_msgs::PointCloud2>(topic_name, 1);
             publishers_.push_back(publisher);
         }
