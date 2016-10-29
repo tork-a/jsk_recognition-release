@@ -1,6 +1,6 @@
 <package>
   <name>jsk_pcl_ros</name>
-  <version>0.3.25</version>
+  <version>0.3.28</version>
   <description>jsk_pcl_ros</description>
   <maintainer email="youhei@jsk.t.u-tokyo.ac.jp">Youhei Kakiuchi</maintainer>
   <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
@@ -45,7 +45,7 @@
   <build_depend>roscpp_tutorials</build_depend>
   <build_depend>jsk_footstep_msgs</build_depend>
   <build_depend>jsk_recognition_utils</build_depend>
-  <!-- <build_depend>robot_self_filter</build_depend> -->
+  <build_depend>robot_self_filter</build_depend>
   <run_depend>roscpp_tutorials</run_depend>
   <run_depend>jsk_topic_tools</run_depend>
   <build_depend>kdl_parser</build_depend>
@@ -85,8 +85,8 @@
   <!-- <run_depend>ml_classifiers</run_depend> -->
   <run_depend>diagnostic_updater</run_depend>
   <run_depend>diagnostic_msgs</run_depend>
-  <!-- <build_depend>python-sklearn</build_depend> -->
-  <!-- <run_depend>python-sklearn</run_depend> -->
+  <build_depend>python-sklearn</build_depend>
+  <run_depend>python-sklearn</run_depend>
   <build_depend>laser_assembler</build_depend>
   <run_depend>laser_assembler</run_depend>
   <build_depend>moveit_ros_perception</build_depend>
@@ -98,11 +98,14 @@
   <build_depend>jsk_recognition_msgs</build_depend>
   <run_depend>jsk_recognition_msgs</run_depend>
   <run_depend>jsk_footstep_msgs</run_depend>
-  <run_depend>jsk_perception</run_depend>
   <build_depend>interactive_markers</build_depend>
   <run_depend>interactive_markers</run_depend>
   <run_depend>jsk_recognition_utils</run_depend>
-  <!-- <run_depend>robot_self_filter</run_depend> -->
+  <run_depend>openni_launch</run_depend>
+  <run_depend>openni2_launch</run_depend>
+  <run_depend>topic_tools</run_depend>
+  <run_depend>resized_image_transport</run_depend>
+  <run_depend>robot_self_filter</run_depend>
   <run_depend>kdl_parser</run_depend>
   <run_depend>kdl_conversions</run_depend>
   <run_depend>nav_msgs</run_depend>
@@ -113,10 +116,12 @@
   <run_depend>jsk_pcl_ros_utils</run_depend>
   <run_depend>jsk_data</run_depend>
   <test_depend>jsk_tools</test_depend>
+  <test_depend>roslaunch</test_depend>
   <test_depend>rostest</test_depend>
   <export>
-    <nodelet plugin="${prefix}/jsk_pcl_nodelets.xml"/>
+    <nodelet plugin="${prefix}/plugins/nodelet/libjsk_pcl_ros.xml"/>
+    <nodelet plugin="${prefix}/plugins/nodelet/libjsk_pcl_ros_utils.xml"/>
+    <moveit_ros_perception plugin="${prefix}/plugins/moveit_ros_perception/libjsk_pcl_ros_moveit.xml"/>
     <cpp lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -ljsk_pcl_ros" cflags="-I${prefix}/include"/>
-    <moveit_ros_perception plugin="${prefix}/jsk_pcl_nodelets.xml"/>
   </export>
 </package>
