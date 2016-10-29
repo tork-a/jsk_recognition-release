@@ -1,4 +1,4 @@
-From 0a04a9b3e0796791829899c057282b28570078ef Mon Sep 17 00:00:00 2001
+From eca35064251cdad3ba8098a7afbcab49aac2bf58 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Tue, 13 Sep 2016 17:52:58 +0900
 Subject: [PATCH] commented out unreleased packages
@@ -8,7 +8,7 @@ Subject: [PATCH] commented out unreleased packages
  1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index b010ec2..4ea788f 100644
+index 2287391..3cb9f20 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -61,20 +61,20 @@
@@ -40,5 +40,5 @@ index b010ec2..4ea788f 100644
    <run_depend>rosbag</run_depend>
    <run_depend>roscpp</run_depend>
 -- 
-1.9.0
+1.9.1
 
