@@ -1,0 +1,13 @@
+Source: ros-indigo-imagesift
+Section: misc
+Priority: extra
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-catkin, ros-indigo-cmake-modules, ros-indigo-cv-bridge, ros-indigo-image-transport, ros-indigo-jsk-recognition-utils, ros-indigo-libsiftfast, ros-indigo-nodelet, ros-indigo-posedetection-msgs, ros-indigo-roscpp, ros-indigo-sensor-msgs
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-indigo-imagesift
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-cv-bridge, ros-indigo-image-transport, ros-indigo-jsk-recognition-utils, ros-indigo-libsiftfast, ros-indigo-nodelet, ros-indigo-posedetection-msgs, ros-indigo-roscpp, ros-indigo-sensor-msgs
+Description: For every image, computes its sift features and send a new message with the image, its intrinsic parameters, and the features.
+ Parameters include: display - shows the image on the local computer
