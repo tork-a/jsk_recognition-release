@@ -1,30 +1,32 @@
-From 243738cd928181a1957b15a021929c47de0adff3 Mon Sep 17 00:00:00 2001
+From e96ae6cec654bec4035505506bc47f9ce16b8de1 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 15:02:36 +0900
 Subject: [PATCH] comment out pip depends
 
 ---
- package.xml | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ package.xml | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 2287391..1d9111b 100644
+index 1cc2e25..153b1fe 100644
 --- a/package.xml
 +++ b/package.xml
-@@ -70,11 +70,11 @@
-   <run_depend>opencv_apps</run_depend>
-   <run_depend>pcl_ros</run_depend>
+@@ -77,14 +77,14 @@
    <run_depend>posedetection_msgs</run_depend>
--  <run_depend>python-chainer</run_depend>
--  <run_depend>python-dlib</run_depend>
--  <run_depend>python-fcn-pip</run_depend>
--  <run_depend>python-gdown</run_depend>
--  <run_depend>python-h5py</run_depend>
-+  <!-- <run_depend>python-chainer</run_depend> -->
-+  <!-- <run_depend>python-dlib</run_depend> -->
-+  <!-- <run_depend>python-fcn-pip</run_depend> -->
-+  <!-- <run_depend>python-gdown</run_depend> -->
-+  <!-- <run_depend>python-h5py</run_depend> -->
+   <!-- install chainer {{ -->
+   <run_depend>python-h5py</run_depend>
+-  <run_depend>python-chainer</run_depend>  <!-- pip -->
++  <!-- <run_depend>python-chainer</run_depend> -->  <!-- pip -->
+   <!-- }} install chainer -->
+-  <run_depend>python-dlib</run_depend>  <!-- pip -->
++  <!-- <run_depend>python-dlib</run_depend> -->  <!-- pip -->
+   <!-- install fcn {{ -->
+   <run_depend>leveldb</run_depend>
+-  <run_depend>python-fcn-pip</run_depend>  <!-- pip -->
++  <!-- <run_depend>python-fcn-pip</run_depend> -->  <!-- pip -->
+   <!-- }} install fcn -->
+-  <run_depend>python-gdown</run_depend>  <!-- pip -->
++  <!-- <run_depend>python-gdown</run_depend> -->  <!-- pip -->
    <run_depend>python-sklearn</run_depend>
    <run_depend>rosbag</run_depend>
    <run_depend>roscpp</run_depend>
