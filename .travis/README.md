@@ -17,7 +17,8 @@ echo -e "FROM ros-ubuntu:14.04\nRUN apt-get update\nRUN apt-get -y upgrade\nEXPO
 
 jsk_travis is a package to test ROS repositories on travis and jenkins.
 In order to test on hydro, it uses travis and on indigo and jade, it uses jenkins by default.
-Use `USE_TRAVIS` and `USE_JENKINS` to configure them manually.
+On travis, docker can be enabled to test multiple distribution.
+Use `USE_DOCKER`, `USE_TRAVIS` and `USE_JENKINS` to configure them manually.
 The jenkins server is available on [jenkins.jsk.imi.i.u-tokyo.ac.jp](https://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080).
 
 
@@ -31,6 +32,8 @@ git submodule add https://github.com/jsk-ros-pkg/jsk_travis.git .travis
 And each project needs to setup .travis.yml for the travis.
 [jsk_common's .travis.yml](https://github.com/jsk-ros-pkg/jsk_common/blob/master/.travis.yml) is a good example to setup
 .travis.yml.
+
+Note that jsk\_travis only supports being upgraded and PRs that downgrades jsk\_travis result in test fails.
 
 
 ## Restarting tests
@@ -66,6 +69,10 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   and then installs left dependencies by apt.
   If `source`, travis does not sees [config files](#config-files) but runs `setup_upstream.sh` file.
   See [here](https://github.com/jsk-ros-pkg/jsk_roseus) for example.
+  
+* `USE_DOCKER` (default: `false`)
+
+  Force to use docker on travis.
 
 * `USE_JENKINS` (default: `false`)
 

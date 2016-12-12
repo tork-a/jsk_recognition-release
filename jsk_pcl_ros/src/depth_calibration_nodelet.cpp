@@ -93,8 +93,8 @@ namespace jsk_pcl_ros
   }
 
   bool DepthCalibration::setCalibrationParameter(
-    SetDepthCalibrationParameter::Request& req,
-    SetDepthCalibrationParameter::Response& res)
+    jsk_recognition_msgs::SetDepthCalibrationParameter::Request& req,
+    jsk_recognition_msgs::SetDepthCalibrationParameter::Response& res)
   {
     boost::mutex::scoped_lock lock(mutex_);
     coefficients2_ = req.parameter.coefficients2;
@@ -142,7 +142,7 @@ namespace jsk_pcl_ros
     for(int v = 0; v < image.rows; v++) {
       for(int u = 0; u < image.cols; u++) {
         float z = image.at<float>(v, u);
-        if (isnan(z)) {
+        if (std::isnan(z)) {
           output_image.at<float>(v, u) = z;
         }
         else {
