@@ -2,6 +2,18 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_pcl_ros)
 
+# check c++11 / c++0x
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+if(COMPILER_SUPPORTS_CXX11)
+  set(CMAKE_CXX_FLAGS "-std=c++11")
+elseif(COMPILER_SUPPORTS_CXX0X)
+  set(CMAKE_CXX_FLAGS "-std=c++0x")
+else()
+  message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   dynamic_reconfigure
@@ -19,7 +31,6 @@ find_package(catkin REQUIRED COMPONENTS
   kdl_conversions
   kdl_parser
   laser_assembler
-  message_generation
   nodelet
   octomap_msgs
   octomap_ros
@@ -48,26 +59,6 @@ IF(${yaml_cpp_VERSION} VERSION_LESS "0.5.0")
 ## indigo yaml-cpp : 0.5.0 /  hydro yaml-cpp : 0.3.0
   add_definitions("-DUSE_OLD_YAML")
 ENDIF()
-
-message(WARNING "DEPRECATION WARNING: srv files in jsk_pcl_ros are deprecated."
-        " Please use those in jsk_recognition_msgs.")
-# TODO(wkentaro): Remove deprecated srv files.
-add_service_files(FILES SwitchTopic.srv
-  UpdateOffset.srv
-  SnapFootstep.srv
-  SetDepthCalibrationParameter.srv
-  TransformScreenpoint.srv
-  CheckCircle.srv
-  RobotPickupReleasePoint.srv
-  TowerPickUp.srv
-  EuclideanSegment.srv
-  TowerRobotMoveCommand.srv
-  CallSnapIt.srv CallPolygon.srv
-  EnvironmentLock.srv
-  PolygonOnEnvironment.srv
-  ICPAlignWithBox.srv
-  ICPAlign.srv
-  CheckCollision.srv)
 
 # generate the dynamic_reconfigure config file
 generate_dynamic_reconfigure_options(
@@ -126,6 +117,7 @@ generate_dynamic_reconfigure_options(
   cfg/Kinfu.cfg
   cfg/PointcloudDatabaseServer.cfg
   cfg/TargetAdaptiveTracking.cfg
+  cfg/PPFRegistration.cfg
   )
 
 find_package(OpenCV REQUIRED core imgproc)
@@ -353,6 +345,8 @@ jsk_pcl_nodelet(src/heightmap_time_accumulation_nodelet.cpp
   "jsk_pcl/HeightmapTimeAccumulation" "heightmap_time_accumulation")
 jsk_pcl_nodelet(src/voxel_grid_large_scale_nodelet.cpp
   "jsk_pcl/VoxelGridLargeScale" "voxel_grid_large_scale")
+jsk_pcl_nodelet(src/ppf_registration_nodelet.cpp
+  "jsk_pcl/PPFRegistration" "ppf_registration")
 if (PCL_GPU_KINFU_LARGE_SCALE_FOUND)
   jsk_pcl_nodelet(src/kinfu_nodelet.cpp
     "jsk_pcl/Kinfu" "kinfu")
@@ -425,15 +419,12 @@ target_link_libraries(range_sensor_error_visualization jsk_pcl_ros)
 add_executable(depth_camera_error_visualization tool/depth_camera_error_visualization.cpp)
 target_link_libraries(depth_camera_error_visualization jsk_pcl_ros)
 
-generate_messages(DEPENDENCIES
-  ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs jsk_footstep_msgs)
-
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 message("flags: ${CMAKE_CXX_FLAGS}")
 
 catkin_package(
     DEPENDS pcl
-    CATKIN_DEPENDS pcl_ros message_runtime ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs jsk_recognition_utils
+    CATKIN_DEPENDS pcl_ros ${PCL_MSGS} sensor_msgs geometry_msgs jsk_recognition_msgs jsk_recognition_utils
     INCLUDE_DIRS include
     LIBRARIES jsk_pcl_ros jsk_pcl_ros_base jsk_pcl_ros_moveit
 )
@@ -476,6 +467,7 @@ if (CATKIN_ENABLE_TESTING)
   target_link_libraries(test_extract_indices ${catkin_LIBRARIES} ${GTEST_LIBRARIES})
   if("$ENV{ROS_DISTRO}" STRGREATER "hydro")
     # because of unreleased topic_tools/transform on hydro
+    add_rostest(test/test_octree_voxel_grid.test)
     add_rostest(test/test_hsi_color_filter.test DEPENDENCIES install_test_data)
     add_rostest(test/test_icp_registration.test DEPENDENCIES install_test_data)
     add_rostest(test/test_attention_clipper.test DEPENDENCIES install_test_data)
