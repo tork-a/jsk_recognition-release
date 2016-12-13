@@ -2,6 +2,9 @@
 Changelog for package jsk_recognition_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.1 (2016-12-13)
+------------------
+
 1.0.0 (2016-12-12)
 ------------------
 * Fix fo kinetic  (`#1943 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1943>`_)
