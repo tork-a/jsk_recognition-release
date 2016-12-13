@@ -1,4 +1,4 @@
-From 1b78c4ce925cd0ba0757b9d3b5ca166269e543df Mon Sep 17 00:00:00 2001
+From 2bb7c0beb2b9eaab8f40e6944d491fb1f564a5cf Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 15:02:36 +0900
 Subject: [PATCH] comment out pip depends
@@ -8,10 +8,10 @@ Subject: [PATCH] comment out pip depends
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 544aa51..24e8544 100644
+index 3d25f3c..44fab2e 100644
 --- a/package.xml
 +++ b/package.xml
-@@ -77,14 +77,14 @@
+@@ -76,14 +76,14 @@
    <run_depend>posedetection_msgs</run_depend>
    <!-- install chainer {{ -->
    <run_depend>python-h5py</run_depend>
