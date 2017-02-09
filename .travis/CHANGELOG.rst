@@ -2,6 +2,39 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.4.22 (2016-10-21)
+-------------------
+* Fix too many logs caused in travis_jenkins.py (`#319 <https://github.com/jsk-ros-pkg/jsk_travis/issues/319>`_ from wkentaro/docker-ps-a)
+
+  * https://github.com/jsk-ros-pkg/jsk_travis/commit/be5a632999c069e107773b6a0347bee51bae0d89
+
+* Enable gazebo test (`#316 <https://github.com/jsk-ros-pkg/jsk_travis/issues/316>`_)
+* [travis_watchdog.py] add watchdog for travis and kill orphan docker container on jenkins (`#317 <https://github.com/jsk-ros-pkg/jsk_travis/issues/317>`_)
+* [travis_jenkins.py] enable testing jsk_travis repository on jenkins (`#315 <https://github.com/jsk-ros-pkg/jsk_travis/issues/315>`_)
+* [travis.sh] fix error "too many arguments" at line 64-65 (`#314 <https://github.com/jsk-ros-pkg/jsk_travis/issues/314>`_)
+* [docker.sh] set +x while executing travis_wait function on docker (`#312 <https://github.com/jsk-ros-pkg/jsk_travis/issues/312>`_)
+
+* Contributors: Kei Okada, Kentaro Wada, Yuki Furuta
+
+0.4.21 (2016-09-21)
+-------------------
+* Check jsk_travis version on Travis
+* Contributors: Kentaro Wada
+
+0.4.20 (2016-09-14)
+-------------------
+* check if install/share/pkg exists (`#310 <https://github.com/jsk-ros-pkg/jsk_travis/issues/310>`_)
+* Contributors: Kei Okada
+
+0.4.19 (2016-09-10)
+-------------------
+* support docker on travis (`#307 <https://github.com/jsk-ros-pkg/jsk_travis/issues/307>`_)
+* Prettify the logging output at checking jsk_travis version (`#306 <https://github.com/jsk-ros-pkg/jsk_travis/issues/306>`_)
+  * Prettify the logging output at checking jsk_travis version
+  * Describe about not supported downgrading jsk_travis in README
+* Add version information about jsk_travis (`#305 <https://github.com/jsk-ros-pkg/jsk_travis/issues/305>`_)
+* Contributors: Kei Okada, Kentaro Wada, Yuki Furuta
+
 0.4.18 (2016-08-17)
 -------------------
 * Set CATKIN_TOOLS_BUILD_OPTIONS after the installation of catkin-tools (`#302 <https://github.com/jsk-ros-pkg/jsk_travis/issues/302>`_)
