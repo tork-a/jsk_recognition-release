@@ -18,18 +18,19 @@ find_package(catkin REQUIRED COMPONENTS
   angles
   cmake_modules
   cv_bridge
-  driver_base
   dynamic_reconfigure
   geometry_msgs
   image_geometry
   image_transport
   image_view2
+  jsk_data
   jsk_recognition_msgs
   jsk_recognition_utils
   jsk_topic_tools
   message_generation
   mk
   nodelet
+  opencv_apps
   pcl_ros
   posedetection_msgs
   roscpp
@@ -369,10 +370,12 @@ if(CATKIN_ENABLE_TESTING)
     # https://github.com/jsk-ros-pkg/jsk_common/pull/1293#issuecomment-164158260
     jsk_add_rostest(test/add_mask_image.test)
     jsk_add_rostest(test/apply_mask_image.test)
+    jsk_add_rostest(test/background_subtraction.test)
     jsk_add_rostest(test/blob_detector.test)
     jsk_add_rostest(test/bof_histogram_extractor.test)
     jsk_add_rostest(test/bounding_object_mask_image.test)
     jsk_add_rostest(test/bounding_rect_mask_image.test)
+    jsk_add_rostest(test/calc_flow.test)
     jsk_add_rostest(test/color_histogram.test)
     jsk_add_rostest(test/colorize_labels.test)
     jsk_add_rostest(test/colorize_float_image.test)
@@ -390,15 +393,17 @@ if(CATKIN_ENABLE_TESTING)
     jsk_add_rostest(test/selective_search.test)
     jsk_add_rostest(test/slic_super_pixels.test)
     jsk_add_rostest(test/sklearn_classifier.test)
+    jsk_add_rostest(test/speak_when_label_found.test)
     jsk_add_rostest(test/split_fore_background.test)
     jsk_add_rostest(test/tile_image.test)
     jsk_add_rostest(test/label_image_decomposer.test)
     # FIXME: Does not work on Travis/Jenkins
     # jsk_add_rostest(test/fcn_object_segmentation.test)
     # jsk_add_rostest(test/vgg16_object_recognition.test install_trained_data)
-    if(TARGET bing)
-      jsk_add_rostest(test/bing.test)
-    endif()
+    # FIXME: Unstable on Travis/Jenkins
+    # if(TARGET bing)
+    #   jsk_add_rostest(test/bing.test)
+    # endif()
   endif()
   jsk_add_rostest(test/sparse_image.test)
 endif()
