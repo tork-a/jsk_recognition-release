@@ -2,6 +2,31 @@
 Changelog for package jsk_perception
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2017-02-09)
+------------------
+
+1.0.4 (2017-02-09)
+------------------
+* package.xml: python-chainer -> python-chainer-pip (`#2014 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2014>`_)
+* Contributors: Kentaro Wada
+
+1.0.3 (2017-02-08)
+------------------
+* Fix cpp format of consensus_tracking(`#1999 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1999>`_)
+* Contributors: Kentaro Wada
+
+1.0.2 (2017-01-12)
+------------------
+* fix typo in vgg16_object_recognition (`#1990 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1990>`_)
+* No longer required python-gdown dependency
+  Because python-gdown-pip is installed via jsk_data (`#1989 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1989>`_)
+* Disable bing test on Travis (`#1985 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1985>`_)
+  Currently the node `bing` seems not used/changed frequently
+  because it requires opencv3, and I have no time to analyze the
+  unstable test on Travis/Jenkins. That's why I'm disabling it.
+  For `#1962 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1962>`_
+* Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa
+
 1.0.1 (2016-12-13)
 ------------------
 * jsk_perception/node_scripts/speak_when_label_found.py: Speak when target labels are found ( `#1923 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1923>`_)
