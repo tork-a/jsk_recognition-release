@@ -2,6 +2,31 @@
 Changelog for package jsk_pcl_ros_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2017-02-09)
+------------------
+
+1.0.4 (2017-02-09)
+------------------
+* scripts/evaluate_voxel_segmentation_by_gt_box.py: Cast to string to get correctly ns from rosparam (`#2016 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2016>`_ )
+* Contributors: Kentaro Wada
+
+1.0.3 (2017-02-08)
+------------------
+* Convert Voxel represented by MarkerArray to PointCloud (`#2012 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2012>`_ )
+  * src/marker_array_voxel_to_pointcloud_nodelet.cpp
+* Use bunny_marker_array.bag longer and high resolution (`#2011 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2011>`_ )
+* Evaluate box/voxel segmentation with gt. box (`#1993 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1993>`_ )
+  * Use longer rosbag for not-published /clock
+  * Move evaluation scripts of box segmentation to jsk_pcl_ros_utils
+* Re-enable tests in jsk_pcl_ros_utils (`#2008 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2008>`_ )
+  * Fix index bag in point_indices_to_mask_image_nodelet
+  * Use light rosbag for samples in jsk_pcl_ros_utils
+  * Comment out pcl tests
+* Contributors: Kentaro Wada
+
+1.0.2 (2017-01-12)
+------------------
+
 1.0.1 (2016-12-13)
 ------------------
 * package.xml : Fix dependency (jsk_data) of jsk_pcl_ros_utils
