@@ -1,4 +1,4 @@
-From ecc3fa7aba29561e9b7622b8e3ca777eaa015dce Mon Sep 17 00:00:00 2001
+From 6d12ddc123c2f9218fe651550dccf84c9811d071 Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Tue, 13 Sep 2016 17:52:58 +0900
 Subject: [PATCH] commented out unreleased packages
@@ -8,7 +8,7 @@ Subject: [PATCH] commented out unreleased packages
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 1cc2e25..8f93935 100644
+index 544aa51..9992ff7 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -70,21 +70,21 @@
