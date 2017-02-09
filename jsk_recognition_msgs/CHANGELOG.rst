@@ -2,6 +2,21 @@
 Changelog for package jsk_recognition_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2017-02-09)
+------------------
+
+1.0.4 (2017-02-09)
+------------------
+
+1.0.3 (2017-02-08)
+------------------
+* Compute box overlap and publish it (`#1993 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1993>`_ )
+  * add Accuracy.msg
+* Contributors: Kentaro Wada
+
+1.0.2 (2017-01-12)
+------------------
+
 1.0.1 (2016-12-13)
 ------------------
 
