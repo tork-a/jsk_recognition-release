@@ -196,8 +196,8 @@ namespace jsk_pcl_ros
   }
 
   bool ICPRegistration::alignWithBoxService(
-    jsk_pcl_ros::ICPAlignWithBox::Request& req, 
-    jsk_pcl_ros::ICPAlignWithBox::Response& res)
+    jsk_recognition_msgs::ICPAlignWithBox::Request& req, 
+    jsk_recognition_msgs::ICPAlignWithBox::Response& res)
   {
     boost::mutex::scoped_lock lock(mutex_);
     if (reference_cloud_list_.size() == 0) {
@@ -229,8 +229,8 @@ namespace jsk_pcl_ros
   }
 
   bool ICPRegistration::alignService(
-    jsk_pcl_ros::ICPAlign::Request& req, 
-    jsk_pcl_ros::ICPAlign::Response& res)
+    jsk_recognition_msgs::ICPAlign::Request& req, 
+    jsk_recognition_msgs::ICPAlign::Response& res)
   {
     boost::mutex::scoped_lock lock(mutex_);
     std::vector<pcl::PointCloud<PointT>::Ptr> tmp_reference_cloud_list
@@ -244,7 +244,7 @@ namespace jsk_pcl_ros
       pcl::PointCloud<PointT>::Ptr non_nan_reference_cloud (new pcl::PointCloud<PointT>);
       for (size_t i = 0; i < reference_cloud->points.size(); i++) {
         PointT p = reference_cloud->points[i];
-        if (!isnan(p.x) && !isnan(p.y) && !isnan(p.z)) {
+        if (!std::isnan(p.x) && !std::isnan(p.y) && !std::isnan(p.z)) {
           non_nan_reference_cloud->points.push_back(p);
         }
       }
@@ -387,7 +387,7 @@ namespace jsk_pcl_ros
     pcl::PointCloud<PointT>::Ptr non_nan_cloud (new pcl::PointCloud<PointT>);
     for (size_t i = 0; i < cloud->points.size(); i++) {
       PointT p = cloud->points[i];
-      if (!isnan(p.x) && !isnan(p.y) && !isnan(p.z)) {
+      if (!std::isnan(p.x) && !std::isnan(p.y) && !std::isnan(p.z)) {
         non_nan_cloud->points.push_back(p);
       }
     }
@@ -411,7 +411,7 @@ namespace jsk_pcl_ros
       pcl::PointCloud<PointT>::Ptr non_nan_reference_cloud (new pcl::PointCloud<PointT>);
       for (size_t i = 0; i < reference_cloud->points.size(); i++) {
         PointT p = reference_cloud->points[i];
-        if (!isnan(p.x) && !isnan(p.y) && !isnan(p.z)) {
+        if (!std::isnan(p.x) && !std::isnan(p.y) && !std::isnan(p.z)) {
           non_nan_reference_cloud->points.push_back(p);
         }
       }
@@ -686,7 +686,7 @@ namespace jsk_pcl_ros
     pcl::PointCloud<PointT>::Ptr non_nan_cloud (new pcl::PointCloud<PointT>);
     for (size_t i = 0; i < cloud->points.size(); i++) {
       PointT p = cloud->points[i];
-      if (!isnan(p.x) && !isnan(p.y) && !isnan(p.z)) {
+      if (!std::isnan(p.x) && !std::isnan(p.y) && !std::isnan(p.z)) {
         non_nan_cloud->points.push_back(p);
       }
     }
