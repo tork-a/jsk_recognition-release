@@ -2,13 +2,22 @@
 
 set -x
 
+export CI_SOURCE_PATH=$(pwd)
+export REPOSITORY_NAME=${PWD##*/}
+
+ANSI_RED="\033[31;1m"
+ANSI_GREEN="\033[32;1m"
+ANSI_BLUE="\033[34;1m"
+ANSI_RESET="\033[0m"
+ANSI_CLEAR="\033[0K"
+
 function travis_time_start {
     set +x
     TRAVIS_START_TIME=$(date +%s%N)
     TRAVIS_TIME_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
     TRAVIS_FOLD_NAME=$1
-    echo -e "\e[0Ktraivs_fold:start:$TRAVIS_FOLD_NAME"
-    echo -e "\e[0Ktraivs_time:start:$TRAVIS_TIME_ID\e[34m>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\e[0m"
+    echo -e "${ANSI_CLEAR}traivs_fold:start:$TRAVIS_FOLD_NAME"
+    echo -e "${ANSI_CLEAR}traivs_time:start:$TRAVIS_TIME_ID${ANSI_BLUE}>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>${ANSI_RESET}"
     set -x
 }
 function travis_time_end {
@@ -16,18 +25,72 @@ function travis_time_end {
     _COLOR=${1:-32}
     TRAVIS_END_TIME=$(date +%s%N)
     TIME_ELAPSED_SECONDS=$(( ($TRAVIS_END_TIME - $TRAVIS_START_TIME)/1000000000 ))
-    echo -e "traivs_time:end:$TRAVIS_TIME_ID:start=$TRAVIS_START_TIME,finish=$TRAVIS_END_TIME,duration=$(($TRAVIS_END_TIME - $TRAVIS_START_TIME))\n\e[0K"
-    echo -e "traivs_fold:end:$TRAVIS_FOLD_NAME\e[${_COLOR}m<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\e[0m"
-    echo -e "\e[0K\e[${_COLOR}mFunction $TRAVIS_FOLD_NAME takes $(( $TIME_ELAPSED_SECONDS / 60 )) min $(( $TIME_ELAPSED_SECONDS % 60 )) sec\e[0m"
+    echo -e "traivs_time:end:$TRAVIS_TIME_ID:start=$TRAVIS_START_TIME,finish=$TRAVIS_END_TIME,duration=$(($TRAVIS_END_TIME - $TRAVIS_START_TIME))\n${ANSI_CLEAR}"
+    echo -e "traivs_fold:end:$TRAVIS_FOLD_NAME\e[${_COLOR}m<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<${ANSI_RESET}"
+    echo -e "${ANSI_CLEAR}\e[${_COLOR}mFunction $TRAVIS_FOLD_NAME takes $(( $TIME_ELAPSED_SECONDS / 60 )) min $(( $TIME_ELAPSED_SECONDS % 60 )) sec${ANSI_RESET}"
     set -x
 }
+
+
+echo "Running jsk_travis/travis.sh whose version is $(cd $CI_SOURCE_PATH/.travis && git describe --all)."
+
+
+travis_time_start is_jsk_travis_upgraded
+
+# Check if jsk_travis is upgraded, because downgrading jsk_travis is not supported.
+if [ "$(git diff origin/master HEAD $CI_SOURCE_PATH/.travis)" != "" ] ; then
+  # HASH_TO_HASH represents: "jsk_travis version commited to origin/master" .. "jsk_travis to be commited with this PR"
+  # ex. 5f047fd5a8c0714c091b965b80b1f3719697c36a...0417ddc12c0b8ca4d10a86844745dd1279534845
+  HASH_TO_HASH=$(git diff origin/master HEAD $CI_SOURCE_PATH/.travis | grep .*Subproject | sed s'@.*Subproject commit @@' | sed 'N;s/\n/.../')
+  COMMITS=$(cd $CI_SOURCE_PATH/.travis/; git log --oneline --graph --left-right --first-parent --decorate $HASH_TO_HASH)
+  if [ $(echo "$COMMITS" | grep -c '^<' ) -eq 0 ]; then
+    echo INFO: jsk_travis is successfully upgraded comparing the version commited to origin/master.
+    echo It is $(echo "$COMMITS" | grep -c '^>') commits ahead.
+  else
+    echo ERROR: jsk_travis is downgraded comparing the version commited to origin/master, and this is not supported.
+    echo It is $(echo "$COMMITS" | grep -c '^<') commits behind, and the commits are below:
+    echo "$COMMITS" | grep -c '^<'
+    error
+  fi
+fi
+
+travis_time_end is_jsk_travis_upgraded
+
 
 # set default values to env variables
 [ "${USE_TRAVIS// }" = "" ] && USE_TRAVIS=false
 
 # Deprecated environmental variables
-[ ! -z $BUILDER -a "$BUILDER" != catkin ] && ( echo "ERROR: $BUILDER is not supported. BUILDER env is deprecated and only 'catkin' is supported for the build."; exit 1; )
-[ ! -z $ROSWS -a "$ROSWS" != wstool ] && ( echo "ERROR: $ROSWS is not supported. ROSWS env is deprecated and only 'wstool' is supported for workspace management."; exit 1; )
+[ ! -z $BUILDER ] && [ "$BUILDER" != catkin ] && ( echo "ERROR: $BUILDER is not supported. BUILDER env is deprecated and only 'catkin' is supported for the build."; exit 1; )
+[ ! -z $ROSWS ] && [ "$ROSWS" != wstool ] && ( echo "ERROR: $ROSWS is not supported. ROSWS env is deprecated and only 'wstool' is supported for workspace management."; exit 1; )
+
+# docker on travis
+if [ "$USE_DOCKER" = true ]; then
+  if [ "$DOCKER_IMAGE" = "" ]; then
+    case $ROS_DISTRO in
+      hydro) DISTRO=precise;;
+      indigo|jade) DISTRO=trusty;;
+      kinetic) DISTRO=xenial;;
+      *) DISTRO=trusty;;
+    esac
+    export DOCKER_IMAGE=ubuntu:$DISTRO
+  fi
+  docker run -it -v $HOME:$HOME \
+    -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
+    -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
+    -e BUILD_PKGS -e TARGET_PKGS -e TEST_PKGS \
+    -e BEFORE_SCRIPT -e BUILDER -e EXTRA_DEBS -e USE_DEB \
+    -e ROS_DISTRO -e ROS_LOG_DIR -e ROS_REPOSITORY_PATH -e ROSWS \
+    -e CATKIN_TOOLS_BUILD_OPTIONS -e CATKIN_TOOLS_CONFIG_OPTIONS \
+    -e CATKIN_PARALLEL_JOBS -e CATKIN_PARALLEL_TEST_JOBS \
+    -e ROS_PARALLEL_JOBS -e ROS_PARALLEL_TEST_JOBS \
+    -e ROSDEP_ADDITIONAL_OPTIONS -e ROSDEP_UPDATE_QUIET \
+    -e SUDO_PIP -e USE_PYTHON_VIRTUALENV \
+    -e NOT_TEST_INSTALL \
+    -t $DOCKER_IMAGE bash -c 'cd $CI_SOURCE_PATH; .travis/docker.sh'
+  DOCKER_EXIT_CODE=$?
+  exit $DOCKER_EXIT_CODE
+fi
 
 if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" == "indigo" -o "$ROS_DISTRO" == "jade" -o "$ROS_DISTRO" == "kinetic" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
     pip install --user python-jenkins -q
@@ -42,14 +105,6 @@ function error {
 }
 
 trap error ERR
-
-git branch --all
-if [ "`git diff origin/master FETCH_HEAD .travis`" != "" ] ; then
-  DIFF=`git diff origin/master FETCH_HEAD .travis | grep .*Subproject | sed s'@.*Subproject commit @@' | sed 'N;s/\n/.../'`;
-  (cd .travis/;git log --oneline --graph --left-right --first-parent --decorate $DIFF) | tee /tmp/$$-travis-diff.log;
-  grep -c '<' /tmp/$$-travis-diff.log && exit 1;
-  echo "ok";
-fi
 
 
 travis_time_start setup_ros
@@ -256,7 +311,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     export EXIT_STATUS=0
     for pkg in $TEST_PKGS; do
       echo "[$pkg] Started testing..."
-      rostest_files=$(find install/share/$pkg -iname '*.test')
+      rostest_files=$(test ! -d install/share/$pkg  || find install/share/$pkg -iname '*.test')
       echo "[$pkg] Found $(echo $rostest_files | wc -w) tests."
       for test_file in $rostest_files; do
         echo "[$pkg] Testing $test_file"
