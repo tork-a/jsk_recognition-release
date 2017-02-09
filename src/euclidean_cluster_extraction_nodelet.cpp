@@ -57,7 +57,7 @@ namespace jsk_pcl_ros
     pcl::PointIndices::Ptr nonnan_indices (new pcl::PointIndices);
     for (size_t i = 0; i < cloud->points.size(); i++) {
       pcl::PointXYZ p = cloud->points[i];
-      if (!isnan(p.x) && !isnan(p.y) && !isnan(p.z)) {
+      if (!std::isnan(p.x) && !std::isnan(p.y) && !std::isnan(p.z)) {
         nonnan_indices->indices.push_back(i);
       }
     }
@@ -147,8 +147,8 @@ namespace jsk_pcl_ros
 
 
   bool EuclideanClustering::serviceCallback(
-    jsk_pcl_ros::EuclideanSegment::Request &req,
-    jsk_pcl_ros::EuclideanSegment::Response &res)
+    jsk_recognition_msgs::EuclideanSegment::Request &req,
+    jsk_recognition_msgs::EuclideanSegment::Response &res)
   {
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(req.input, *cloud);
