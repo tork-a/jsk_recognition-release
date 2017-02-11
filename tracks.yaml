@@ -110,7 +110,7 @@ tracks:
     release_inc: '0'
     release_repo_url: null
     release_tag: :{version}
-    ros_distro: jade
+    ros_distro: kinetic
     vcs_type: git
     vcs_uri: https://github.com/jsk-ros-pkg/jsk_recognition
     version: :{auto}
