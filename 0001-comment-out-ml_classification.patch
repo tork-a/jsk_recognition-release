@@ -1,0 +1,34 @@
+From 68bed84b8e99b0f0c1c3d0b85645bfbbc026bb86 Mon Sep 17 00:00:00 2001
+From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Date: Sun, 12 Feb 2017 13:51:07 +0900
+Subject: [PATCH] comment out ml_classification
+
+---
+ package.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/package.xml b/package.xml
+index 2d7cd63..91d6b4e 100644
+--- a/package.xml
++++ b/package.xml
+@@ -37,7 +37,7 @@
+   <build_depend>boost</build_depend>
+   <build_depend>rosboost_cfg</build_depend>
+   <build_depend>cv_bridge</build_depend>
+-  <build_depend>ml_classifiers</build_depend>
++  <!-- <build_depend>ml_classifiers</build_depend> -->
+   <build_depend>diagnostic_updater</build_depend>
+   <build_depend>diagnostic_msgs</build_depend>
+   <build_depend>jsk_topic_tools</build_depend>
+@@ -82,7 +82,7 @@
+   <run_depend>rosboost_cfg</run_depend>
+   <run_depend>rviz</run_depend>
+   <run_depend>cv_bridge</run_depend>
+-  <run_depend>ml_classifiers</run_depend>
++  <!-- <run_depend>ml_classifiers</run_depend> -->
+   <run_depend>diagnostic_updater</run_depend>
+   <run_depend>diagnostic_msgs</run_depend>
+   <run_depend>python-sklearn</run_depend>
+-- 
+1.9.1
+
