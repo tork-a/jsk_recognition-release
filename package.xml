@@ -69,7 +69,7 @@
   <run_depend>libcmt</run_depend>
   <run_depend>message_runtime</run_depend>
   <run_depend>mk</run_depend>
-  <run_depend>ml_classifiers</run_depend>
+  <!-- <run_depend>ml_classifiers</run_depend> -->
   <run_depend>nodelet</run_depend>
   <run_depend>opencv_apps</run_depend>
   <run_depend>openni2_launch</run_depend>
