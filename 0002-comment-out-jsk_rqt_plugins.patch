@@ -1,0 +1,25 @@
+From f5d53c12ec0f3f2cadb7f116da5f3f9c1233418b Mon Sep 17 00:00:00 2001
+From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Date: Sun, 12 Feb 2017 13:51:40 +0900
+Subject: [PATCH 2/2] comment out jsk_rqt_plugins
+
+---
+ package.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package.xml b/package.xml
+index d4df28e..77c087b 100644
+--- a/package.xml
++++ b/package.xml
+@@ -64,7 +64,7 @@
+   <run_depend>jsk_gui_msgs</run_depend>
+   <run_depend>jsk_recognition_msgs</run_depend>
+   <run_depend>jsk_recognition_utils</run_depend>
+-  <run_depend>jsk_rqt_plugins</run_depend>
++  <!-- <run_depend>jsk_rqt_plugins</run_depend> -->
+   <run_depend>jsk_topic_tools</run_depend>
+   <run_depend>libcmt</run_depend>
+   <run_depend>message_runtime</run_depend>
+-- 
+1.9.1
+
