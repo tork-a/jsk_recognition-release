@@ -1,0 +1,12 @@
+Source: ros-kinetic-resized-image-transport
+Section: misc
+Priority: extra
+Maintainer: Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-kinetic-catkin, ros-kinetic-cv-bridge, ros-kinetic-image-transport, ros-kinetic-jsk-perception, ros-kinetic-jsk-tools, ros-kinetic-jsk-topic-tools, ros-kinetic-message-generation, ros-kinetic-nodelet, ros-kinetic-rostest, ros-kinetic-sensor-msgs, ros-kinetic-std-srvs
+Homepage: http://ros.org/wiki/resized_image_transport
+Standards-Version: 3.9.2
+
+Package: ros-kinetic-resized-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-kinetic-cv-bridge, ros-kinetic-image-transport, ros-kinetic-jsk-topic-tools, ros-kinetic-message-runtime, ros-kinetic-nodelet, ros-kinetic-sensor-msgs, ros-kinetic-std-srvs
+Description: resized_image_transport
