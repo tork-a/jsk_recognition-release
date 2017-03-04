@@ -1,4 +1,4 @@
-From f5d53c12ec0f3f2cadb7f116da5f3f9c1233418b Mon Sep 17 00:00:00 2001
+From ede95f62240903ad450eaf139bf3b184949118b1 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Sun, 12 Feb 2017 13:51:40 +0900
 Subject: [PATCH 2/2] comment out jsk_rqt_plugins
@@ -21,5 +21,5 @@ index d4df28e..77c087b 100644
    <run_depend>libcmt</run_depend>
    <run_depend>message_runtime</run_depend>
 -- 
-1.9.1
+1.9.0
 
