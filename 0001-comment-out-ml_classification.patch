@@ -1,4 +1,4 @@
-From 68bed84b8e99b0f0c1c3d0b85645bfbbc026bb86 Mon Sep 17 00:00:00 2001
+From 57d2472624405657b6e9fe52efb07aaa6ee8ec29 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Sun, 12 Feb 2017 13:51:07 +0900
 Subject: [PATCH] comment out ml_classification
@@ -30,5 +30,5 @@ index 2d7cd63..91d6b4e 100644
    <run_depend>diagnostic_msgs</run_depend>
    <run_depend>python-sklearn</run_depend>
 -- 
-1.9.1
+1.9.0
 
