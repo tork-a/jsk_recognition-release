@@ -1,14 +1,14 @@
-From be89502f7e3dd4bffbbbbaff409411e23a3c805f Mon Sep 17 00:00:00 2001
+From 776b93bb97a8ec93cd17fa34cfc2424b31aecc6e Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Sun, 20 Dec 2015 13:04:12 +0900
 Subject: [PATCH] ml_classifiers and sklearn is not released on jade
 
 ---
- package.xml | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ package.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index ee5d72d..30c9a89 100644
+index 2d7cd63..91d6b4e 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -37,7 +37,7 @@
@@ -20,19 +20,15 @@ index ee5d72d..30c9a89 100644
    <build_depend>diagnostic_updater</build_depend>
    <build_depend>diagnostic_msgs</build_depend>
    <build_depend>jsk_topic_tools</build_depend>
-@@ -79,10 +79,10 @@
-   <run_depend>boost</run_depend>
+@@ -82,7 +82,7 @@
    <run_depend>rosboost_cfg</run_depend>
+   <run_depend>rviz</run_depend>
    <run_depend>cv_bridge</run_depend>
 -  <run_depend>ml_classifiers</run_depend>
 +  <!-- <run_depend>ml_classifiers</run_depend> -->
    <run_depend>diagnostic_updater</run_depend>
    <run_depend>diagnostic_msgs</run_depend>
--  <run_depend>python-sklearn</run_depend>
-+  <!-- <run_depend>python-sklearn</run_depend> -->
-   <build_depend>laser_assembler</build_depend>
-   <run_depend>laser_assembler</run_depend>
-   <build_depend>moveit_ros_perception</build_depend>
+   <run_depend>python-sklearn</run_depend>
 -- 
 1.9.0
 
