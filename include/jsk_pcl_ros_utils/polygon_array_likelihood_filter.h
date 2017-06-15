@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2017, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -34,39 +34,53 @@
  *********************************************************************/
 
 
-#ifndef JSK_PCL_ROS_UTILS_POLYGON_MAGNIFIER_H_
-#define JSK_PCL_ROS_UTILS_POLYGON_MAGNIFIER_H_
+#ifndef JSK_PCL_ROS_UTILS_POLYGON_ARRAY_LIKELIHOOD_FILTER_H_
+#define JSK_PCL_ROS_UTILS_POLYGON_ARRAY_LIKELIHOOD_FILTER_H_
 
+#include <message_filters/subscriber.h>
+#include <message_filters/time_synchronizer.h>
+#include <message_filters/synchronizer.h>
+
+#include <dynamic_reconfigure/server.h>
+#include <jsk_pcl_ros_utils/PolygonArrayLikelihoodFilterConfig.h>
+#include <jsk_recognition_msgs/PolygonArray.h>
+#include <jsk_recognition_msgs/ModelCoefficientsArray.h>
 #include <jsk_topic_tools/diagnostic_nodelet.h>
 
-#include <jsk_pcl_ros_utils/PolygonMagnifierConfig.h>
-#include <dynamic_reconfigure/server.h>
-
-#include <jsk_recognition_msgs/PolygonArray.h>
 
 namespace jsk_pcl_ros_utils
 {
-  class PolygonMagnifier: public jsk_topic_tools::DiagnosticNodelet
+  class PolygonArrayLikelihoodFilter: public jsk_topic_tools::DiagnosticNodelet
   {
   public:
-    typedef boost::shared_ptr<PolygonMagnifier> Ptr;
-    typedef PolygonMagnifierConfig Config;
-    PolygonMagnifier(): DiagnosticNodelet("PolygonMagnifier") {}
+    typedef PolygonArrayLikelihoodFilterConfig Config;
+    typedef message_filters::sync_policies::ExactTime<
+      jsk_recognition_msgs::PolygonArray,
+      jsk_recognition_msgs::ModelCoefficientsArray>
+    SyncPolicy;
+    PolygonArrayLikelihoodFilter(): DiagnosticNodelet("PolygonArrayLikelihoodFilter") {}
   protected:
     virtual void onInit();
     virtual void subscribe();
     virtual void unsubscribe();
-    virtual void magnify(
-      const jsk_recognition_msgs::PolygonArray::ConstPtr& polygon_msg);
-    virtual void configCallback(
-      Config& config, uint32_t level);
-    ros::Subscriber sub_;
-    ros::Publisher pub_;
-    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
+    virtual void configCallback(Config &config, uint32_t level);
+    virtual void filter(
+      const jsk_recognition_msgs::PolygonArray::ConstPtr& polygons);
+    virtual void filter(
+      const jsk_recognition_msgs::PolygonArray::ConstPtr& polygons,
+      const jsk_recognition_msgs::ModelCoefficientsArray::ConstPtr& coefficients);
     boost::mutex mutex_;
-    bool use_scale_factor_;
-    double magnify_distance_;
-    double magnify_scale_factor_;
+    boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
+    boost::shared_ptr<message_filters::Synchronizer<SyncPolicy> >sync_;
+    message_filters::Subscriber<jsk_recognition_msgs::PolygonArray> sub_polygons_;
+    message_filters::Subscriber<jsk_recognition_msgs::ModelCoefficientsArray> sub_coefficients_;
+    ros::Subscriber sub_polygons_alone_;
+    ros::Publisher pub_polygons_;
+    ros::Publisher pub_coefficients_;
+    bool negative_;
+    bool use_coefficients_;
+    double threshold_;
+    size_t queue_size_;
   private:
     
   };
