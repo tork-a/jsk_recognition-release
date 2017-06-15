@@ -1,8 +1,7 @@
-// -*- mode: c++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2017, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,43 +32,57 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
+#define BOOST_PARAMETER_MAX_ARITY 7
 
-#ifndef JSK_PCL_ROS_UTILS_POLYGON_MAGNIFIER_H_
-#define JSK_PCL_ROS_UTILS_POLYGON_MAGNIFIER_H_
+#include <pcl_conversions/pcl_conversions.h>
 
-#include <jsk_topic_tools/diagnostic_nodelet.h>
-
-#include <jsk_pcl_ros_utils/PolygonMagnifierConfig.h>
-#include <dynamic_reconfigure/server.h>
-
-#include <jsk_recognition_msgs/PolygonArray.h>
+#include "jsk_pcl_ros_utils/pointcloud_xyzrgb_to_xyz.h"
 
 namespace jsk_pcl_ros_utils
 {
-  class PolygonMagnifier: public jsk_topic_tools::DiagnosticNodelet
-  {
-  public:
-    typedef boost::shared_ptr<PolygonMagnifier> Ptr;
-    typedef PolygonMagnifierConfig Config;
-    PolygonMagnifier(): DiagnosticNodelet("PolygonMagnifier") {}
-  protected:
-    virtual void onInit();
-    virtual void subscribe();
-    virtual void unsubscribe();
-    virtual void magnify(
-      const jsk_recognition_msgs::PolygonArray::ConstPtr& polygon_msg);
-    virtual void configCallback(
-      Config& config, uint32_t level);
-    ros::Subscriber sub_;
-    ros::Publisher pub_;
-    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
-    boost::mutex mutex_;
-    bool use_scale_factor_;
-    double magnify_distance_;
-    double magnify_scale_factor_;
-  private:
-    
-  };
+
+void PointCloudXYZRGBToXYZ::onInit()
+{
+  DiagnosticNodelet::onInit();
+  pub_ = advertise<sensor_msgs::PointCloud2>(*pnh_, "output", 1);
+  onInitPostProcess();
 }
 
-#endif
+void PointCloudXYZRGBToXYZ::subscribe()
+{
+  sub_ = pnh_->subscribe("input", 1, &PointCloudXYZRGBToXYZ::convert, this);
+}
+
+void PointCloudXYZRGBToXYZ::unsubscribe()
+{
+  sub_.shutdown();
+}
+
+void PointCloudXYZRGBToXYZ::convert(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg)
+{
+  vital_checker_->poke();
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_xyzrgb(new pcl::PointCloud<pcl::PointXYZRGB>);
+  pcl::fromROSMsg(*cloud_msg, *cloud_xyzrgb);
+
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_xyz(new pcl::PointCloud<pcl::PointXYZ>);
+  cloud_xyz->points.resize(cloud_xyzrgb->points.size());
+  cloud_xyz->is_dense = cloud_xyzrgb->is_dense;
+  cloud_xyz->width = cloud_xyzrgb->width;
+  cloud_xyz->height = cloud_xyzrgb->height;
+  for (size_t i = 0; i < cloud_xyzrgb->points.size(); i++) {
+    pcl::PointXYZ p;
+    p.x = cloud_xyzrgb->points[i].x;
+    p.y = cloud_xyzrgb->points[i].y;
+    p.z = cloud_xyzrgb->points[i].z;
+    cloud_xyz->points[i] = p;
+  }
+  sensor_msgs::PointCloud2 out_cloud_msg;
+  pcl::toROSMsg(*cloud_xyz, out_cloud_msg);
+  out_cloud_msg.header = cloud_msg->header;
+  pub_.publish(out_cloud_msg);
+}
+
+}  // namespace jsk_pcl_ros_utils
+
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS(jsk_pcl_ros_utils::PointCloudXYZRGBToXYZ, nodelet::Nodelet);

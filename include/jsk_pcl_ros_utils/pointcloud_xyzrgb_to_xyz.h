@@ -1,8 +1,7 @@
-// -*- mode: c++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, JSK Lab
+ *  Copyright (c) 2017, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,43 +32,31 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-
-#ifndef JSK_PCL_ROS_UTILS_POLYGON_MAGNIFIER_H_
-#define JSK_PCL_ROS_UTILS_POLYGON_MAGNIFIER_H_
+#ifndef JSK_PCL_ROS_UTILS_POINTCLOUD_XYZRGB_TO_XYZ_H_
+#define JSK_PCL_ROS_UTILS_POINTCLOUD_XYZRGB_TO_XYZ_H_
 
 #include <jsk_topic_tools/diagnostic_nodelet.h>
 
-#include <jsk_pcl_ros_utils/PolygonMagnifierConfig.h>
-#include <dynamic_reconfigure/server.h>
-
-#include <jsk_recognition_msgs/PolygonArray.h>
+#include <sensor_msgs/PointCloud2.h>
 
 namespace jsk_pcl_ros_utils
 {
-  class PolygonMagnifier: public jsk_topic_tools::DiagnosticNodelet
-  {
-  public:
-    typedef boost::shared_ptr<PolygonMagnifier> Ptr;
-    typedef PolygonMagnifierConfig Config;
-    PolygonMagnifier(): DiagnosticNodelet("PolygonMagnifier") {}
-  protected:
-    virtual void onInit();
-    virtual void subscribe();
-    virtual void unsubscribe();
-    virtual void magnify(
-      const jsk_recognition_msgs::PolygonArray::ConstPtr& polygon_msg);
-    virtual void configCallback(
-      Config& config, uint32_t level);
-    ros::Subscriber sub_;
-    ros::Publisher pub_;
-    boost::shared_ptr <dynamic_reconfigure::Server<Config> > srv_;
-    boost::mutex mutex_;
-    bool use_scale_factor_;
-    double magnify_distance_;
-    double magnify_scale_factor_;
-  private:
-    
-  };
-}
 
-#endif
+class PointCloudXYZRGBToXYZ: public jsk_topic_tools::DiagnosticNodelet
+{
+public:
+  PointCloudXYZRGBToXYZ(): DiagnosticNodelet("PointCloudXYZRGBToXYZ") { }
+protected:
+  virtual void onInit();
+  virtual void subscribe();
+  virtual void unsubscribe();
+  virtual void convert(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg);
+
+  ros::Subscriber sub_;
+  ros::Publisher pub_;
+private:
+};
+
+}  // namespace jsk_pcl_ros_utils
+
+#endif  // JSK_PCL_ROS_UTILS_POINTCLOUD_XYZRGB_TO_XYZ_H_
