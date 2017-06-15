@@ -2,6 +2,11 @@
 Changelog for package imagesift
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.2 (2017-06-16)
+------------------
+* Generate README by script
+* Contributors: Kentaro Wada
+
 1.1.1 (2017-03-04)
 ------------------
 
