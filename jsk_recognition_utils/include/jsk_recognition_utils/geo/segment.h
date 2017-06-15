@@ -38,16 +38,36 @@
 
 #include <iostream>
 #include "jsk_recognition_utils/geo/line.h"
-
+#include "visualization_msgs/Marker.h"
 
 namespace jsk_recognition_utils
 {
   class Plane;
+  /**
+   * @brief
+   * Class to represent 3-D straight line which has finite length.
+   */
   class Segment: public Line
   {
   public:
     typedef boost::shared_ptr<Segment> Ptr;
+
+    /**
+     * @brief
+     * Construct a line from a start point and a goal point.
+     *
+     * @param from
+     * @param to
+     */
     Segment(const Eigen::Vector3f& from, const Eigen::Vector3f to);
+
+    /**
+     * @brief
+     * get end of the line and assing it to output.
+     */
+    virtual void getEnd(Eigen::Vector3f& output) const;
+    virtual Eigen::Vector3f getEnd() const;
+
     virtual void foot(const Eigen::Vector3f& point, Eigen::Vector3f& output) const;
     virtual double dividingRatio(const Eigen::Vector3f& point) const;
     virtual double distance(const Eigen::Vector3f& point) const;
@@ -56,8 +76,46 @@ namespace jsk_recognition_utils
     virtual void midpoint(Eigen::Vector3f& midpoint) const;
     //virtual double distance(const Segment& other);
     friend std::ostream& operator<<(std::ostream& os, const Segment& seg);
+
+    /**
+     * @brief
+     * compute a distance to a point
+     * @param from
+     * @param foot_point
+     * @param distance_to_goal
+     */
+    virtual double distanceWithInfo(const Eigen::Vector3f& from,
+                                    Eigen::Vector3f& foot_point,
+                                    double &distance_to_goal) const;
+
+    /**
+     * @brief
+     * return flipped line (line of opposite direction)
+     */
+    virtual Segment::Ptr flipSegment() const;
+
+    /**
+     * @brief
+     * return length of the line
+     */
+    virtual double length() const;
+
+    /**
+     * @brief
+     * make marker message to display the finite line
+     */
+    void toMarker(visualization_msgs::Marker& marker) const;
+
+    /**
+     * @brief
+     * is crossing with another line
+     */
+    virtual bool isCross (const Line &ln, double distance_threshold = 1e-5) const;
+    virtual bool isCross (const Segment &ln, double distance_threshold = 1e-5) const;
+
   protected:
-    Eigen::Vector3f from_, to_;
+    Eigen::Vector3f to_;
+    double length_;
   private:
   };
 }
