@@ -75,11 +75,24 @@ if [ "$USE_DOCKER" = true ]; then
     esac
     export DOCKER_IMAGE=ubuntu:$DISTRO
   fi
+
+  # use host xserver
+  sudo apt-get update -q || echo Ignore error of apt-get update
+  sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
+  export DISPLAY=:0
+  sudo Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /tmp/xorg.log -config $CI_SOURCE_PATH/.travis/dummy.xorg.conf $DISPLAY &
+  sleep 3 # wait x server up
+  glxinfo | grep GLX
+  export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
+  xhost +local:root
+
   docker run -it -v $HOME:$HOME \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -e QT_X11_NO_MITSHM -e DISPLAY \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
     -e BUILD_PKGS -e TARGET_PKGS -e TEST_PKGS \
-    -e BEFORE_SCRIPT -e BUILDER -e EXTRA_DEBS -e USE_DEB \
+    -e BEFORE_SCRIPT -e BUILDER -e EXTRA_DEB -e USE_DEB \
     -e ROS_DISTRO -e ROS_LOG_DIR -e ROS_REPOSITORY_PATH -e ROSWS \
     -e CATKIN_TOOLS_BUILD_OPTIONS -e CATKIN_TOOLS_CONFIG_OPTIONS \
     -e CATKIN_PARALLEL_JOBS -e CATKIN_PARALLEL_TEST_JOBS \
@@ -160,7 +173,9 @@ travis_time_start setup_rosdep
 # Setup rosdep
 pip --version
 rosdep --version
-sudo rosdep init
+if [ ! -e /etc/ros/rosdep/sources.list.d/20-default.list ]; then
+    sudo rosdep init
+fi
 ret=1
 rosdep update || while [ $ret != 0 ]; do sleep 1; rosdep update && ret=0 || echo "failed"; done
 
