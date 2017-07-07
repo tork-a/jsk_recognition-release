@@ -2,6 +2,9 @@
 Changelog for package checkerboard_detector
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.3 (2017-07-07)
+------------------
+
 1.1.2 (2017-06-16)
 ------------------
 * [checkerboard_detector] update launch and document
