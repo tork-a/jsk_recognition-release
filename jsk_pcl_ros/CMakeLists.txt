@@ -4,8 +4,8 @@ project(jsk_pcl_ros)
 
 # check c++11 / c++0x
 include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORTS_CXX11)
+check_cxx_compiler_flag("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
 if(COMPILER_SUPPORTS_CXX11)
   set(CMAKE_CXX_FLAGS "-std=c++11")
 elseif(COMPILER_SUPPORTS_CXX0X)
@@ -54,10 +54,10 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}
 find_package(PCL QUIET COMPONENTS gpu_kinfu_large_scale)
 
 pkg_check_modules(yaml_cpp yaml-cpp REQUIRED)
-IF(${yaml_cpp_VERSION} VERSION_LESS "0.5.0")
+if(${yaml_cpp_VERSION} VERSION_LESS "0.5.0")
 ## indigo yaml-cpp : 0.5.0 /  hydro yaml-cpp : 0.3.0
   add_definitions("-DUSE_OLD_YAML")
-ENDIF()
+endif()
 
 # generate the dynamic_reconfigure config file
 generate_dynamic_reconfigure_options(
@@ -94,7 +94,11 @@ generate_dynamic_reconfigure_options(
   cfg/MultiPlaneExtraction.cfg
   cfg/NormalEstimationIntegralImage.cfg
   cfg/EnvironmentPlaneModeling.cfg
+  cfg/ColorHistogram.cfg
+  cfg/ColorHistogramClassifier.cfg
+  cfg/ColorHistogramFilter.cfg
   cfg/ColorHistogramMatcher.cfg
+  cfg/ColorHistogramVisualizer.cfg
   cfg/ClusterPointIndicesDecomposer.cfg
   cfg/GridSampler.cfg
   cfg/OrganizedEdgeDetector.cfg
@@ -113,10 +117,10 @@ generate_dynamic_reconfigure_options(
   cfg/OctreeVoxelGrid.cfg
   cfg/OctreeChangePublisher.cfg
   cfg/ExtractTopPolygonLikelihood.cfg
-  cfg/Kinfu.cfg
   cfg/PointcloudDatabaseServer.cfg
   cfg/TargetAdaptiveTracking.cfg
   cfg/PPFRegistration.cfg
+  cfg/Kinfu.cfg
   )
 
 find_package(OpenCV REQUIRED core imgproc)
@@ -180,7 +184,7 @@ jsk_pcl_nodelet(src/euclidean_cluster_extraction_nodelet.cpp
   "jsk_pcl/EuclideanClustering" "euclidean_clustering")
 jsk_pcl_nodelet(src/cluster_point_indices_decomposer_nodelet.cpp
   "jsk_pcl/ClusterPointIndicesDecomposer" "cluster_point_indices_decomposer")
-jsk_pcl_nodelet(src/cluster_point_indices_decomposer_z_axis_nodelet.cpp
+jsk_pcl_nodelet(src/cluster_point_indices_decomposer_nodelet.cpp
   "jsk_pcl/ClusterPointIndicesDecomposerZAxis" "cluster_point_indices_decomposer_z_axis")
 jsk_pcl_nodelet(src/resize_points_publisher_nodelet.cpp
   "jsk_pcl/ResizePointsPublisher" "resize_points_publisher")
@@ -223,6 +227,13 @@ if(ml_classifiers_FOUND)
 endif(ml_classifiers_FOUND)
 jsk_pcl_nodelet(src/environment_plane_modeling_nodelet.cpp
   "jsk_pcl/EnvironmentPlaneModeling" "environment_plane_modeling")
+if(jsk_topic_tools_VERSION VERSION_LESS 2.2.4)
+  message(WARNING "ColorHistogram requires jsk_topic_tools >= 2.2.4")
+else()
+  jsk_pcl_nodelet(src/color_histogram_nodelet.cpp "jsk_pcl/ColorHistogram" "color_histogram")
+  jsk_pcl_nodelet(src/color_histogram_classifier_nodelet.cpp "jsk_pcl/ColorHistogramClassifier" "color_histogram_classifier")
+  jsk_pcl_nodelet(src/color_histogram_filter_nodelet.cpp "jsk_pcl/ColorHistogramFilter" "color_histogram_filter")
+endif()
 jsk_pcl_nodelet(src/color_histogram_matcher_nodelet.cpp
   "jsk_pcl/ColorHistogramMatcher" "color_histogram_matcher")
 jsk_pcl_nodelet_upstream(jsk_pcl_ros_utils "jsk_pcl/PolygonAppender" "polygon_appender")
@@ -245,10 +256,10 @@ jsk_pcl_nodelet(src/region_growing_multiple_plane_segmentation_nodelet.cpp
   "jsk_pcl/RegionGrowingMultiplePlaneSegmentation"
   "region_growing_multiple_plane_segmentation")
 
-IF(${PCL_VERSION} VERSION_GREATER "1.7.2")
+if(${PCL_VERSION} VERSION_GREATER "1.7.2")
   jsk_pcl_nodelet(src/organized_edge_detector_nodelet.cpp
     "jsk_pcl/OrganizedEdgeDetector" "organized_edge_detector")
-ENDIF(${PCL_VERSION} VERSION_GREATER "1.7.2")
+endif(${PCL_VERSION} VERSION_GREATER "1.7.2")
 
 jsk_pcl_nodelet(src/edge_depth_refinement_nodelet.cpp
   "jsk_pcl/EdgeDepthRefinement" "edge_depth_refinement")
@@ -472,6 +483,7 @@ if (CATKIN_ENABLE_TESTING)
     add_rostest(test/test_icp_registration.test)
     add_rostest(test/test_attention_clipper.test)
     add_rostest(test/test_cluster_point_indices_decomposer.test)
+    add_rostest(test/test_cluster_point_indices_decomposer_sort_by.test)
     add_rostest(test/test_depth_image_creator.test)
     if(${PCL_VERSION} VERSION_GREATER "1.7.2")
       # because of jsk_pcl/OrganizedEdgeDetector
@@ -480,12 +492,20 @@ if (CATKIN_ENABLE_TESTING)
     add_rostest(test/test_euclidean_segmentation.test)
     # TODO(iory): https://github.com/jsk-ros-pkg/jsk_recognition/issues/2007
     # add_rostest(test/test_people_detection.test DEPENDENCIES install_test_data)
+    if(PCL_GPU_KINFU_LARGE_SCALE_FOUND)
+      add_rostest(test/test_kinfu.test)
+    endif()
     add_rostest(test/test_line_segment_detector.test)
     add_rostest(test/test_pointcloud_database_server.test)
     add_rostest(test/test_convex_connected_voxels.test)
     add_rostest(test/test_organized_pointcloud_to_point_indices.test)
     add_rostest(test/test_rearrange_bounding_box.test)
     add_rostest(test/test_color_based_region_growing_segmentation.test)
+    if(jsk_topic_tools_VERSION VERSION_LESS 2.2.4)
+      message(WARNING "ColorHistogram requires jsk_topic_tools >= 2.2.4")
+    else()
+      add_rostest(test/color_histogram.test)
+    endif()
   endif()
   roslaunch_add_file_check(launch/openni_local.launch)
   roslaunch_add_file_check(launch/openni2_local.launch)

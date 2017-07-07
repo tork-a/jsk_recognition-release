@@ -407,8 +407,10 @@ if(CATKIN_ENABLE_TESTING)
     jsk_add_rostest(test/split_fore_background.test)
     jsk_add_rostest(test/tile_image.test)
     jsk_add_rostest(test/label_image_decomposer.test)
-    # FIXME: Does not work on Travis/Jenkins
-    # jsk_add_rostest(test/fcn_object_segmentation.test)
+    jsk_add_rostest(test/people_pose_estimation_2d.test)
+    jsk_add_rostest(test/fcn_object_segmentation.test)
+    jsk_add_rostest(test/label_image_classifier.test)
+    jsk_add_rostest(test/probability_image_classifier.test)
     # jsk_add_rostest(test/vgg16_object_recognition.test install_trained_data)
     # jsk_add_rostest(test/alexnet_object_recognition.test install_trained_data)
     # FIXME: Unstable on Travis/Jenkins
