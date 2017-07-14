@@ -1,0 +1,12 @@
+Source: ros-kinetic-jsk-recognition-utils
+Section: misc
+Priority: extra
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), cython, libyaml-cpp-dev, ros-kinetic-catkin, ros-kinetic-dynamic-reconfigure, ros-kinetic-eigen-conversions, ros-kinetic-geometry-msgs, ros-kinetic-image-geometry, ros-kinetic-jsk-recognition-msgs, ros-kinetic-jsk-tools, ros-kinetic-jsk-topic-tools, ros-kinetic-message-generation, ros-kinetic-pcl-msgs, ros-kinetic-pcl-ros, ros-kinetic-sensor-msgs, ros-kinetic-std-msgs, ros-kinetic-tf, ros-kinetic-tf-conversions, ros-kinetic-tf2-ros, ros-kinetic-visualization-msgs
+Homepage: http://jsk-docs.readthedocs.io/en/latest/jsk_recognition/jsk_recognition_utils
+Standards-Version: 3.9.2
+
+Package: ros-kinetic-jsk-recognition-utils
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libyaml-cpp-dev, python-skimage, ros-kinetic-eigen-conversions, ros-kinetic-geometry-msgs, ros-kinetic-image-geometry, ros-kinetic-jsk-recognition-msgs, ros-kinetic-jsk-topic-tools, ros-kinetic-message-runtime, ros-kinetic-pcl-msgs, ros-kinetic-pcl-ros, ros-kinetic-sensor-msgs, ros-kinetic-std-msgs, ros-kinetic-tf, ros-kinetic-tf-conversions, ros-kinetic-tf2-ros, ros-kinetic-visualization-msgs
+Description: C++ library about sensor model, geometrical modeling and perception.
