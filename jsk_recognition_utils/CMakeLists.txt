@@ -78,6 +78,7 @@ add_library(jsk_recognition_utils SHARED
   src/rgb_colors.cpp
   src/geo/line.cpp
   src/geo/segment.cpp
+  src/geo/polyline.cpp
   src/geo/plane.cpp
   src/geo/polygon.cpp
   src/geo/convex_polygon.cpp
@@ -109,3 +110,8 @@ install(TARGETS jsk_recognition_utils
 
 install(DIRECTORY include/${PROJECT_NAME}/
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
+install(DIRECTORY node_scripts/
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        USE_SOURCE_PERMISSIONS
+)
