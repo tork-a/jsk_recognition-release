@@ -1,3 +1,35 @@
+## jsk_recognition (indigo) - 1.2.1-0
+
+The packages in the `jsk_recognition` repository were released into the `indigo` distro by running `/usr/bin/bloom-release -y --skip-pip jsk_recognition --track indigo --rosdistro indigo` on `Sat, 15 Jul 2017 11:44:14 -0000`
+
+These packages were released:
+- `checkerboard_detector`
+- `imagesift`
+- `jsk_pcl_ros`
+- `jsk_pcl_ros_utils`
+- `jsk_perception`
+- `jsk_recognition`
+- `jsk_recognition_msgs`
+- `jsk_recognition_utils`
+- `resized_image_transport`
+
+Version of package(s) in repository `jsk_recognition`:
+
+- upstream repository: https://github.com/jsk-ros-pkg/jsk_recognition
+- release repository: https://github.com/tork-a/jsk_recognition-release.git
+- rosdistro version: `1.2.0-0`
+- old version: `1.2.0-0`
+- new version: `1.2.1-0`
+
+Versions of tools used:
+
+- bloom version: `0.5.26`
+- catkin_pkg version: `0.3.5`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.6.2`
+- vcstools version: `0.1.39`
+
+
 ## jsk_recognition (indigo) - 1.2.0-0
 
 The packages in the `jsk_recognition` repository were released into the `indigo` distro by running `/usr/bin/bloom-release -y --skip-pip jsk_recognition --track indigo --rosdistro indigo` on `Sat, 15 Jul 2017 00:13:33 -0000`
