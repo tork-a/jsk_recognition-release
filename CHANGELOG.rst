@@ -2,6 +2,20 @@
 Changelog for package resized_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.3 (2017-11-23)
+------------------
+
+1.2.2 (2017-07-23)
+------------------
+* current source code needs jsk_topic_tools >= 2.2.4 (`#2173 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2173>`_)
+* Contributors: Kei Okada
+
+1.2.1 (2017-07-15)
+------------------
+
+1.2.0 (2017-07-15)
+------------------
+
 1.1.3 (2017-07-07)
 ------------------
 
