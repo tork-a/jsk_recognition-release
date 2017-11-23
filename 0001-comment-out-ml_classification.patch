@@ -1,4 +1,4 @@
-From 80cb08031578a54d00ab19627151c5d1d11827e0 Mon Sep 17 00:00:00 2001
+From c7281ebb6d8b2d6ad06f9318a621915435ea4831 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Sun, 12 Feb 2017 13:50:32 +0900
 Subject: [PATCH] comment out ml_classification
@@ -8,10 +8,10 @@ Subject: [PATCH] comment out ml_classification
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index b96a3c1..d0778ca 100644
+index ea88690..586254b 100644
 --- a/package.xml
 +++ b/package.xml
-@@ -37,7 +37,7 @@
+@@ -38,7 +38,7 @@
    <build_depend>boost</build_depend>
    <build_depend>rosboost_cfg</build_depend>
    <build_depend>cv_bridge</build_depend>
