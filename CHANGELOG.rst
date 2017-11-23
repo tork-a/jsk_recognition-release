@@ -2,6 +2,40 @@
 Changelog for package jsk_pcl_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.3 (2017-11-23)
+------------------
+* [tilt_laser_listener] add size check of position and velocity (`#2218 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2218>`_)
+* jsk_pcl_ros: primitive_shape_classifier: don't process debug message if not subscribed (`#2220 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2220>`_)
+* find moveit_ros_perception package at the top of cmake (`#2210 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2210>`_)
+* bounding_box_filter_nodelet.cpp: Support filtering bounding boxes without indices (`#2192 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2192>`_)
+* jsk_pcl_ros: color_histogram_classifier: fix typo (`#2190 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2190>`_)
+* jsk_pcl_ros: multi_plane_extraction: add option use_coefficients (`#2191 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2191>`_)
+* Publish sorted cluster point indices in ClusterPointIndicesDecomposer (`#2183 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2183>`_)
+* enhance heightmap much smoother (`#2180 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2180>`_)
+  * [jsk_pcl_ros, heightmap] update heightmap_converter.launch
+  * [jsk_pcl_ros, heightmap_converter, heightmap_morphological_filtering, heightmap_time_accumulation] update for using averaging accumulation and bilateral filter
+
+* Contributors: Yuki Furuta, Kei Okada, Kentaro Wada, Shingo Kitagawa, Yohei Kakiuchi
+
+1.2.2 (2017-07-23)
+------------------
+
+1.2.1 (2017-07-15)
+------------------
+
+1.2.0 (2017-07-15)
+------------------
+* Check encoding of input topics in FuseImages (`#2158 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2158>`_)
+  
+* jsk_pcl_ros: Add Primitive shape classifier nodelet (`#2141 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2141>`_)
+  * [jsk_pcl_ros] add test for primitive_shape_classifier
+  * [jsk_pcl_ros][primitive_shape_classifier] classify with circle likelihood first
+  * [jsk_pcl_ros][primitive_shape_classifier] parameterize classification threshold
+  * [jsk_pcl_ros] add primitive shape classifier (cont)
+  * [jsk_pcl_ros] add primitive shape classifier
+
+* Contributors: Kentaro Wada, Yuki Furuta
+
 1.1.3 (2017-07-07)
 ------------------
 * Filter invalid centroid in centroid_publisher (`#2150 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2150>`_)
