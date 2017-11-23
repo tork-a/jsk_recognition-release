@@ -32,6 +32,7 @@ find_package(catkin REQUIRED COMPONENTS
   kdl_parser
   laser_assembler
   nodelet
+  moveit_ros_perception
   octomap_msgs
   octomap_server
   pcl_msgs
@@ -120,6 +121,7 @@ generate_dynamic_reconfigure_options(
   cfg/PointcloudDatabaseServer.cfg
   cfg/TargetAdaptiveTracking.cfg
   cfg/PPFRegistration.cfg
+  cfg/PrimitiveShapeClassifier.cfg
   cfg/Kinfu.cfg
   )
 
@@ -228,11 +230,13 @@ endif(ml_classifiers_FOUND)
 jsk_pcl_nodelet(src/environment_plane_modeling_nodelet.cpp
   "jsk_pcl/EnvironmentPlaneModeling" "environment_plane_modeling")
 if(jsk_topic_tools_VERSION VERSION_LESS 2.2.4)
-  message(WARNING "ColorHistogram requires jsk_topic_tools >= 2.2.4")
+  message(WARNING "Building some nodelets are skipped if jsk_topic_tools < 2.2.4")
 else()
   jsk_pcl_nodelet(src/color_histogram_nodelet.cpp "jsk_pcl/ColorHistogram" "color_histogram")
   jsk_pcl_nodelet(src/color_histogram_classifier_nodelet.cpp "jsk_pcl/ColorHistogramClassifier" "color_histogram_classifier")
   jsk_pcl_nodelet(src/color_histogram_filter_nodelet.cpp "jsk_pcl/ColorHistogramFilter" "color_histogram_filter")
+  jsk_pcl_nodelet(src/primitive_shape_classifier_nodelet.cpp
+    "jsk_pcl/PrimitiveShapeClassifier" "primitive_shape_classifier")
 endif()
 jsk_pcl_nodelet(src/color_histogram_matcher_nodelet.cpp
   "jsk_pcl/ColorHistogramMatcher" "color_histogram_matcher")
@@ -412,8 +416,6 @@ add_dependencies(jsk_pcl_ros_moveit ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencf
 
 target_link_libraries(jsk_pcl_ros_base
   ${catkin_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES} yaml-cpp)
-# moveit_ros_perception is excluded from catkin COMPONENTS because of collision about octomap dependency
-find_package(moveit_ros_perception)
 target_link_libraries(jsk_pcl_ros_moveit
   ${catkin_LIBRARIES} ${moveit_ros_perception_LIBRARIES} ${pcl_ros_LIBRARIES} ${OpenCV_LIBRARIES} yaml-cpp)
 
@@ -501,10 +503,9 @@ if (CATKIN_ENABLE_TESTING)
     add_rostest(test/test_organized_pointcloud_to_point_indices.test)
     add_rostest(test/test_rearrange_bounding_box.test)
     add_rostest(test/test_color_based_region_growing_segmentation.test)
-    if(jsk_topic_tools_VERSION VERSION_LESS 2.2.4)
-      message(WARNING "ColorHistogram requires jsk_topic_tools >= 2.2.4")
-    else()
+    if(jsk_topic_tools_VERSION VERSION_GREATER 2.2.4)
       add_rostest(test/color_histogram.test)
+      add_rostest(test/primitive_shape_classifier.test)
     endif()
   endif()
   roslaunch_add_file_check(launch/openni_local.launch)
