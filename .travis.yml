@@ -16,7 +16,6 @@ env:
     - NOT_TEST_INSTALL=true
     - USE_JENKINS=true
   matrix:
-    - ROS_DISTRO=hydro  USE_DEB=false
     - ROS_DISTRO=indigo USE_DEB=true
     - ROS_DISTRO=indigo USE_DEB=true CATKIN_TOOLS_CONFIG_OPTIONS="--install" TEST_PKGS='jsk_recognition_msgs' # to skip test
     - ROS_DISTRO=indigo USE_DEB=true ROS_REPOSITORY_PATH="http://packages.ros.org/ros/ubuntu"
@@ -27,3 +26,6 @@ env:
 script:
   - source .travis/travis.sh
   - (cd $TRAVIS_BUILD_DIR/doc && source setup.sh && make html)
+after_success:
+  # trigger build of jsk-docs.readthedocs.org
+  - curl -X POST -d "branches=master" -d "token=da477cb4ef53d533aeb51c2b43e8baca6202baca" https://readthedocs.org/api/v2/webhook/jsk-docs/9094/
