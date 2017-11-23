@@ -2,6 +2,20 @@
 Changelog for package imagesift
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.3 (2017-11-23)
+------------------
+* imagesift: fix onInitPostProcess and poke (`#2203 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2203>`_)
+* Contributors: Yuki Furuta
+
+1.2.2 (2017-07-23)
+------------------
+
+1.2.1 (2017-07-15)
+------------------
+
+1.2.0 (2017-07-15)
+------------------
+
 1.1.3 (2017-07-07)
 ------------------
 
