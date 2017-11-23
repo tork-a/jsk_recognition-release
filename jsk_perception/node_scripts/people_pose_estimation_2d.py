@@ -5,16 +5,9 @@
 
 import math
 import pickle
-from distutils.version import LooseVersion
 
 import chainer
 import chainer.functions as F
-if LooseVersion(chainer.__version__) < LooseVersion("2.0"):
-    import chainer.functions.caffe
-    chainer_v1 = True
-else:
-    import chainer.links.caffe
-    chainer_v1 = False
 from chainer import cuda
 import cv2
 import matplotlib
@@ -27,6 +20,7 @@ import rospy
 from jsk_topic_tools import ConnectionBasedTransport
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import Point
+from geometry_msgs.msg import Quaternion
 from jsk_recognition_msgs.msg import PeoplePose
 from jsk_recognition_msgs.msg import PeoplePoseArray
 from sensor_msgs.msg import CameraInfo
@@ -101,14 +95,18 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
         self.pad_value = rospy.get_param('~pad_value', 128)
         self.thre1 = rospy.get_param('~thre1', 0.1)
         self.thre2 = rospy.get_param('~thre2', 0.05)
-        self.visualize = rospy.get_param('~visualize', True)
         self.gpu = rospy.get_param('~gpu', -1)  # -1 is cpu mode
         self.with_depth = rospy.get_param('~with_depth', False)
         self._load_model()
-        self.pub = self.advertise('~output', Image, queue_size=1)
+        self.image_pub = self.advertise('~output', Image, queue_size=1)
         self.pose_pub = self.advertise('~pose', PeoplePoseArray, queue_size=1)
+        self.sub_info = None
         if self.with_depth is True:
             self.pose_2d_pub = self.advertise('~pose_2d', PeoplePoseArray, queue_size=1)
+
+    @property
+    def visualize(self):
+        return self.image_pub.get_num_connections() > 0
 
     def _load_model(self):
         if self.backend == 'chainer':
@@ -130,9 +128,19 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
                 '~input', Image, queue_size=1, buff_size=2**24)
             sub_depth = message_filters.Subscriber(
                 '~input/depth', Image, queue_size=1, buff_size=2**24)
-            sub_info = message_filters.Subscriber(
-                '~input/info', CameraInfo, queue_size=1, buff_size=2**24)
-            self.subs = [sub_img, sub_depth, sub_info]
+            self.subs = [sub_img, sub_depth]
+
+            # NOTE: Camera info is not synchronized by default.
+            # See https://github.com/jsk-ros-pkg/jsk_recognition/issues/2165
+            sync_cam_info = rospy.get_param("~sync_camera_info", False)
+            if sync_cam_info:
+                sub_info = message_filters.Subscriber(
+                    '~input/info', CameraInfo, queue_size=1, buff_size=2**24)
+                self.subs.append(sub_info)
+            else:
+                self.sub_info = rospy.Subscriber(
+                    '~input/info', CameraInfo, self._cb_cam_info)
+
             if rospy.get_param('~approximate_sync', True):
                 slop = rospy.get_param('~slop', 0.1)
                 sync = message_filters.ApproximateTimeSynchronizer(
@@ -140,7 +148,11 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
             else:
                 sync = message_filters.TimeSynchronizer(
                     fs=self.subs, queue_size=queue_size)
-            sync.registerCallback(self._cb_with_depth)
+            if sync_cam_info:
+                sync.registerCallback(self._cb_with_depth_info)
+            else:
+                self.camera_info_msg = None
+                sync.registerCallback(self._cb_with_depth)
         else:
             sub_img = rospy.Subscriber(
                 '~input', Image, self._cb, queue_size=1, buff_size=2**24)
@@ -149,12 +161,30 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
     def unsubscribe(self):
         for sub in self.subs:
             sub.unregister()
+        if self.sub_info is not None:
+            self.sub_info.unregister()
+            self.sub_info = None
 
-    def _cb_with_depth(self, img_msg, depth_msg, camera_info_msg):
+    def _cb_cam_info(self, msg):
+        self.camera_info_msg = msg
+        self.sub_info.unregister()
+        self.sub_info = None
+        rospy.loginfo("Received camera info")
+
+    def _cb_with_depth(self, img_msg, depth_msg):
+        if self.camera_info_msg is None:
+            return
+        self._cb_with_depth_info(img_msg, depth_msg, self.camera_info_msg)
+
+    def _cb_with_depth_info(self, img_msg, depth_msg, camera_info_msg):
         br = cv_bridge.CvBridge()
         img = br.imgmsg_to_cv2(img_msg, desired_encoding='bgr8')
         depth_img = br.imgmsg_to_cv2(depth_msg, 'passthrough')
-        depth_img = np.array(depth_img, dtype=np.float32)
+        if depth_msg.encoding == '16UC1':
+            depth_img = np.asarray(depth_img, dtype=np.float32)
+            depth_img /= 1000  # convert metric: mm -> m
+        elif depth_msg.encoding != '32FC1':
+            rospy.logerr('Unsupported depth encoding: %s' % depth_msg.encoding)
 
         pose_estimated_img, people_joint_positions = self.pose_estimate(img)
         pose_estimated_msg = br.cv2_to_imgmsg(
@@ -184,14 +214,14 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
                 y = (joint_pos['y'] - cy) * z / fy
                 pose_msg.limb_names.append(joint_pos['limb'])
                 pose_msg.scores.append(joint_pos['score'])
-                pose_msg.poses.append(Pose(position=Point(x=x,
-                                                          y=y,
-                                                          z=z)))
+                pose_msg.poses.append(Pose(position=Point(x=x, y=y, z=z),
+                                           orientation=Quaternion(w=1)))
             people_pose_msg.poses.append(pose_msg)
 
         self.pose_2d_pub.publish(people_pose_2d_msg)
         self.pose_pub.publish(people_pose_msg)
-        self.pub.publish(pose_estimated_msg)
+        if self.visualize:
+            self.image_pub.publish(pose_estimated_msg)
 
     def _cb(self, img_msg):
         br = cv_bridge.CvBridge()
@@ -206,7 +236,8 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
             img_msg.header)
 
         self.pose_pub.publish(people_pose_msg)
-        self.pub.publish(pose_estimated_msg)
+        if self.visualize:
+            self.image_pub.publish(pose_estimated_msg)
 
     def _create_2d_people_pose_array_msgs(self, people_joint_positions, header):
         people_pose_msg = PeoplePoseArray(header=header)
@@ -220,7 +251,7 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
                 pose_msg.poses.append(Pose(position=Point(x=joint_pos['x'],
                                                           y=joint_pos['y'],
                                                           z=0)))
-                people_pose_msg.poses.append(pose_msg)
+            people_pose_msg.poses.append(pose_msg)
         return people_pose_msg
 
     def pose_estimate(self, bgr):
@@ -289,11 +320,12 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
         all_peaks[:, 1] = peaks[:, 0]
         all_peaks[:, 2] = heatmap_avg[peaks.T.tolist()]
         peaks_order = peaks[..., 2]
-        if chainer_v1:
+        try:
+            all_peaks = all_peaks[xp.argsort(peaks_order)]
+        except AttributeError:
+            # cupy.argsort is not available at cupy==1.0.1
             peaks_order = chainer.cuda.to_cpu(peaks_order)
             all_peaks = all_peaks[np.argsort(peaks_order)]
-        else:
-            all_peaks = all_peaks[xp.argsort(peaks_order)]
         all_peaks[:, 3] = xp.arange(peak_counter, dtype=np.float32)
         if self.gpu != -1:
             all_peaks = chainer.cuda.to_cpu(all_peaks)
