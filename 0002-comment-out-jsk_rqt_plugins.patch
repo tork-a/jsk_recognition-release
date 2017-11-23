@@ -1,4 +1,4 @@
-From c85fd07f4a4eb11182f3e4e9a8cb8146d9235f3a Mon Sep 17 00:00:00 2001
+From 042e92336ce6ff3c1b1e2146bc02783dc0fa78df Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Sun, 12 Feb 2017 13:51:40 +0900
 Subject: [PATCH 2/2] comment out jsk_rqt_plugins
@@ -8,10 +8,10 @@ Subject: [PATCH 2/2] comment out jsk_rqt_plugins
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/package.xml b/package.xml
-index f5f3568..c616234 100644
+index 62670df..764855a 100644
 --- a/package.xml
 +++ b/package.xml
-@@ -64,7 +64,7 @@
+@@ -63,7 +63,7 @@
    <run_depend>jsk_gui_msgs</run_depend>
    <run_depend>jsk_recognition_msgs</run_depend>
    <run_depend>jsk_recognition_utils</run_depend>
