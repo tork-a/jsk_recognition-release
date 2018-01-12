@@ -1,4 +1,4 @@
-From 042e92336ce6ff3c1b1e2146bc02783dc0fa78df Mon Sep 17 00:00:00 2001
+From 49c86ef2a1f34a1a68ea01a98dc6e5b48e45987a Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Sun, 12 Feb 2017 13:51:40 +0900
 Subject: [PATCH 2/2] comment out jsk_rqt_plugins
@@ -8,7 +8,7 @@ Subject: [PATCH 2/2] comment out jsk_rqt_plugins
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/package.xml b/package.xml
-index 62670df..764855a 100644
+index 027b583..412ba9a 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -63,7 +63,7 @@
@@ -21,5 +21,5 @@ index 62670df..764855a 100644
    <run_depend>libcmt</run_depend>
    <run_depend>message_runtime</run_depend>
 -- 
-1.9.0
+2.7.4
 
