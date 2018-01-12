@@ -1,6 +1,0 @@
-<library path="lib/libimagesift">
-  <class name="imagesift/ImageSift"
-         type="imagesift::SiftNode"
-         base_class_type="nodelet::Nodelet">
-  </class>
-</library>
