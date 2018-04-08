@@ -2,6 +2,25 @@
 Changelog for package jsk_pcl_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.5 (2018-04-09)
+------------------
+* Fix build of jsk_pcl_ros (on Kinetic) (`#2262 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2262>`_)
+* [jsk_pcl_ros/color_histogram_visualizer.py] use facecolor instead of axisbg (`#2250 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2250>`_)
+  * use facecolor instead of axisbg
+    axisbg is removed from matplotlib 2.2.0
+
+* [jsk_pcl_ros] ICP Registration on 2D plane (`#1991 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1991>`_)
+  * [jsk_pcl_ros] add sample launch file for icp_registration 2d
+  * [jsk_pcl_ros][icp_registration_nodelet.cpp] add option for 2d transform estimation
+
+* jsk_pcl_ros: add sample door detector (`#2182 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2182>`_)
+  * jsk_pcl_ros: fix param for door_detector sample launch
+  * jsk_pcl_ros: add sample launch files for icp registration 2d
+  * jsk_pcl_ros: add sample data for pr2 sink scenario
+  * jsk_pcl_ros: add rviz config / rosbag for sample_door_handle_detector
+  * jsk_pcl_ros: add sample door detector
+* Contributors: Kentaro Wada, Shingo Kitagawa, Yuki Furuta
+
 1.2.4 (2018-01-12)
 ------------------
 * jsk_pcl_ros/multi_plane_extraction: fix typo 'maginify' (`#2237 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2237>`_)
@@ -180,12 +199,12 @@ Changelog for package jsk_pcl_ros
 * Fix deprecation warning on RearrangeBoundingBox (`#2088 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2088>`_)
   ```
   WARNING: '/home/wkentaro/Projects/label_octomap/src/jsk-ros-pkg/jsk_recognition/jsk_pcl_ros/sample/data/sample_add_color_from_image_20170319.bag' exists
-  /home/wkentaro/Projects/label_octomap/src/jsk-ros-pkg/jsk_recognition/jsk_pcl_ros/src/rearrange_bounding_box_nodelet.cpp: In member function ‘virtual void jsk_pcl_ros::RearrangeBoundingBox::onInit()’:
-  /home/wkentaro/Projects/label_octomap/src/jsk-ros-pkg/jsk_recognition/jsk_pcl_ros/src/rearrange_bounding_box_nodelet.cpp:51:57: warning: ‘tf2::Quaternion::Quaternion(const tf2Scalar&, const tf2Scalar&, const tf2Scalar&)’ is deprecated (declared at /opt/ros/indigo/include/tf2/LinearMath/Quaternion.h:50) [-Wdeprecated-declarations]
+  /home/wkentaro/Projects/label_octomap/src/jsk-ros-pkg/jsk_recognition/jsk_pcl_ros/src/rearrange_bounding_box_nodelet.cpp: In member function 'virtual void jsk_pcl_ros::RearrangeBoundingBox::onInit()':
+  /home/wkentaro/Projects/label_octomap/src/jsk-ros-pkg/jsk_recognition/jsk_pcl_ros/src/rearrange_bounding_box_nodelet.cpp:51:57: warning: 'tf2::Quaternion::Quaternion(const tf2Scalar&, const tf2Scalar&, const tf2Scalar&)' is deprecated (declared at /opt/ros/indigo/include/tf2/LinearMath/Quaternion.h:50) [-Wdeprecated-declarations]
   q\_ = tf2::Quaternion(rotate_y\_, rotate_x\_, rotate_z\_);
   ^
-  /home/wkentaro/Projects/label_octomap/src/jsk-ros-pkg/jsk_recognition/jsk_pcl_ros/src/rearrange_bounding_box_nodelet.cpp: In member function ‘void jsk_pcl_ros::RearrangeBoundingBox::configCallback(jsk_pcl_ros::RearrangeBoundingBox::Config&, uint32_t)’:
-  /home/wkentaro/Projects/label_octomap/src/jsk-ros-pkg/jsk_recognition/jsk_pcl_ros/src/rearrange_bounding_box_nodelet.cpp:73:57: warning: ‘tf2::Quaternion::Quaternion(const tf2Scalar&, const tf2Scalar&, const tf2Scalar&)’ is deprecated (declared at /opt/ros/indigo/include/tf2/LinearMath/Quaternion.h:50) [-Wdeprecated-declarations]
+  /home/wkentaro/Projects/label_octomap/src/jsk-ros-pkg/jsk_recognition/jsk_pcl_ros/src/rearrange_bounding_box_nodelet.cpp: In member function 'void jsk_pcl_ros::RearrangeBoundingBox::configCallback(jsk_pcl_ros::RearrangeBoundingBox::Config&, uint32_t)':
+  /home/wkentaro/Projects/label_octomap/src/jsk-ros-pkg/jsk_recognition/jsk_pcl_ros/src/rearrange_bounding_box_nodelet.cpp:73:57: warning: 'tf2::Quaternion::Quaternion(const tf2Scalar&, const tf2Scalar&, const tf2Scalar&)' is deprecated (declared at /opt/ros/indigo/include/tf2/LinearMath/Quaternion.h:50) [-Wdeprecated-declarations]
   q\_ = tf2::Quaternion(rotate_y\_, rotate_x\_, rotate_z\_);
   ```
 * [tilt_laser_listener] add periodic publish mode (`#2082 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2082>`_)
@@ -363,7 +382,7 @@ Changelog for package jsk_pcl_ros
 * Fix missing dependency declaration of jsk_pcl_ros
 * Fix order of components in find_package of jsk_pcl_ros
 * Remove dependency on jsk_perception for separated build
-* [jsk_pcl_ros/icp_registration] Fix error in case of input point cloud… (#1795)
+* [jsk_pcl_ros/icp_registration] Fix error in case of input point cloud... (#1795)
   * [jsk_pcl_ros/icp_registration] Fix error in case of input point cloud size is 0
   * [jsk_pcl_ros/icp_registration] Publish empty topics
   * [jsk_pcl_ros/icp_registration] Add test
