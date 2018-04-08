@@ -1,4 +1,4 @@
-From 8826c0377b5a58e1d5606c46cf915a3f200298db Mon Sep 17 00:00:00 2001
+From 9723e6441c6bd2d8b711f24384689a8dc1614bd5 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Sun, 12 Feb 2017 13:50:32 +0900
 Subject: [PATCH] comment out ml_classification
@@ -8,7 +8,7 @@ Subject: [PATCH] comment out ml_classification
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index e742555..2a2987a 100644
+index 69d604f..fab649f 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -38,7 +38,7 @@
@@ -30,5 +30,5 @@ index e742555..2a2987a 100644
    <run_depend>diagnostic_msgs</run_depend>
    <build_depend>python-sklearn</build_depend>
 -- 
-2.7.4
+1.9.0
 
