@@ -155,6 +155,22 @@ def main():
         md5='77fe66a229a2444688a21e3b63fa0661',
     )
 
+    # node_scripts/fcn_depth_prediction.py
+    download_data(
+        pkg_name=PKG,
+        path='trained_data/fcn8s_depth_prediction_refrigerator.npz',
+        url='https://drive.google.com/uc?id=15n00783FVwxrG9DRdBQOmi8xu1pz-FYl',
+        md5='a585e4d41ed67d5052417ade6fb2d608',
+    )
+
+    # node_scripts/mask_rcnn_instance_segmentation.py
+    download_data(
+        pkg_name=PKG,
+        path='trained_data/mask_rcnn_resnet50_voc_20180403.npz',
+        url='https://drive.google.com/uc?id=1Ui_SXZzF388fLZ-WM1rponFziCCJcm3n',
+        md5='16a196fab8789f7c72a71241a85f59f7',
+    )
+
 
 if __name__ == '__main__':
     main()
