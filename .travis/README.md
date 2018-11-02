@@ -118,6 +118,10 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   The options passed when rosdep install.
 
+* `NOT_TEST_INSTALL` (none or `true`, default: none)
+
+  Flag to skip testing catkin install in addition to devel build.
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`
@@ -132,7 +136,7 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
 ```
 mv CATKIN_IGNORE CATKIN_IGNORE.bak
-catkin_generate_changelog --skip-merges
+catkin_generate_changelog
 emacs -nw CHANGELOG.rst                 # prettify CHANGELOG so we can understand what has changed
 git commit -m "update CHANGELOG" CHANGELOG.rst
 catkin_prepare_release --no-push        # please type "Y" to all
