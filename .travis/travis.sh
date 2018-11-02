@@ -70,25 +70,30 @@ if [ "$USE_DOCKER" = true ]; then
     case $ROS_DISTRO in
       hydro) DISTRO=precise;;
       indigo|jade) DISTRO=trusty;;
-      kinetic) DISTRO=xenial;;
+      kinetic|lunar) DISTRO=xenial;;
+      melodic) DISTRO=bionic;;
       *) DISTRO=trusty;;
     esac
     export DOCKER_IMAGE=ubuntu:$DISTRO
   fi
 
-  # use host xserver
-  sudo apt-get update -q || echo Ignore error of apt-get update
-  sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
-  export DISPLAY=:0
-  sudo Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /tmp/xorg.log -config $CI_SOURCE_PATH/.travis/dummy.xorg.conf $DISPLAY &
-  sleep 3 # wait x server up
-  glxinfo | grep GLX
-  export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
-  xhost +local:root
+  DOCKER_XSERVER_OPTIONS=''
+  if [ "$TRAVIS_SUDO" = true ]; then
+    # use host xserver
+    sudo apt-get update -q || echo Ignore error of apt-get update
+    sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
+    export DISPLAY=:0
+    sudo Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /tmp/xorg.log -config $CI_SOURCE_PATH/.travis/dummy.xorg.conf $DISPLAY &
+    sleep 3 # wait x server up
+    glxinfo | grep GLX
+    export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
+    xhost +local:root
+    DOCKER_XSERVER_OPTIONS='-v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM -e DISPLAY'
+  fi
 
-  docker run -it -v $HOME:$HOME \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -e QT_X11_NO_MITSHM -e DISPLAY \
+  docker pull $DOCKER_IMAGE || true
+  docker run -v $HOME:$HOME \
+    $DOCKER_XSERVER_OPTIONS \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
     -e BUILD_PKGS -e TARGET_PKGS -e TEST_PKGS \
@@ -105,8 +110,8 @@ if [ "$USE_DOCKER" = true ]; then
   exit $DOCKER_EXIT_CODE
 fi
 
-if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" == "indigo" -o "$ROS_DISTRO" == "jade" -o "$ROS_DISTRO" == "kinetic" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
-    pip install --user python-jenkins -q
+if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
+    pip install --user -U python-jenkins==0.4.16 -q
     ./.travis/travis_jenkins.py
     exit $?
 fi
@@ -132,11 +137,16 @@ if [ ! "$CATKIN_PARALLEL_TEST_JOBS" ]; then export CATKIN_PARALLEL_TEST_JOBS="$C
 if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://packages.ros.org/ros-shadow-fixed/ubuntu"; fi
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
-# Setup pip
-# FIXME: need to specify pip version to 6.0.7 to avoid unexpected error
-# https://github.com/jsk-ros-pkg/jsk_robot/pull/523#issuecomment-164699366
-sudo easy_install 'pip==6.0.7'
-sudo pip install -U -q pip setuptools
+
+# Install pip
+curl https://bootstrap.pypa.io/get-pip.py | sudo python -
+# pip>=10 no longer uninstalls distutils packages (ex. packages installed via apt),
+# and fails to install packages via pip if they are already installed via apt.
+# See https://github.com/pypa/pip/issues/4805 for detail.
+sudo -H pip install 'pip<10'
+
+# set DEBIAN_FRONTEND=noninteractive
+echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 # Setup apt
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
@@ -212,8 +222,8 @@ cd ~/ros/ws_$REPOSITORY_NAME
 catkin init
 catkin config $CATKIN_TOOLS_CONFIG_OPTIONS
 cd ~/ros/ws_$REPOSITORY_NAME/src
+wstool init
 if [ "$USE_DEB" == false ]; then
-    wstool init .
     if [ -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
         # install (maybe unreleased version) dependencies from source
         wstool merge file://$CI_SOURCE_PATH/.travis.rosinstall
@@ -225,7 +235,7 @@ if [ "$USE_DEB" == false ]; then
     wstool update
 fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
-if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then wstool init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; wstool update; fi
+if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; wstool update; fi
 # disable hrpsys/doc generation
 find . -ipath "*/hrpsys/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
 # disable metapackage
@@ -236,10 +246,6 @@ if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
     ROSDEP_ARGS=>/dev/null
 fi
 source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x # ROS_PACKAGE_PATH is important for rosdep
-
-if [ ! -e .rosinstall ]; then
-    echo "- git: {local-name: $REPOSITORY_NAME, uri: 'http://github.com/$TRAVIS_REPO_SLUG'}" >> .rosinstall
-fi
 
 travis_time_end
 
@@ -253,6 +259,8 @@ travis_time_end
 
 travis_time_start rosdep_install
 
+## add https://github.com/ros-infrastructure/rosdep/pull/612
+(cd /usr/lib/python2.7/dist-packages; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros-infrastructure/rosdep/pull/612.diff -O /tmp/612.diff; sudo patch -p2 < /tmp/612.diff)
 if [ -e ${CI_SOURCE_PATH}/.travis/rosdep-install.sh ]; then ## this is mainly for jsk_travis itself
     ${CI_SOURCE_PATH}/.travis/rosdep-install.sh
 else
