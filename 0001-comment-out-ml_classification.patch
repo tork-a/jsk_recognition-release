@@ -1,0 +1,25 @@
+From 104b469dc91287daf32bde3cf0c4ee813a108794 Mon Sep 17 00:00:00 2001
+From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Date: Sun, 12 Feb 2017 13:50:32 +0900
+Subject: [PATCH] comment out ml_classification
+
+---
+ package.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package.xml b/package.xml
+index 1db4593b8..51d242edc 100644
+--- a/package.xml
++++ b/package.xml
+@@ -56,7 +56,7 @@
+   <run_depend>kdl_conversions</run_depend>
+   <run_depend>kdl_parser</run_depend>
+   <run_depend>laser_assembler</run_depend>
+-  <run_depend>ml_classifiers</run_depend>
++  <!-- <run_depend>ml_classifiers</run_depend> -->
+   <run_depend>moveit_core</run_depend>
+   <run_depend>moveit_ros_perception</run_depend>
+   <run_depend>nav_msgs</run_depend>
+-- 
+2.17.1
+
