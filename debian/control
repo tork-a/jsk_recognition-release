@@ -1,0 +1,12 @@
+Source: ros-melodic-resized-image-transport
+Section: misc
+Priority: extra
+Maintainer: Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-melodic-catkin, ros-melodic-cv-bridge, ros-melodic-image-transport, ros-melodic-jsk-recognition-utils, ros-melodic-jsk-tools, ros-melodic-jsk-topic-tools (>= 2.2.8), ros-melodic-message-generation, ros-melodic-nodelet, ros-melodic-rostest, ros-melodic-sensor-msgs, ros-melodic-std-srvs
+Homepage: http://jsk-docs.readthedocs.io/en/latest/jsk_recognition/doc/resized_image_transport
+Standards-Version: 3.9.2
+
+Package: ros-melodic-resized-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-melodic-cv-bridge, ros-melodic-image-transport, ros-melodic-jsk-topic-tools (>= 2.2.8), ros-melodic-message-runtime, ros-melodic-nodelet, ros-melodic-sensor-msgs, ros-melodic-std-srvs
+Description: ROS nodes to publish resized images.
