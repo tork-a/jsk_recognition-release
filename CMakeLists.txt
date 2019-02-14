@@ -2,6 +2,13 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_pcl_ros)
 
+# Use ccache if installed to make it fast to generate object files
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif()
+
 # check c++11 / c++0x
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -17,7 +24,7 @@ endif()
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   dynamic_reconfigure
-  # eigen_conversions
+  eigen_conversions
   # genmsg
   # geometry_msgs
   image_geometry
@@ -27,7 +34,7 @@ find_package(catkin REQUIRED COMPONENTS
   jsk_pcl_ros_utils
   # jsk_recognition_msgs
   jsk_recognition_utils
-  jsk_rviz_plugins # kinfu.h uses jsk_rviz_plugins/OverlayText.h
+  # jsk_rviz_plugins # kinfu.h uses jsk_rviz_plugins/OverlayText.h, but jsk_recognition should not depends on jsk_visualization
   jsk_topic_tools
   # kdl_conversions
   # kdl_parser
@@ -367,7 +374,11 @@ jsk_pcl_nodelet(src/voxel_grid_large_scale_nodelet.cpp
   "jsk_pcl/VoxelGridLargeScale" "voxel_grid_large_scale")
 jsk_pcl_nodelet(src/ppf_registration_nodelet.cpp
   "jsk_pcl/PPFRegistration" "ppf_registration")
-if (PCL_GPU_KINFU_LARGE_SCALE_FOUND)
+
+# kinfu.h uses jsk_rviz_plugins/OverlayText.h, but jsk_recognition should not depends on jsk_visualization
+find_package(jsk_rviz_plugins QUIET)
+if (PCL_GPU_KINFU_LARGE_SCALE_FOUND AND jsk_rviz_plugins_FOUND)
+  include_directories(${jsk_rviz_plugins_INCLUDE_DIRS})
   jsk_pcl_nodelet(src/kinfu_nodelet.cpp
     "jsk_pcl/Kinfu" "kinfu")
   include_directories(/usr/local/cuda/include)
@@ -480,6 +491,7 @@ install(DIRECTORY config euslisp launch plugins sample scripts test
 )
 
 if (CATKIN_ENABLE_TESTING)
+  find_package(jsk_perception REQUIRED)
   find_package(roslaunch REQUIRED)
   find_package(rostest REQUIRED)
   add_rostest_gtest(test_extract_indices test/test_extract_indices.test test/test_extract_indices.cpp)
@@ -489,10 +501,12 @@ if (CATKIN_ENABLE_TESTING)
     add_rostest(test/test_add_color_from_image.test)
     add_rostest(test/test_add_color_from_image_to_organized.test)
     add_rostest(test/test_octree_voxel_grid.test)
+    add_rostest(test/test_octomap_contact.test)
     add_rostest(test/test_hsi_color_filter.test)
     add_rostest(test/test_icp_registration.test)
     add_rostest(test/test_attention_clipper.test)
     add_rostest(test/test_cluster_point_indices_decomposer.test)
+    add_rostest(test/test_cluster_point_indices_decomposer_bbox.test)
     add_rostest(test/test_cluster_point_indices_decomposer_sort_by.test)
     add_rostest(test/test_depth_image_creator.test)
     if(${PCL_VERSION} VERSION_GREATER "1.7.2")

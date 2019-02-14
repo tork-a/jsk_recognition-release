@@ -47,13 +47,14 @@ namespace jsk_pcl_ros
     DiagnosticNodelet("OctomapServerContact"),
     m_octreeContact(NULL),
     m_publishUnknownSpace(false),
+    m_publishFrontierSpace(false),
     m_offsetVisualizeUnknown(0),
     m_maxRangeProximity(0.05),
     m_occupancyMinX(-std::numeric_limits<double>::max()),
     m_occupancyMaxX(std::numeric_limits<double>::max()),
     m_occupancyMinY(-std::numeric_limits<double>::max()),
     m_occupancyMaxY(std::numeric_limits<double>::max()),
-    m_useVertex(true)
+    m_useContactSurface(true)
   {
     delete m_octree;
     m_octree = NULL;
@@ -68,15 +69,15 @@ namespace jsk_pcl_ros
 
     privateNh.param("publish_unknown_space", m_publishUnknownSpace, m_publishUnknownSpace);
     privateNh.param("offset_vis_unknown", m_offsetVisualizeUnknown, m_offsetVisualizeUnknown);
-
     privateNh.param("sensor_model/max_range_proximity", m_maxRangeProximity, m_maxRangeProximity);
+    privateNh.param("publish_frontier_space", m_publishFrontierSpace, m_publishFrontierSpace);
 
     privateNh.param("occupancy_min_x", m_occupancyMinX,m_occupancyMinX);
     privateNh.param("occupancy_max_x", m_occupancyMaxX,m_occupancyMaxX);
     privateNh.param("occupancy_min_y", m_occupancyMinY,m_occupancyMinY);
     privateNh.param("occupancy_max_y", m_occupancyMaxY,m_occupancyMaxY);
 
-    privateNh.param("use_vertex", m_useVertex,m_useVertex);
+    privateNh.param("use_contact_surface", m_useContactSurface,m_useContactSurface);
 
     double r, g, b, a;
     privateNh.param("color_unknown/r", r, 0.5);
@@ -87,6 +88,14 @@ namespace jsk_pcl_ros
     m_colorUnknown.g = g;
     m_colorUnknown.b = b;
     m_colorUnknown.a = a;
+    privateNh.param("color_frontier/r", r, 1.0);
+    privateNh.param("color_frontier/g", g, 0.0);
+    privateNh.param("color_frontier/b", b, 0.0);
+    privateNh.param("color_frontier/a", a, 1.0);
+    m_colorFrontier.r = r;
+    m_colorFrontier.g = g;
+    m_colorFrontier.b = b;
+    m_colorFrontier.a = a;
 
     m_unknownPointCloudPub = m_nh.advertise<sensor_msgs::PointCloud2>("octomap_unknown_point_cloud_centers", 1, m_latchedTopics);
     m_umarkerPub = m_nh.advertise<visualization_msgs::MarkerArray>("unknown_cells_vis_array", 1, m_latchedTopics);
@@ -94,6 +103,9 @@ namespace jsk_pcl_ros
     m_pointProximitySub = new message_filters::Subscriber<sensor_msgs::PointCloud2> (m_nh, "proximity_in", 5);
     m_tfPointProximitySub = new tf::MessageFilter<sensor_msgs::PointCloud2> (*m_pointProximitySub, m_tfListener, m_worldFrameId, 5);
     m_tfPointProximitySub->registerCallback(boost::bind(&OctomapServerContact::insertProximityCallback, this, _1));
+
+    m_frontierPointCloudPub = m_nh.advertise<sensor_msgs::PointCloud2>("octomap_frontier_point_cloud_centers", 1, m_latchedTopics);
+    m_fromarkerPub = m_nh.advertise<visualization_msgs::MarkerArray>("frontier_cells_vis_array", 1, m_latchedTopics);
 
     m_contactSensorSub.subscribe(m_nh, "contact_sensors_in", 2);
     m_tfContactSensorSub.reset(new tf::MessageFilter<jsk_recognition_msgs::ContactSensorArray> (
@@ -292,26 +304,36 @@ namespace jsk_pcl_ros
       m_octree->prune();
   }
 
-  void OctomapServerContact::insertContactSensor(const std::vector<jsk_recognition_msgs::ContactSensor> &datas) {
-    std_msgs::Header tmpHeader;
-    tmpHeader.frame_id = m_worldFrameId;
-    tmpHeader.stamp = ros::Time::now();
+  void OctomapServerContact::insertContactSensor(const jsk_recognition_msgs::ContactSensorArray::ConstPtr& msg) {
+    std::vector<jsk_recognition_msgs::ContactSensor> datas = msg->datas;
 
-    point3d pmin( m_occupancyMinX, m_occupancyMinY, m_occupancyMinZ);
-    point3d pmax( m_occupancyMaxX, m_occupancyMaxY, m_occupancyMaxZ);
+    // setup tf transformation between octomap and each link
+    {
+      std_msgs::Header tmpHeader;
+      tmpHeader.frame_id = m_worldFrameId;
+      tmpHeader.stamp = msg->header.stamp;
+      if(!m_selfMask->assumeFrame(tmpHeader)) {
+        ROS_ERROR_STREAM("failed tf transformation in insertContactSensor");
+        return;
+      }
+    }
+
+    // clamp min and max points  cf. https://github.com/OctoMap/octomap/issues/146
+    point3d pmin_raw( m_occupancyMinX, m_occupancyMinY, m_occupancyMinZ );
+    point3d pmax_raw( m_occupancyMaxX, m_occupancyMaxY, m_occupancyMaxZ );
+    point3d pmin = m_octree->keyToCoord(m_octree->coordToKey(pmin_raw));
+    point3d pmax = m_octree->keyToCoord(m_octree->coordToKey(pmax_raw));
     float diff[3];
     unsigned int steps[3];
     double resolution = m_octreeContact->getResolution();
     for (int i = 0; i < 3; ++i) {
       diff[i] = pmax(i) - pmin(i);
       steps[i] = floor(diff[i] / resolution);
-      //      std::cout << "bbx " << i << " size: " << diff[i] << " " << steps[i] << " steps\n";
+      // std::cout << "bbx " << i << " size: " << diff[i] << " " << steps[i] << " steps\n";
     }
 
-    m_selfMask->assumeFrame(tmpHeader);
-
     // loop for grids of octomap
-    if (m_useVertex) {
+    if (m_useContactSurface) {
       std::vector< std::vector<bool> > containFlag(datas.size(), std::vector<bool>(8));
       point3d p = pmin;
       for (unsigned int x = 0; x < steps[0]; ++x) {
@@ -394,72 +416,33 @@ namespace jsk_pcl_ros
       }
     }
     else {
-      std::vector<bool> containFlag(datas.size());
-      point3d p = pmin;
-      for (unsigned int x = 0; x < steps[0]; ++x) {
-        p.x() += resolution;
-        for (unsigned int y = 0; y < steps[1]; ++y) {
-          p.y() += resolution;
-          for (unsigned int z = 0; z < steps[2]; ++z) {
-            // std::cout << "querying p=" << p << std::endl;
-            p.z() += resolution;
-            // loop for vertices of each gird
-            point3d vertexOffset(-resolution/2.0, -resolution/2.0, -resolution/2.0);
-            point3d vertex;
-            vertex = p + vertexOffset;
-            // std::cout << "vertex = " << vertex << std::endl;
-            // loop for each body link
-            for (int l=0; l<datas.size(); l++) {
-              if (m_selfMask->getMaskContainmentforNamedLink(vertex(0), vertex(1), vertex(2), datas[l].link_name) == robot_self_filter::INSIDE) {
-                // std::cout << "inside vertex = " << vertex << std::endl;
-                containFlag[l] = true;
-              }
-              else {
-                containFlag[l] = false;
-              }
-            }
-
-            // update probability of grid
-            bool containFlagLinkSum = false;
-            std::vector<bool> containFlagVerticesSum(datas.size(), false);
-            std::vector<bool> containFlagVerticesProd(datas.size(), true);
-            bool insideFlag = false;
-            bool surfaceFlag = false;
-            for (int l = 0; l < datas.size(); l++) {
-              if (containFlag[l]) {
-                containFlagLinkSum = true;
-                containFlagVerticesSum[l] = true;
-              }
-              else {
-                containFlagVerticesProd[l] = false;
-              }
-            }
-            insideFlag = containFlagLinkSum; // when all elements is true
-            for (int l = 0; l < datas.size(); l++) {
-              if (containFlagVerticesSum[l] && !(containFlagVerticesProd[l]) ) {
-                if (datas[l].contact) {
-                  surfaceFlag = true;
-                }
-              }
-            }
-            if (insideFlag) { // inside
-              octomap::OcTreeKey pKey;
-              if (m_octreeContact->coordToKeyChecked(p, pKey)) {
-                m_octreeContact->updateNode(pKey, m_octreeContact->getProbMissContactSensorLog());
-                // std::cout << "find inside grid and find key. p = " << vertex << std::endl;
-              }
-            }
-            else if (surfaceFlag) { // surface
-              octomap::OcTreeKey pKey;
-              if (m_octreeContact->coordToKeyChecked(p, pKey)) {
-                m_octreeContact->updateNode(pKey, m_octreeContact->getProbHitContactSensorLog());
-                // std::cout << "find surface grid and find key. p = " << vertex << std::endl;
-              }
-            }
-          }
-          p.z() = pmin.z();
+      point3d vertexOffset(-resolution/2.0, -resolution/2.0, -resolution/2.0);
+#pragma omp parallel for
+      for (unsigned int cnt = 0; cnt < steps[0] * steps[1] * steps[2]; ++cnt) {
+        // get grid center
+        point3d p;
+        {
+          unsigned int id[3];
+          id[0] = cnt / (steps[1] * steps[2]);
+          id[1] = (cnt % (steps[1] * steps[2])) / steps[2];
+          id[2] = (cnt % (steps[1] * steps[2])) % steps[2];
+          p.x() = pmin(0) + resolution * id[0];
+          p.y() = pmin(1) + resolution * id[1];
+          p.z() = pmin(2) + resolution * id[2];
         }
-        p.y() = pmin.y();
+        point3d vertex;
+        vertex = p + vertexOffset;
+        // loop for each body link
+        for (int l=0; l<datas.size(); l++) {
+          if (m_selfMask->getMaskContainmentforNamedLink(vertex(0), vertex(1), vertex(2), datas[l].link_name) == robot_self_filter::INSIDE) {
+            octomap::OcTreeKey pKey;
+            if (m_octreeContact->coordToKeyChecked(p, pKey)) {
+#pragma omp critical
+              m_octreeContact->updateNode(pKey, m_octreeContact->getProbMissContactSensorLog());
+            }
+            break;
+          }
+        }
       }
     }
     m_octreeContact->updateInnerOccupancy();
@@ -467,8 +450,7 @@ namespace jsk_pcl_ros
 
   void OctomapServerContact::insertContactSensorCallback(const jsk_recognition_msgs::ContactSensorArray::ConstPtr& msg) {
     NODELET_INFO("insert contact sensor");
-    std::vector<jsk_recognition_msgs::ContactSensor> datas = msg->datas;
-    insertContactSensor(datas);
+    insertContactSensor(msg);
 
     publishAll(msg->header.stamp);
   }
@@ -484,6 +466,7 @@ namespace jsk_pcl_ros
 
     bool publishFreeMarkerArray = m_publishFreeSpace && (m_latchedTopics || m_fmarkerPub.getNumSubscribers() > 0);
     bool publishUnknownMarkerArray = m_publishUnknownSpace && (m_latchedTopics || m_umarkerPub.getNumSubscribers() > 0);
+    bool publishFrontierMarkerArray = m_publishFrontierSpace && (m_latchedTopics || m_fromarkerPub.getNumSubscribers() > 0);
     bool publishMarkerArray = (m_latchedTopics || m_markerPub.getNumSubscribers() > 0);
     bool publishPointCloud = (m_latchedTopics || m_pointCloudPub.getNumSubscribers() > 0);
     bool publishBinaryMap = (m_latchedTopics || m_binaryMapPub.getNumSubscribers() > 0);
@@ -601,7 +584,7 @@ namespace jsk_pcl_ros
 
     // finish MarkerArray:
     if (publishMarkerArray) {
-      for (unsigned i= 0; i < occupiedNodesVis.markers.size(); ++i) {
+      for (unsigned i = 0; i < occupiedNodesVis.markers.size(); ++i) {
         double size = m_octreeContact->getNodeSize(i);
 
         occupiedNodesVis.markers[i].header.frame_id = m_worldFrameId;
@@ -629,7 +612,7 @@ namespace jsk_pcl_ros
 
     // finish FreeMarkerArray:
     if (publishFreeMarkerArray) {
-      for (unsigned i= 0; i < freeNodesVis.markers.size(); ++i) {
+      for (unsigned i = 0; i < freeNodesVis.markers.size(); ++i) {
         double size = m_octreeContact->getNodeSize(i);
 
         freeNodesVis.markers[i].header.frame_id = m_worldFrameId;
@@ -653,6 +636,7 @@ namespace jsk_pcl_ros
 
       m_fmarkerPub.publish(freeNodesVis);
     }
+
 
     // publish unknown grid as marker
     if (publishUnknownMarkerArray) {
@@ -712,6 +696,128 @@ namespace jsk_pcl_ros
       unknownRosCloud.header.frame_id = m_worldFrameId;
       unknownRosCloud.header.stamp = rostime;
       m_unknownPointCloudPub.publish(unknownRosCloud);
+
+      // publish frontier grid as marker
+      if (publishFrontierMarkerArray) {
+        visualization_msgs::MarkerArray frontierNodesVis;
+        frontierNodesVis.markers.resize(1);
+        pcl::PointCloud<pcl::PointXYZ> frontierCloud;
+        double resolution = m_octreeContact->getResolution();
+        // how many resolution-size grids are in one edge
+        int x_num = int(((m_occupancyMaxX - m_occupancyMinX) / resolution));
+        int y_num = int(((m_occupancyMaxY - m_occupancyMinY) / resolution));
+        int z_num = int(((m_occupancyMaxZ - m_occupancyMinZ) / resolution));
+        std::vector< std::vector< std::vector<int> > > check_unknown(x_num, std::vector< std::vector<int> >(y_num, std::vector<int>(z_num)));
+        std::vector< std::vector< std::vector<int> > > check_occupied(x_num, std::vector< std::vector<int> >(y_num, std::vector<int>(z_num)));
+        std::vector< std::vector< std::vector<int> > > check_frontier(x_num, std::vector< std::vector<int> >(y_num, std::vector<int>(z_num)));
+
+        for (int i = 0; i < x_num; i++) {
+          for (int j = 0; j < y_num; j++) {
+            for (int k = 0; k < z_num; k++) {
+              check_unknown[i][j][k] = 0;
+              check_occupied[i][j][k] = 0;
+              check_frontier[i][j][k] = 0;
+            }
+          }
+        }
+
+        // for all unknown grids, store its information to array
+        for (point3d_list::iterator it_unknown = unknownLeaves.begin();
+             it_unknown != unknownLeaves.end();
+             it_unknown++) {
+          // get center of unknown grids
+          double x_unknown = it_unknown->x();
+          double y_unknown = it_unknown->y();
+          double z_unknown = it_unknown->z();
+          int x_index = int(std::round((x_unknown - m_occupancyMinX) / resolution - 1));
+          int y_index = int(std::round((y_unknown - m_occupancyMinY) / resolution - 1));
+          int z_index = int(std::round((z_unknown - m_occupancyMinZ) / resolution - 1));
+          check_unknown[x_index][y_index][z_index] = 1;
+        }
+
+        // for all occupied grids, store its information to array
+        for (int idx = 0; idx < occupiedNodesVis.markers.size(); idx++) {
+          double size_occupied = occupiedNodesVis.markers[idx].scale.x;
+          for (int id = 0; id < occupiedNodesVis.markers[idx].points.size(); id++) {
+            double x_occupied = occupiedNodesVis.markers[idx].points[id].x;
+            double y_occupied = occupiedNodesVis.markers[idx].points[id].y;
+            double z_occupied = occupiedNodesVis.markers[idx].points[id].z;
+            int x_min_index = std::round((x_occupied - (size_occupied / 2.0) - m_occupancyMinX) / resolution);
+            int y_min_index = std::round((y_occupied - (size_occupied / 2.0) - m_occupancyMinY) / resolution);
+            int z_min_index = std::round((z_occupied - (size_occupied / 2.0) - m_occupancyMinZ) / resolution);
+            for (int i = x_min_index; i < x_min_index + int(size_occupied/resolution); i++) {
+              for (int j = y_min_index; j < y_min_index + int(size_occupied/resolution); j++) {
+                for (int k = z_min_index; k < z_min_index + int(size_occupied/resolution); k++) {
+                  check_occupied[i][j][k] = 1;
+                }
+              }
+            }
+          }
+        }
+
+        // for all grids except occupied and unknown, (NOTE there are grids which are not free, nor occupied, nor unknown)
+        // check whether they are frontier, namely, adjecent to unknown grids
+        // NOTE all unknown grids are displaced half from the other grids
+        geometry_msgs::Point cubeCenter;
+        for (int i = 0; i < x_num; i++) {
+          for (int j = 0; j < y_num; j++) {
+            for (int k = 0; k < z_num-1; k++) {
+              for (int l = -1; l <= 1; l++) {
+                if ( i+l < 0 || x_num <= i+l ) continue;
+                for (int m = -1; m <= 1; m++) {
+                  if ( j+m < 0 || y_num <= j+m ) continue;
+                  for (int n = -1; n <= 1; n++) {
+                    if (  k+n < 0 || z_num <= k+n ) continue;
+                    if (l == 0 && m == 0 && n== 0) continue;
+                    if (check_unknown[i+l][j+m][k+n] == 1 && check_unknown[i][j][k] == 0 && check_occupied[i][j][k] == 0 && check_frontier[i][j][k] == 0) {
+                      check_frontier[i][j][k] = 1;
+                      cubeCenter.x = (i+0.5)*resolution + m_occupancyMinX;
+                      cubeCenter.y = (j+0.5)*resolution + m_occupancyMinY;
+                      cubeCenter.z = (k+0.5)*resolution + m_occupancyMinZ;
+                      if (m_useHeightMap) {
+                        double minX, minY, minZ, maxX, maxY, maxZ;
+                        m_octreeContact->getMetricMin(minX, minY, minZ);
+                        m_octreeContact->getMetricMax(maxX, maxY, maxZ);
+                        double h = (1.0 - std::min(std::max((cubeCenter.z-minZ)/ (maxZ - minZ), 0.0), 1.0)) *m_colorFactor;
+                        frontierNodesVis.markers[0].colors.push_back(heightMapColor(h));
+                      }
+                      frontierNodesVis.markers[0].points.push_back(cubeCenter);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        // publish frontier grid as marker
+        double size = m_octreeContact->getNodeSize(m_maxTreeDepth);
+        frontierNodesVis.markers[0].header.frame_id = m_worldFrameId;
+        frontierNodesVis.markers[0].header.stamp = rostime;
+        frontierNodesVis.markers[0].ns = m_worldFrameId;
+        frontierNodesVis.markers[0].id = 0;
+        frontierNodesVis.markers[0].type = visualization_msgs::Marker::CUBE_LIST;
+        frontierNodesVis.markers[0].scale.x = size;
+        frontierNodesVis.markers[0].scale.y = size;
+        frontierNodesVis.markers[0].scale.z = size;
+        frontierNodesVis.markers[0].color = m_colorFrontier;
+
+        if (frontierNodesVis.markers[0].points.size() > 0) {
+          frontierNodesVis.markers[0].action = visualization_msgs::Marker::ADD;
+        }
+        else {
+          frontierNodesVis.markers[0].action = visualization_msgs::Marker::DELETE;
+        }
+
+        m_fromarkerPub.publish(frontierNodesVis);
+
+        // publish frontier grid as pointcloud
+        sensor_msgs::PointCloud2 frontierRosCloud;
+        pcl::toROSMsg (frontierCloud, frontierRosCloud);
+        frontierRosCloud.header.frame_id = m_worldFrameId;
+        frontierRosCloud.header.stamp = rostime;
+        m_frontierPointCloudPub.publish(frontierRosCloud);
+      }
     }
 
     // finish pointcloud:
