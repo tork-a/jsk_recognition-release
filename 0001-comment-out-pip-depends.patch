@@ -1,4 +1,4 @@
-From 295a785624c6db1f5eb25307e192dc84aaa95213 Mon Sep 17 00:00:00 2001
+From cc74139438c62babdbc8280ef7accc1a3744270c Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 11 Dec 2015 15:07:28 +0900
 Subject: [PATCH] comment out pip depends
@@ -8,7 +8,7 @@ Subject: [PATCH] comment out pip depends
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/package.xml b/package.xml
-index 2987f3b..e1f5524 100644
+index da25f120c..6437b92b1 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -36,7 +36,7 @@
@@ -21,5 +21,5 @@ index 2987f3b..e1f5524 100644
    <run_depend>std_msgs</run_depend>
    <run_depend>tf2_ros</run_depend>
 -- 
-2.7.4
+2.17.1
 
