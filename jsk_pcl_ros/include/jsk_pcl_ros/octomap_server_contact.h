@@ -59,7 +59,7 @@ namespace jsk_pcl_ros
      virtual void insertProximityCallback(const sensor_msgs::PointCloud2::ConstPtr& cloud);
      virtual void insertScanProximity(const tf::Point& sensorOriginTf, const PCLPointCloud& pc);
      virtual void initContactSensor(const ros::NodeHandle& privateNh);
-     virtual void insertContactSensor(const std::vector<jsk_recognition_msgs::ContactSensor>& datas);
+     virtual void insertContactSensor(const jsk_recognition_msgs::ContactSensorArray::ConstPtr& msg);
      virtual void insertContactSensorCallback(const jsk_recognition_msgs::ContactSensorArray::ConstPtr& msg);
 
      virtual void publishAll(const ros::Time& rostime);
@@ -71,14 +71,18 @@ namespace jsk_pcl_ros
      ros::Publisher m_unknownPointCloudPub, m_umarkerPub;
      message_filters::Subscriber<sensor_msgs::PointCloud2>* m_pointProximitySub;
      tf::MessageFilter<sensor_msgs::PointCloud2>* m_tfPointProximitySub;
+     ros::Publisher m_frontierPointCloudPub, m_fromarkerPub;
      message_filters::Subscriber<jsk_recognition_msgs::ContactSensorArray> m_contactSensorSub;
      boost::shared_ptr<tf::MessageFilter<jsk_recognition_msgs::ContactSensorArray> > m_tfContactSensorSub;
      ros::ServiceServer m_octomapBinaryService, m_octomapFullService, m_clearBBXService, m_resetService;
 
      std_msgs::ColorRGBA m_colorUnknown;
+     std_msgs::ColorRGBA m_colorFrontier;
 
      bool m_publishUnknownSpace;
      double m_offsetVisualizeUnknown;
+
+     bool m_publishFrontierSpace;
 
      double m_maxRangeProximity;
 
@@ -87,7 +91,7 @@ namespace jsk_pcl_ros
      double m_occupancyMinY;
      double m_occupancyMaxY;
 
-     bool m_useVertex;
+     bool m_useContactSurface;
 
      boost::shared_ptr<robot_self_filter::SelfMaskNamedLink> m_selfMask;
 
