@@ -2,6 +2,9 @@
 Changelog for package jsk_recognition_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.7 (2019-02-14)
+------------------
+
 1.2.6 (2018-11-02)
 ------------------
 * Install sample and test  into SHARE_DESTINATION (`#2345 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2345>`_)
