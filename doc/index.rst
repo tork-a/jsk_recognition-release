@@ -1,21 +1,37 @@
-=====================
-jsk_recognition_utils
-=====================
+===============
+jsk_recognition
+===============
 
-jsk_recognition_utils a C++ library for sensor model, geometrical modeling and perception.
+jsk_recognition is a stack for the perception packages which are used in JSK lab.
 
-- `Code API <http://docs.ros.org/indigo/api/jsk_recognition_utils/html/annotated.html>`_
-- `Nodes and Nodelets <#nodes-and-nodelets>`_
+The code is open source, and `available on github`_.
 
-.. toctree::
-   :glob:
-   :maxdepth: 1
+.. _available on github: http://github.com/jsk-ros-pkg/jsk_recognition
 
-   ./*
 
 .. toctree::
-   :glob:
    :maxdepth: 1
-   :caption: nodes and nodelets
+   :caption: Contents
 
-   ./nodes/*
+   overview
+   tutorials/index
+   tips
+   install_astra_camera
+   install_softkinetic_camera
+   install_realsense_camera
+   install_xtion2
+   install_ensenso
+   install_chainer_gpu
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: ROS Packages
+
+   checkerboard_detector/index
+   imagesift/index
+   jsk_perception/index
+   jsk_pcl_ros/index
+   jsk_pcl_ros_utils/index
+   jsk_recognition_utils/index
+   resized_image_transport/index
