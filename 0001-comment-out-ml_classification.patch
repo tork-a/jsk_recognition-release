@@ -1,4 +1,4 @@
-From fa916e39233ed7a811a979fcf8622be81218b491 Mon Sep 17 00:00:00 2001
+From 99feb46a957cc2da551627d8a29e8751349cbe11 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Sun, 12 Feb 2017 13:50:32 +0900
 Subject: [PATCH] comment out ml_classification
