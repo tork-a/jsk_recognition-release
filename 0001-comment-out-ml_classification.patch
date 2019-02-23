@@ -1,4 +1,4 @@
-From 104b469dc91287daf32bde3cf0c4ee813a108794 Mon Sep 17 00:00:00 2001
+From 7c1a14ca6da73d1f5188b164d07cb4349bd7fa71 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Sun, 12 Feb 2017 13:50:32 +0900
 Subject: [PATCH] comment out ml_classification
@@ -8,7 +8,7 @@ Subject: [PATCH] comment out ml_classification
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/package.xml b/package.xml
-index 1db4593b8..51d242edc 100644
+index d6b7461d5..ae9db2b18 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -56,7 +56,7 @@
