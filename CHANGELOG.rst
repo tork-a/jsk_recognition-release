@@ -2,6 +2,14 @@
 Changelog for package jsk_recognition_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.9 (2019-02-23)
+------------------
+* add QT_LIBRARIES Qt5::Widgets to fix 'cannot find -lQt5::Widgets' error on debian stretch (`#2398 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2398>`_ )
+* Contributors: Kei Okada
+
+1.2.8 (2019-02-22)
+------------------
+
 1.2.7 (2019-02-14)
 ------------------
 * [jsk_perception] Add deep_sort_tracker_node.py (`#2351 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2351>`_ )
