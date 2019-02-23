@@ -1,3 +1,35 @@
+## jsk_recognition (kinetic) - 1.2.9-0
+
+The packages in the `jsk_recognition` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release -y --skip-pip jsk_recognition --track kinetic --rosdistro kinetic` on `Sat, 23 Feb 2019 08:56:36 -0000`
+
+These packages were released:
+- `checkerboard_detector`
+- `imagesift`
+- `jsk_pcl_ros`
+- `jsk_pcl_ros_utils`
+- `jsk_perception`
+- `jsk_recognition`
+- `jsk_recognition_msgs`
+- `jsk_recognition_utils`
+- `resized_image_transport`
+
+Version of package(s) in repository `jsk_recognition`:
+
+- upstream repository: https://github.com/jsk-ros-pkg/jsk_recognition
+- release repository: https://github.com/tork-a/jsk_recognition-release.git
+- rosdistro version: `1.2.7-0`
+- old version: `1.2.7-0`
+- new version: `1.2.9-0`
+
+Versions of tools used:
+
+- bloom version: `0.7.2`
+- catkin_pkg version: `0.4.8`
+- rosdep version: `0.15.0`
+- rosdistro version: `0.7.2`
+- vcstools version: `0.1.40`
+
+
 ## jsk_recognition (melodic) - 1.2.7-2
 
 The packages in the `jsk_recognition` repository were released into the `melodic` distro by running `/usr/bin/bloom-release -y --skip-pip jsk_recognition --track melodic --rosdistro melodic` on `Thu, 14 Feb 2019 03:48:36 -0000`
