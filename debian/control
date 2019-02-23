@@ -1,0 +1,13 @@
+Source: ros-melodic-imagesift
+Section: misc
+Priority: extra
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-melodic-catkin, ros-melodic-cmake-modules, ros-melodic-cv-bridge, ros-melodic-image-transport, ros-melodic-jsk-recognition-utils, ros-melodic-jsk-topic-tools (>= 2.2.8), ros-melodic-libsiftfast, ros-melodic-nodelet, ros-melodic-posedetection-msgs, ros-melodic-roscpp, ros-melodic-rostest, ros-melodic-sensor-msgs
+Homepage: http://jsk-docs.readthedocs.io/en/latest/jsk_recognition/doc/imagesift
+Standards-Version: 3.9.2
+
+Package: ros-melodic-imagesift
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-melodic-cv-bridge, ros-melodic-image-transport, ros-melodic-jsk-recognition-utils, ros-melodic-jsk-topic-tools (>= 2.2.8), ros-melodic-libsiftfast, ros-melodic-nodelet, ros-melodic-posedetection-msgs, ros-melodic-roscpp, ros-melodic-sensor-msgs
+Description: For every image, computes its sift features and send a new message with the image, its intrinsic parameters, and the features.
+ Parameters include: display - shows the image on the local computer
