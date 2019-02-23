@@ -1,4 +1,4 @@
-From dd70a80f0402f438dcc2eb9b0ee47e2d6ed8eabf Mon Sep 17 00:00:00 2001
+From 1bc4f70b2b8a353d632ca7dd86be55a8fbf8bfc7 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Sun, 12 Feb 2017 13:51:40 +0900
 Subject: [PATCH 2/2] comment out jsk_rqt_plugins
