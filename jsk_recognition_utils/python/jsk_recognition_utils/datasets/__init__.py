@@ -1,5 +1,0 @@
-from jsk_recognition_utils.datasets import segmentation
-
-
-InstanceSegmentationDataset = segmentation.InstanceSegmentationDataset
-SemanticSegmentationDataset = segmentation.SemanticSegmentationDataset
