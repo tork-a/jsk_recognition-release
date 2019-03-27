@@ -1,0 +1,690 @@
+ros-melodic-jsk-recognition-msgs (1.2.10-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 27 Mar 2019 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.2.9-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 23 Feb 2019 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.2.8-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 22 Feb 2019 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.2.7-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 14 Feb 2019 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.2.6-0stretch) stretch; urgency=high
+
+  * Install sample and test  into SHARE_DESTINATION (#2345 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2345>)
+  * jsk_pcl_ros: support lazy mode for pointcloud_screenpoint nodelet (#2277 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2277>)p
+    * add 'bool no_update' to TransformScreenpoint.srv
+  * Contributors: Yuki Furuta, Yuto Uchimi
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 02 Nov 2018 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.2.5-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 09 Apr 2018 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.2.4-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 12 Jan 2018 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.2.3-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 23 Nov 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.2.2-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 23 Jul 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.2.1-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 15 Jul 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.2.0-0stretch) stretch; urgency=high
+
+  * [ADD NEW MESSAGE] Add Object.msg, ObjectArray.msg to represent object property (#2148 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2148>)
+    * Message to represent object property (Object.msg/ObjectArray.msg)
+  * Enhance PeoplePoseEstimation2D (#2162 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2162>
+    * scripts/people_pose_array_to_pose_array.py: Visualize people 3D pose on rviz in sample
+  * Contributors: Kentaro Wada, Yuki Furuta
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 15 Jul 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.1.3-0stretch) stretch; urgency=high
+
+  * [jsk_perception] apply candidates node supports topic update (#2143 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2143>)
+    * update Label msg API
+    * add Label and LabelArray msg
+  * Rewrite KinfuNodelet with some enhancements and new features (#2129 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2129>)
+    * Save kinfu mesh model with bbox and ground frame id
+    * Create polygon mesh with bbox request in kinfu
+    * Create jsk_recognition_msgs/TrackingStatus.msg and use it in  Kinfue
+  * [jsk_perception] PeoplePoseEstimation2D (#2115 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2115>)
+    * [jsk_recogntion_msgs/PoseArray] Add score
+    * [jsk_perception/people_pose_estimation_2d] Modified type of PeoplePose.msg
+    * [jsk_recognition_msgs] Add people_pose msgs
+  * Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Iori Yanokura
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 07 Jul 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.1.2-0stretch) stretch; urgency=high
+
+  * [jsk_recognition_msgs] add segment messages. (#2047 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2047> )
+  * Generate README by script (#2064 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2064> )
+  * Contributors: Kentaro Wada, Masaki Murooka
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 16 Jun 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.1.1-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 04 Mar 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.1.0-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 09 Feb 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.0.4-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 09 Feb 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.0.3-0stretch) stretch; urgency=high
+
+  * Compute box overlap and publish it (#1993 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1993> )
+    * add Accuracy.msg
+  * Contributors: Kentaro Wada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 08 Feb 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.0.2-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 12 Jan 2017 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.0.1-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 13 Dec 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (1.0.0-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 12 Dec 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.29-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 30 Oct 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.28-0stretch) stretch; urgency=high
+
+  * [Major Release] Copy jsk_pcl_ros/srv and  jsk_perception/srv files to jsk_recognition_msgs (#1914 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1914> )
+  * Copy deprecated srv files to jsk_recognition_msgs
+    - jsk_pcl_ros/srv -> jsk_recognition_msgs/srv
+    - jsk_perception/srv -> jsk_recognition_msgs/srv
+    TODO
+    - 1. Migrate current code for srv files in jsk_recognition_msgs
+    - 2. Remove srv files in jsk_pcl_ros and jsk_perception
+  * Contributors: Kei Okada, Kentaro Wada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 29 Oct 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.27-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 29 Oct 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.26-0stretch) stretch; urgency=high
+
+  * Apply context to label probability (#1901 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1901>)
+  * Contributors: Kentaro Wada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 27 Oct 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.25-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 16 Sep 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.24-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 15 Sep 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.23-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 14 Sep 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.22-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 13 Sep 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.21-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 15 Apr 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.20-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 14 Apr 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.19-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 22 Mar 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.18-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 21 Mar 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.17-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 20 Mar 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.16-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 11 Feb 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.15-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 09 Feb 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.14-0stretch) stretch; urgency=high
+
+  * [jsk_perception] BoundingBoxToRectArray and rect_array_to_image_marker.py
+  * [jsk_pcl_ros] Publish current tracking status (running or idle)
+    from particle_fitler_tracking.
+    And add some scripts to visualize them.
+  * [jsk_recognition_msgs] Add min/max fields to  PlotDataArray
+  * [jsk_recognition_msgs] Update PlotData message to support more 2d plotting
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 04 Feb 2016 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.13-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 19 Dec 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.12-0stretch) stretch; urgency=high
+
+  * [jsk_pcl_ros_utils] Introduce new package called jsk_pcl_ros_utils
+    in order to speed-up compilation of jsk_pcl_ros
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 19 Dec 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.11-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 18 Dec 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.10-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 17 Dec 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.9-0stretch) stretch; urgency=high
+
+  * [jsk_perception] Add PolygonArrayColorHistogram
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 14 Dec 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.8-0stretch) stretch; urgency=high
+
+  * [jsk_pcl_ros] Add Failure flag to Torus message
+  * Remove types on docs for jsk_pcl_ros
+    See http://docs.ros.org/indigo/api/jsk_recognition_msgs/html/index-msg.html for message types
+  * Contributors: Kentaro Wada, Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 08 Dec 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.7-0stretch) stretch; urgency=high
+
+  * Merge pull request #1276 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1276> from mmurooka/add-octomap-contact
+    [jsk_pcl_ros] Add octomap contact
+  * [jsk_recognition_msgs] Add VectorArray.msg
+  * add message for octomap_server_contact
+  * [jsk_recognition_msgs] Add new msg ClassificationResult
+  * [jsk_recognition_msgs] Sort msg files in CMakeLists.txt
+  * [jsk_recognition_msgs] Add WeightedPoseArray
+  * add new output msg for handle estimate
+  * Contributors: Kentaro Wada, Masaki Murooka, Ryohei Ueda, Yu Ohara
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 19 Nov 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.6-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 11 Sep 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.5-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 09 Sep 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.4-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 07 Sep 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.3-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 06 Sep 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.2-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 05 Sep 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.1-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 04 Sep 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.3.0-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 04 Sep 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.18-0stretch) stretch; urgency=high
+
+  * [jsk_recognition_msgs] Add script to convert
+    jsk_recognition_msgs/PlotData into csv
+  * [jsk_pcl_ros] Add tool to visualize variance of raser scan
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 04 Sep 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.17-0stretch) stretch; urgency=high
+
+  * [jsk_recognition_msgs/PolygonArray] Add lebels and likelihood for
+    colorizing on rviz
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 21 Aug 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.16-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 19 Aug 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.15-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 18 Aug 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.14-0stretch) stretch; urgency=high
+
+  * [jsk_recognition_msgs] Add value field to BoundingBox to represent likelihood
+  * [jsk_recognition_msgs] HistogramWithRange message to represent rich histogram
+    data
+  * [jsk_pcl_ros] Add config topic to chain heightmap configuration
+  * [jsk_perception] Scripts for bof and its hist extractor
+  * Contributors: Kentaro Wada, Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 13 Aug 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.13-0stretch) stretch; urgency=high
+
+  * [jsk_perception] Use ImageDifferenceValue.msg instead of Float32Stamped.msg
+  * [jsk_recognition_msgs] Add Float32Stamped.msg
+  * Contributors: Kentaro Wada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 11 Jun 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.12-0stretch) stretch; urgency=high
+
+  * JSK Recognition Msg for handling Array of 2D Rects
+  * Contributors: iKrishneel
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 04 May 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.11-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 13 Apr 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.10-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 09 Apr 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.9-0stretch) stretch; urgency=high
+
+  * 0.2.8
+  * Update Changelog
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 29 Mar 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.8-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 29 Mar 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.7-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 26 Mar 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.6-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 25 Mar 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.5-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 17 Mar 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.4-0stretch) stretch; urgency=high
+
+  * [jsk_recognition_msgs] Add resolution to SimpleOccupancyGrid
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 08 Mar 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.3-0stretch) stretch; urgency=high
+
+  * add CATKIN_DEPENDS
+  * [jsk_recognition_msgs] Add new message for occupancy grid for more
+    simple usage
+  * Contributors: Ryohei Ueda, Kei Okada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 02 Feb 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.2-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 30 Jan 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.1-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 30 Jan 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.2.0-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.34-0stretch) stretch; urgency=high
+
+  * [jsk_pcl_ros, jsk_perception] Use jsk_recognition_msgs
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.33-0stretch) stretch; urgency=high
+
+  * [jsk_recognition_msgs] Add jsk_recognition_msgs
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 24 Jan 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.32-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 12 Jan 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.31-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 08 Jan 2015 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.30-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 24 Dec 2014 16:45:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.29-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 24 Dec 2014 12:43:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.28-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 17 Dec 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.27-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 09 Dec 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.26-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 23 Nov 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.25-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 21 Nov 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.24-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 15 Nov 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.23-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 09 Oct 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.22-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 24 Sep 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.21-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 20 Sep 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.20-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 17 Sep 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.19-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 15 Sep 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.18-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 13 Sep 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.17-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 07 Sep 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.16-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 04 Sep 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.15-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 26 Aug 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.14-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 01 Aug 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.13-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 29 Jul 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.12-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 24 Jul 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.11-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 08 Jul 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.10-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 07 Jul 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.9-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 01 Jul 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.8-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 29 Jun 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.7-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 31 May 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.6-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 30 May 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.5-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 May 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.4-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 25 Apr 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.3-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 12 Apr 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.2-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 11 Apr 2014 00:00:00 -0000
+
+ros-melodic-jsk-recognition-msgs (0.1.1-0stretch) stretch; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 10 Apr 2014 00:00:00 -0000
+
+
