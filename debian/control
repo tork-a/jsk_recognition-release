@@ -1,0 +1,12 @@
+Source: ros-melodic-jsk-pcl-ros
+Section: misc
+Priority: extra
+Maintainer: Youhei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), libyaml-cpp-dev, ros-melodic-catkin, ros-melodic-cv-bridge, ros-melodic-image-geometry, ros-melodic-interactive-markers, ros-melodic-jsk-data, ros-melodic-jsk-pcl-ros-utils, ros-melodic-jsk-perception, ros-melodic-jsk-recognition-utils, ros-melodic-jsk-tools, ros-melodic-jsk-topic-tools (>= 2.2.7), ros-melodic-laser-assembler, ros-melodic-moveit-ros-perception, ros-melodic-octomap-server, ros-melodic-pcl-msgs, ros-melodic-pcl-ros, ros-melodic-roslaunch, ros-melodic-rostest, ros-melodic-tf, ros-melodic-tf-conversions
+Homepage: http://jsk-docs.readthedocs.io/en/latest/jsk_recognition/doc/jsk_pcl_ros
+Standards-Version: 3.9.2
+
+Package: ros-melodic-jsk-pcl-ros
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libboost-all-dev, libyaml-cpp-dev, python-sklearn, ros-melodic-checkerboard-detector, ros-melodic-cv-bridge, ros-melodic-diagnostic-msgs, ros-melodic-diagnostic-updater, ros-melodic-dynamic-reconfigure, ros-melodic-eigen-conversions, ros-melodic-geometry-msgs, ros-melodic-image-geometry, ros-melodic-image-transport, ros-melodic-image-view2, ros-melodic-interactive-markers, ros-melodic-jsk-data, ros-melodic-jsk-footstep-msgs, ros-melodic-jsk-interactive-marker, ros-melodic-jsk-pcl-ros-utils, ros-melodic-jsk-recognition-msgs, ros-melodic-jsk-recognition-utils, ros-melodic-jsk-topic-tools (>= 2.2.7), ros-melodic-kdl-conversions, ros-melodic-kdl-parser, ros-melodic-laser-assembler, ros-melodic-moveit-core, ros-melodic-moveit-ros-perception, ros-melodic-nav-msgs, ros-melodic-nodelet, ros-melodic-octomap, ros-melodic-octomap-server, ros-melodic-openni-launch, ros-melodic-openni2-launch, ros-melodic-pcl-conversions, ros-melodic-pcl-msgs, ros-melodic-pcl-ros, ros-melodic-resized-image-transport, ros-melodic-robot-self-filter, ros-melodic-rosboost-cfg, ros-melodic-roscpp-tutorials, ros-melodic-sensor-msgs, ros-melodic-std-msgs, ros-melodic-std-srvs, ros-melodic-stereo-image-proc, ros-melodic-stereo-msgs, ros-melodic-tf, ros-melodic-tf-conversions, ros-melodic-tf2-ros, ros-melodic-topic-tools, ros-melodic-visualization-msgs
+Description: ROS nodelets for pointcloud perception.
