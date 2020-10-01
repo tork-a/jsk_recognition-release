@@ -1,0 +1,12 @@
+Source: ros-noetic-jsk-perception
+Section: misc
+Priority: optional
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), git, libeigen3-dev, libyaml-cpp-dev, ros-noetic-angles, ros-noetic-catkin, ros-noetic-cmake-modules, ros-noetic-cv-bridge, ros-noetic-dynamic-reconfigure, ros-noetic-geometry-msgs, ros-noetic-image-geometry, ros-noetic-image-transport, ros-noetic-image-view2, ros-noetic-jsk-data, ros-noetic-jsk-recognition-msgs, ros-noetic-jsk-recognition-utils, ros-noetic-jsk-tools, ros-noetic-jsk-topic-tools, ros-noetic-libcmt, ros-noetic-message-generation, ros-noetic-mk, ros-noetic-nodelet, ros-noetic-opencv-apps, ros-noetic-pcl-ros, ros-noetic-posedetection-msgs, ros-noetic-robot-self-filter, ros-noetic-roscpp, ros-noetic-roslaunch, ros-noetic-roslint, ros-noetic-rospack, ros-noetic-rostest, ros-noetic-sensor-msgs, ros-noetic-std-msgs, ros-noetic-tf
+Homepage: https://jsk-docs.readthedocs.io/projects/jsk_recognition/en/latest/jsk_perception
+Standards-Version: 3.9.2
+
+Package: ros-noetic-jsk-perception
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeigen3-dev, libleveldb-dev, libyaml-cpp-dev, python3-sklearn, python3-yaml, ros-noetic-angles, ros-noetic-checkerboard-detector, ros-noetic-cv-bridge, ros-noetic-dynamic-reconfigure, ros-noetic-geometry-msgs, ros-noetic-image-geometry, ros-noetic-image-transport, ros-noetic-image-view, ros-noetic-image-view2, ros-noetic-imagesift, ros-noetic-jsk-data, ros-noetic-jsk-gui-msgs, ros-noetic-jsk-recognition-msgs, ros-noetic-jsk-recognition-utils, ros-noetic-jsk-topic-tools, ros-noetic-libcmt, ros-noetic-message-runtime, ros-noetic-mk, ros-noetic-nodelet, ros-noetic-opencv-apps, ros-noetic-openni2-launch, ros-noetic-pcl-ros, ros-noetic-posedetection-msgs, ros-noetic-robot-self-filter, ros-noetic-rosbag, ros-noetic-roscpp, ros-noetic-rospack, ros-noetic-rospy, ros-noetic-rostopic, ros-noetic-rqt-gui, ros-noetic-rviz, ros-noetic-sensor-msgs, ros-noetic-sound-play, ros-noetic-std-msgs, ros-noetic-tf, ros-noetic-tf2-geometry-msgs, ros-noetic-topic-tools
+Description: ROS nodes and nodelets for 2-D image perception.
