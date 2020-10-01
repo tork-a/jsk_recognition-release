@@ -1,0 +1,628 @@
+ros-noetic-audio-to-spectrogram (1.2.11-1buster) buster; urgency=high
+
+  * Fix for  noetic / 20.04 (#2507 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2507>)
+    
+      * upgrade package.xml to format=3, migrate to noetic with ROS_PYTHON_VERSION=2/3, use multiple ROS distro strategy http://wiki.ros.org/noetic/Migration
+    
+  * [audio_to_spectrogram] Enable multi channel input by retrieving single channel data (#2514 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2514>)
+  * [audio_to_spectrogram] Add README for usage and scripts interface (#2498 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2498>)
+    
+      * [audio_to_spectrogram] Add README for usage and scripts interface
+      * [audio_to_spectrogram] add args to audio_to_spectrogram.launch
+      * [audio_to_spectrogram] Add arg to run audio_capture
+    
+  * Convert audio data to spectrogram (#2478 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2478>)
+    
+      * Make audio_to_spectrogram as ROS package
+    
+  * Contributors: Kei Okada, Naoya Yamaguchi, Shingo Kitagawa
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 01 Oct 2020 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.10-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 27 Mar 2019 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.9-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 23 Feb 2019 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.8-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 22 Feb 2019 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.7-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 14 Feb 2019 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.6-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 02 Nov 2018 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.5-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 09 Apr 2018 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.4-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 12 Jan 2018 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.3-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 23 Nov 2017 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.2-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 23 Jul 2017 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.1-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 15 Jul 2017 20:44:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.0-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 15 Jul 2017 09:14:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.1.3-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 07 Jul 2017 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.1.2-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 16 Jun 2017 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.1.1-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 04 Mar 2017 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.1.0-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 09 Feb 2017 22:50:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.0.4-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 09 Feb 2017 22:48:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.0.3-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 08 Feb 2017 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.0.2-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 12 Jan 2017 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.0.1-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 13 Dec 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.0.0-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 12 Dec 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.29-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 30 Oct 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.28-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 29 Oct 2016 16:34:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.27-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 29 Oct 2016 00:14:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.26-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 27 Oct 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.25-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 16 Sep 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.24-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 15 Sep 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.23-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 14 Sep 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.22-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 13 Sep 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.21-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 15 Apr 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.20-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 14 Apr 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.19-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 22 Mar 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.18-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 21 Mar 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.17-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 20 Mar 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.16-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 11 Feb 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.15-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 09 Feb 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.14-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 04 Feb 2016 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.13-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 19 Dec 2015 17:35:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.12-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 19 Dec 2015 14:44:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.11-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 18 Dec 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.10-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 17 Dec 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.9-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 14 Dec 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.8-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 08 Dec 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.7-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 19 Nov 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.6-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 11 Sep 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.5-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 09 Sep 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.4-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 07 Sep 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.3-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 06 Sep 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.2-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 05 Sep 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.1-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 04 Sep 2015 17:12:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.0-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 04 Sep 2015 12:37:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.18-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 04 Sep 2015 01:07:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.17-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 21 Aug 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.16-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 19 Aug 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.15-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 18 Aug 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.14-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 13 Aug 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.13-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 11 Jun 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.12-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 04 May 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.11-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 13 Apr 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.10-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 09 Apr 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.9-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 29 Mar 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.7-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 26 Mar 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.6-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 25 Mar 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.5-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 17 Mar 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.4-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 08 Mar 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.3-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 02 Feb 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.2-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 30 Jan 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.0-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 29 Jan 2015 12:20:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.34-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 29 Jan 2015 11:53:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.33-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 24 Jan 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.32-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 12 Jan 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.31-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 08 Jan 2015 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.30-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 24 Dec 2014 16:45:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.29-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 24 Dec 2014 12:43:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.28-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 17 Dec 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.27-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 09 Dec 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.26-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 23 Nov 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.25-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 21 Nov 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.24-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 15 Nov 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.23-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 09 Oct 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.22-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 24 Sep 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.21-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 20 Sep 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.20-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 17 Sep 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.19-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 15 Sep 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.18-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 13 Sep 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.17-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 07 Sep 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.16-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 04 Sep 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.15-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 26 Aug 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.14-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 01 Aug 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.13-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 29 Jul 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.12-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 24 Jul 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.11-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 08 Jul 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.10-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 07 Jul 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.9-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 01 Jul 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.8-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 29 Jun 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.7-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 31 May 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.6-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 30 May 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.5-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 29 May 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.4-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 25 Apr 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.3-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 12 Apr 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.2-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 11 Apr 2014 00:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.1-1buster) buster; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 10 Apr 2014 00:00:00 -0000
+
+
