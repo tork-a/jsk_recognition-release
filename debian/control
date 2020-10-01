@@ -1,0 +1,13 @@
+Source: ros-noetic-imagesift
+Section: misc
+Priority: optional
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), python3-setuptools, ros-noetic-catkin, ros-noetic-cmake-modules, ros-noetic-cv-bridge, ros-noetic-image-transport, ros-noetic-jsk-recognition-utils, ros-noetic-jsk-topic-tools (>= 2.2.8), ros-noetic-libsiftfast, ros-noetic-nodelet, ros-noetic-posedetection-msgs, ros-noetic-roscpp, ros-noetic-rostest, ros-noetic-sensor-msgs
+Homepage: https://jsk-docs.readthedocs.io/projects/jsk_recognition/en/latest/imagesift
+Standards-Version: 3.9.2
+
+Package: ros-noetic-imagesift
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-cv-bridge, ros-noetic-image-transport, ros-noetic-jsk-recognition-utils, ros-noetic-jsk-topic-tools (>= 2.2.8), ros-noetic-libsiftfast, ros-noetic-nodelet, ros-noetic-posedetection-msgs, ros-noetic-roscpp, ros-noetic-sensor-msgs
+Description: For every image, computes its sift features and send a new message with the image, its intrinsic parameters, and the features.
+ Parameters include: display - shows the image on the local computer
