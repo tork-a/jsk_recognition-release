@@ -1,0 +1,12 @@
+Source: ros-melodic-jsk-recognition-utils
+Section: misc
+Priority: optional
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), cython, libyaml-cpp-dev, python-setuptools, qtbase5-dev, ros-melodic-catkin, ros-melodic-dynamic-reconfigure, ros-melodic-eigen-conversions, ros-melodic-geometry-msgs, ros-melodic-image-geometry, ros-melodic-jsk-recognition-msgs, ros-melodic-jsk-tools, ros-melodic-jsk-topic-tools, ros-melodic-message-generation, ros-melodic-pcl-msgs, ros-melodic-pcl-ros, ros-melodic-sensor-msgs, ros-melodic-std-msgs, ros-melodic-tf, ros-melodic-tf-conversions, ros-melodic-tf2-ros, ros-melodic-visualization-msgs
+Homepage: https://jsk-docs.readthedocs.io/projects/jsk_recognition/en/latest/jsk_recognition_utils
+Standards-Version: 3.9.2
+
+Package: ros-melodic-jsk-recognition-utils
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libyaml-cpp-dev, python-skimage, ros-melodic-eigen-conversions, ros-melodic-geometry-msgs, ros-melodic-image-geometry, ros-melodic-image-view, ros-melodic-jsk-recognition-msgs, ros-melodic-jsk-topic-tools, ros-melodic-message-runtime, ros-melodic-pcl-msgs, ros-melodic-pcl-ros, ros-melodic-sensor-msgs, ros-melodic-std-msgs, ros-melodic-tf, ros-melodic-tf-conversions, ros-melodic-tf2-ros, ros-melodic-visualization-msgs
+Description: C++ library about sensor model, geometrical modeling and perception.
