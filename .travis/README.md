@@ -5,12 +5,6 @@
 
 ![](_media/jsk_travis_diagram.png)
 
-- How to update docker image on jenkins
-```
-echo -e "FROM ros-ubuntu:14.04\nRUN apt-get update\nRUN apt-get -y upgrade\nEXPOSE 22" | sudo docker build -t ros-ubuntu:14.04 -
-```
-
-
 ----------------------------------------------------------
 
 ## Where test runs
@@ -62,6 +56,12 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   Specify your target distribution of ROS. Now we support hydro, indigo and jade.
   If you specify indigo or jade, tests automatically run on jenkins.
+
+* `ROS_PYTHON_VERSION` (default: none)
+
+  Specify your target python version used of ROS. Available from Noetic.
+  see [Build Using Python3](http://wiki.ros.org/UsingPython3/BuildUsingPython3) and
+  [rep 149](https://github.com/ros-infrastructure/rep/blob/master/rep-0149.rst)
 
 * `USE_DEB` (value: [`true`|`false`|`source`])
 
@@ -122,6 +122,21 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   Flag to skip testing catkin install in addition to devel build.
 
+* `CMAKE_DEVELOPER_ERROR` (none or `true`, default: none)
+
+  Flag to show CMake developer error in catkin run_tests.
+
+* `ADDITIONAL_ENV_TO_DOCKER` (default: none)
+
+  Specify environment variables you want to pass to docker on travis/jenkins.
+  You can specify multiple variables separated by a space.  
+  e.g. `IS_EUSLISP_TRAVIS_TEST IS_GAZEBO_TRAVIS_TEST`
+
+* `DEBUG_TRAVIS_PYTHON` (default: none)
+
+  Specify python command to run within travis/docker/jenkins,
+  for example set `DEBUG_TRAVIS_PYTHON` to `python -v`
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`
@@ -144,6 +159,21 @@ mv CATKIN_IGNORE.bak CATKIN_IGNORE      # do not forget this
 gitk                                    # make sure that what you changed is correct
 git push && git push --tags
 ```
+
+## How to build docker images used in jenkins
+
+```
+cd docker; make
+```
+
+This will build base images for each distros, such as `ros-ubuntu:12.04-base`, `ros-ubuntu:14.04-base`, `ros-ubuntu:16.04-base` ...
+
+and PCL-installed images `ros-ubuntu:14.04-pcl`, `ros-ubuntu:16.04-pcl` ...
+
+Each images are re-build everyday by `--build-arg CACHEBUST=$(date +%%Y%%m%%d)`.
+
+Note that `ros-ubuntu:14.04` is used for build process and we do not expect users to run this package. Please use `ros-ubuntu:14.04-base` instead.
+
 
 
 ## Debug by changing the submodule jsk_travis
