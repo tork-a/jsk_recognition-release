@@ -323,6 +323,9 @@ void Slic::colour_with_cluster_means(cv::Mat &image) {
     for (int i = 0; i < image.cols; i++) {
         for (int j = 0; j < image.rows; j++) {
             int index = clusters(i,j);
+            if (index < 0) {
+              continue;
+            }
             cv::Vec3b c = image.at<cv::Vec3b>(j, i);
             colours[index][0] += (c[0]);
             colours[index][1] += (c[1]);
