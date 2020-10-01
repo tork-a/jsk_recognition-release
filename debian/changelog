@@ -1,0 +1,932 @@
+ros-noetic-jsk-recognition-utils (1.2.11-1focal) focal; urgency=high
+
+  * Add ssd to bounding box sample (#2513 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2513>)
+    
+      * rename launch and rvizconfig
+      * rename to sample_table_rects_to_bounding_box.launch
+      * update rviz config
+      * refactor launch files
+      * add ssd output arg
+      * enabe to put out the bounding box
+      * try to make ssd to bbox sample
+    
+  * Include cython3 when searching (#2531 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2531>)
+  * [jsk_recognition_utils] add rect_array_to_cluster_point_indices.py (#2511 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2511>)
+  * [jsk_recognition_utils] remove unnecessary dynamic_reconfigure in rect_array_to_polygon_array.py (#2510 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2510>)
+    
+      * fix typo in rect_array_to_cluster_point_indices.py
+      * add test and sample for rect_array_to_cluster_point_indices
+      * add rect_array_to_cluster_point_indices.py
+      * remove unused dynamic_reconfigure in rect_array_to_polygon_array.py
+    
+  * Add FCN8sDepthPredictionConcatFirst model to fcn_depth_prediction.py (#2481 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2481>)
+    
+      * Remove unused import in depth_prediction dataset
+      * Rewrite data augmentation to remove dependency on imgaug
+      * Read dataset directory from argument
+      * Add loss computation
+      * Add weight initialization from VGG16
+      * Flatten images for network input
+      * Rewrite mvtk-dependent code
+      * Remove redundant visualization of DepthPredictionDataset
+      * Rosdep install imgaug
+      * Fix default root_dir of DepthPredictionDataset
+      * Move FCN8sDepthPrediction chainer models to jsk_recognition_utils
+      * Add DepthPredictionDataset
+    
+  * Fix for  noetic / 20.04 (#2507 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2507>)
+    
+      * jsk_recognition_utils/cv_utils.h fix for opencv4
+      * upgrade package.xml to format=3, migrate to noetic with ROS_PYTHON_VERSION=2/3, use multiple ROS distro strategy http://wiki.ros.org/noetic/Migration
+    
+  * [jsk_perception] add program for training ssd with box annotation (#2483 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2483>)
+  * set chainer version less than 7.0.0 (#2485 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2485>)
+  * [jsk_recognition_utils] Fix ear clipping triangulation to support concave polygon (#2447 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2447>)
+    
+      * Handle parallel line segments as well
+      * Check if line segment 'uw' completely lies inside the polygon for correcting isEar function
+      * Rename func: triangulate -> triangulateClockwiseVertices
+      * Add space in 'if' line for readable code
+      * Fix ear clipping to support concave polygon
+    
+  * Add train script and sample for SSD (#2471 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2471>)
+  * fix generate_readme.py and update readme (#2442 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2442>)
+  * Add sample, test and doc (#2440 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2440>)
+    
+      * Add dependency on image_view in jsk_recognition_utils/package.xml
+      * Add test for image_16uc1_to_32fc1.py
+      * Add sample for image_16uc1_to_32fc1.py
+      * Add test for rect_array_to_polygon_array.py
+      * Add sample for rect_array_to_polygon_array.py
+      * Fix output polygon vertices in rect_array_to_polygon_array.py
+      * Add test for add_cluster_indices.py
+      * Add sample for add_cluster_indices.py
+      * Add test for static_virtual_camera.py
+      * Add test for pose_array_to_pose.py
+      * Add sample for pose_array_to_pose.py
+      * Add test for polygon_array_to_polygon
+      * Add sample for polygon_array_to_polygon
+      * Add test for polygon_array_publisher
+      * Fix rviz config for sample_polygon_array_publisher.launch
+      * add label to bounding_box_publisher.py
+    
+  * [jsk_recognition_utils] Add label to bounding_box_publisher.py (#2430 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2430>)
+  * Contributors: Naoaki Kanazawa, Kei Okada, Peter Mitrano, Shingo Kitagawa, Yuki Furuta, Yuto Uchimi, Taichi Higashide
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 01 Oct 2020 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.10-1focal) focal; urgency=high
+
+  * Add qtbase5-dev as a package.xml dependency for jsk_recognition_utils. (#2417 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2417>)
+    Needed since CMakeLists.txt tries to depend on it.
+    Signed-off-by: Chris Lalancette <mailto:clalancette@openrobotics.org>
+  * Contributors: Chris Lalancette
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 27 Mar 2019 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.9-1focal) focal; urgency=high
+
+  * add QT_LIBRARIES Qt5::Widgets to fix 'cannot find -lQt5::Widgets' error on debian stretch (#2398 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2398> )
+  * Contributors: Kei Okada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 23 Feb 2019 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.8-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 22 Feb 2019 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.7-1focal) focal; urgency=high
+
+  * [jsk_perception] Add deep_sort_tracker_node.py (#2351 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2351> )
+    * [jsk_recognition_utils/deep_sort_net.py] Renamed network name DeepSortFeature -> DeepSortFeatureExtractor
+    * [jsk_perception/deep_sort/deep_sort_net.py] Moved to jsk_recognition_utils's chainermodels
+  * [jsk_recognition_utils] Resolve dependency for chainer (#2306 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2306> )
+  * Support passing Numpy_INCLUDE_DIRS externally (#2389 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2389> )
+  * [doc] [jsk_perception] [jsk_recognition_utils] Add guide to image recognition with deep learning (#2365 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2365>)
+    
+      * Add doc for image annotation
+      * Add annotate_images_with_labelme to index
+      * Add dataset class for semantic segmentation
+      * Add install_learning_datasets script
+      * Download datasets during catkin build
+      * Add .gitignore in learning_datasets/
+      * Add train_fcn script
+      * Set default learning_rate to valid value
+      * Enable plotting from remote host as well
+      * Add doc for training FCN
+      * Add doc for starting deep learning with image dataset
+      * Add how to create dataset, where to store it in documentation
+      * Dump param for fcn_object_segmentation.py
+      * Add InstanceSegmentationDataset
+      * Add train script for Mask-RCNN
+      * Fix model_name and outputs in train_fcn.md
+      * Add doc for training Mask-RCNN
+    
+  * Contributors: Esteve Fernandez, Yuto Uchimi, Iori Yanokura
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 14 Feb 2019 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.6-1focal) focal; urgency=high
+
+  * Install 'sample' and 'test'into SHARE_DESTINATION (#2345 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2345>)
+  * Use diagnostic nodelet for EuclideanClustering and other nodelets (#2301 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2301>)
+    * jsk_pcl_ros: euclidean_clustering: use dianogistc nodeletUse DiagnosticNodelet::updateDiagnostic preferrably
+  * Describe the hierachy of rosparams of ClusterPointIndicesDecomposer (#2285 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2285>)
+    * Fix test of add_bounding_box_array The input topics are slow (~1Hz), so slop should be larger (it was 0.1 before).
+  * Fix for AssertionError in fast_rcnn.py (#2281 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2281>)
+    * Use roi_pooling_2d defined in chainer for fast_rcnn on CPU mode
+  * Re-enable tests which use chainer inside them (#2280 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2280>)
+    * Looser timeout for test of add_bounding_box_array
+  * Node to concatenate BoundingBoxArray (#2264 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2264>)
+    * Doc for add_bounding_box_array.py
+    * Node to concatenate BoundingBoxArray
+    * Move <test> section to the sample launch files
+  * Contributors: Yuki Furuta, Kei Okada, Kentaro Wada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 02 Nov 2018 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.5-1focal) focal; urgency=high
+
+  * Fix build of jsk_recognition_utils (on Kinetic) (#2262 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2262> )
+    * Close https://github.com/jsk-ros-pkg/jsk_recognition/issues/2259
+  * [jsk_perception/fast_rcnn.py] fast_rcnn node to follow chainer-v2 version (#2249 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2249>)
+    * modify fast_rcnn model to follow chainer-v2 version
+  * Contributors: Yuki Furuta, Kentaro Wada, Shingo Kitagawa
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 09 Apr 2018 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.4-1focal) focal; urgency=high
+
+  * Add image gallery to README (#2225 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2225>)
+  * Contributors: Kentaro Wada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 12 Jan 2018 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.3-1focal) focal; urgency=high
+
+  * Regional feature based object recognition using ResNet (#2172 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2172>)
+  * Convert bounding box to mask (#2176 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2176>)
+    * Add RectArrayToPolygonArray
+  * Contributors: Kentaro Wada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 23 Nov 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.2-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 23 Jul 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.1-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 15 Jul 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.2.0-1focal) focal; urgency=high
+
+  * jsk_pcl_ros: Add Primitive shape classifier nodelet (#2141)
+    
+    jsk_recognition_utils/include/jsk_recognition_utils/geo/polygon.h
+    
+    [jsk_recognition_utils][polygon][fromROSMsg] use identity matrix for default transformation
+  * jsk_recognition_utils/setup.py: Find packages automatically in jsk_recognition_utils (#2156 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2156>)
+  * [jsk_recognition_utils] install chainermodels dir in setup.py (#2154 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2154>)
+  * Contributors: Kentaro Wada, Shingo Kitagawa, Yuki Furuta
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 15 Jul 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.1.3-1focal) focal; urgency=high
+
+  * [jsk_pcl_ros_utils] Add nodelet for computing & comparing color  histogram (#2101 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2101> )
+    * jsk_recognition_utils/include/jsk_recognition_utils/pcl/color_histogram.h: add color_histogram_classifier and visualizer
+  * Generate Kinfu texture model with attention (BoundingBox) and Groundframe to fix occluded surface  (#2135 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2135> )
+    * Create function to crop point cloud by bounding box #2118 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2118> )
+  * install node_scripts in jsk_recognition_utils
+  * Contributors: Kentaro Wada, Shingo Kitagawa, Yuki Furuta
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 07 Jul 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.1.2-1focal) focal; urgency=high
+
+  * [jsk_percption][jsk_recogniton_utils] add imagenet_object_recognition
+  * [jsk_perception] add AlexNet object recognition node #2083 (#2083 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2083> )
+    * add alex_object_recognition node
+  * Remove README.md to generate doc of jsk_recognition_utils (#2078 )
+    
+    Modified:
+    - doc/jsk_recognition_utils/index.rst
+    Added:
+    - jsk_recognition_utils/sample/sample_static_virtual_camera.launch
+  * [jsk_pcl_ros_utils][polygon_magnifier] allow negative distance to magnify (#2053 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2053> )
+    [jsk_pcl_ros_utils][polygon_magnifier] update docs
+    [jsk_recognition_utils] add polygon_array_publisher.py / sample_polygon_array_publisher.launch
+    [jsk_pcl_ros_utils] add sample / test for polygon_magnifier
+  * Generate README by script (#2064 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2064> )
+  * [jsk_recognition_utils/geo/Polygon] add distance method. (#2031 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2031> )
+  * [jsk_recognition_utils] add PolyLine to polyline.{h,cpp} and add code to segment.{h, cpp} (#2026 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2026> )
+  * Contributors: Kentaro Wada, Masaki Murooka, Shingo Kitagawa, Yohei Kakiuchi, Yuki Furuta
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 16 Jun 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.1.1-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 04 Mar 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.1.0-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 09 Feb 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.0.4-1focal) focal; urgency=high
+
+  * [jsk_recognition_utils] src/geo/segment.cpp: fix argument name of Segment::midpoint. (#2013 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2013> )
+  * Contributors: Masaki Murooka
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 09 Feb 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.0.3-1focal) focal; urgency=high
+
+  * [jsk_recognition_utils] add mipoint method to segment class. (#2009 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2009> )
+    * src/edge_depth_refinement_nodelet.cpp
+    * src/geo/segment.cppinclude/jsk_recognition_utils/geo/segment.h
+  * Evaluate voxel segmentation by IU (#1993 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1993> )
+    * Stop depending on jsk_interactive_marker
+    * node_scripts/evaluate_voxel_segmentation_by_gt_box.py
+    * Compute box overlap and publish it : intersect-over-union (overlap)  = volume_tp / (volume_fn + volume_fp + volume_tp)test/evaluate_box_segmentation_by_gt_box.test
+    
+    test/evaluate_voxel_segmentation_by_gt_box.test
+    
+    sample/sample_evaluate_box_segmentation_by_gt_box.launch
+    
+    sample/sample_evaluate_voxel_segmentation_by_gt_box.launch
+    
+    scripts/evaluate_box_segmentation_by_gt_box.py
+    
+    scripts/evaluate_voxel_segmentation_by_gt_box.py
+    
+      * Move evaluation scripts of box segmentation from jsk_recognition_utils to to jsk_pcl_ros_utils
+    
+  * Contributors: Kentaro Wada, Masaki Murooka
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 08 Feb 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.0.2-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 12 Jan 2017 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.0.1-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 13 Dec 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (1.0.0-1focal) focal; urgency=high
+
+  * Fix fo kinetic  (#1943 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1943>)
+    * use std::isnan instead of isnan, knetic compiler requires this
+  * Contributors: Kei Okada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 12 Dec 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.29-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 30 Oct 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.28-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 29 Oct 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.27-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 29 Oct 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.26-1focal) focal; urgency=high
+
+  * Stop using deprecated jsk_topic_tools/log_utils.h (#1933 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1933>)
+  * [heightmap] change type of heightmap to image/32FC2 (#1886 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1886>)
+  * Prettify the style of rosparam for bbox publisher (#1885 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1885>)
+    This shows deprecation warning and does not break the current api.
+    (BTW, this code is quite new and I think no one use this other than me.)
+  * Contributors: Kentaro Wada, Yohei Kakiuchi
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 27 Oct 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.25-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 16 Sep 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.24-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 15 Sep 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.23-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 14 Sep 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.22-1focal) focal; urgency=high
+
+  * Merge pull request #1826 from mmurooka/polyarr-to-poly2
+    [jsk_recognition_utils/node_scripts] add polygon_array_to_polygon.py
+  * [jsk_recognition_utils/node_scripts] add polygon_array_to_polygon.py
+  * Skip rostest on hydro because of unreleased test tools
+  * Add test for bounding_box_array_publisher.py
+  * Add sample for bounding_box_array_publisher.py
+  * Node to publish bounding box array
+  * Skip rostest on hydro because of unreleased test tools
+  * Add test for bounding_box_array_publisher.py
+  * Add sample for bounding_box_array_publisher.py
+  * Node to publish bounding box array
+  * Merge pull request #1809 from wkentaro/feature/pose-array-to-pose
+    Convert PoseArray to PoseStamped with a specified index
+  * Convert PoseArray to PoseStamped with a specified index
+  * Rename test files in favor to {NODE_NAME}.test
+  * Add util to convert image 16uc1 to 32fc1
+  * Merge pull request #1694 from wkentaro/get-numpy-include-dirs
+    [jsk_recognition_utils] Set Numpy include directories in cmake to fix error on OS X
+  * Set Numpy include directories in cmake to fix error on OS X
+  * Remove color_gategoryXX (use labelcolormap)
+  * Add label color utility function
+  * Remove nms.py that is moved to nms.pyx
+  * Recognize object with VGG16 net
+  * Rename vgg16 -> vgg16_fast_rcnn
+  * Cythonize Non-maximum Supression baseline
+  * Remove dependency on rbgirshick/fast-rcnn
+  * Support old scipy which does not have face()
+  * Add static virtual camera
+  * Copy jsk_perception/image_utils.h to jsk_recognition_utils/cv_utils.h
+  * Stop passing -z flag to ld with Clang (#1601)
+  * Contributors: Kei Okada, Kentaro Wada, Masaki Murooka
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 13 Sep 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.21-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 15 Apr 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.20-1focal) focal; urgency=high
+
+  * [jsk_recognition_utils] Support Affine3d project function in Plane (#1576 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1576>)
+  * [jsk_recognition_utils] Add multiple ClusterPointIndices to one (#1581 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1581>)
+    * Add multiple ClusterPointIndices to one
+    Added:
+    - jsk_recognition_utils/node_scripts/add_cluster_indices.py
+    * Document for add_cluster_indices.py
+  * Visualize ClusterPointIndices for image (#1579 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1579>)
+  * Contributors: Iori Kumagai, Kentaro Wada
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 14 Apr 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.19-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 22 Mar 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.18-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 21 Mar 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.17-1focal) focal; urgency=high
+
+  * [jsk_perception] Use timer callback to speed up tile_image with no_sync:=true
+  * [jsk_perception] Cache concatenated image to speed up
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 20 Mar 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.16-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 11 Feb 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.15-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 09 Feb 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.14-1focal) focal; urgency=high
+
+  * [jsk_recognition_utils] Tile different size images with centerization
+    Modified:
+    - jsk_recognition_utils/python/jsk_recognition_utils/visualize.py
+  * [jsk_perception] BoundingBoxToRectArray and rect_array_to_image_marker.py
+  * jsk_recognition_utils/CMakeLists.txt: include_directories should have include/ before catkin_INCLUDE_DIRS
+  * Merge remote-tracking branch 'origin/master' into auto-change-point-type
+  * [jsk_pcl_ros] Publish current tracking status (running or idle)
+    from particle_fitler_tracking.
+    And add some scripts to visualize them.
+  * [jsk_pcl_ros] Automatically detect point type in OctreeVoxelGrid
+    Modified:
+    - doc/jsk_pcl_ros/nodes/octree_voxel_grid.md
+    - jsk_pcl_ros/cfg/OctreeVoxelGrid.cfg
+    - jsk_pcl_ros/include/jsk_pcl_ros/octree_voxel_grid.h
+    - jsk_pcl_ros/src/octree_voxel_grid_nodelet.cpp
+    - jsk_recognition_utils/include/jsk_recognition_utils/pcl_ros_util.h
+    - jsk_recognition_utils/src/pcl_ros_util.cpp
+  * [jsk_recognition_utils] Add SeriesedBoolean::isAllTrueFilled method
+    to check all the buffer is filled by true
+  * [jsk_pcl_ros] Fix WallDurationTimer to publish correct average value
+  * [jsk_pcl_ros] Publish computation time in icp_registration and torus_finder
+    Modified:
+    - doc/jsk_pcl_ros/nodes/icp_registration.md
+    - doc/jsk_pcl_ros/nodes/torus_f_inder.md
+    - jsk_pcl_ros/include/jsk_pcl_ros/icp_registration.h
+    - jsk_pcl_ros/include/jsk_pcl_ros/torus_finder.h
+    - jsk_pcl_ros/src/icp_registration_nodelet.cpp
+    - jsk_pcl_ros/src/torus_finder_nodelet.cpp
+    - jsk_recognition_utils/include/jsk_recognition_utils/time_util.h
+  * [jsk_perception] Keep original resolution if all the input images has
+    same shape and add ~draw_input_topic parameter to draw topic name on
+    the tiled images
+    Modified:
+    - jsk_perception/node_scripts/tile_image.py
+    - jsk_recognition_utils/python/jsk_recognition_utils/visualize.py
+  * [jsk_perception] Fix tile_image.py for hydro.
+    1. Disable approximate sync for hydro. it's not supported on hydro
+    2. Use PIL.Image.frombytes instead of PIL.Image.fromstring
+  * Contributors: Kei Okada, Kentaro Wada, Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 04 Feb 2016 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.13-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 19 Dec 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.12-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 19 Dec 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.11-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 18 Dec 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.10-1focal) focal; urgency=high
+
+  * [jsk_recognition_utils] Fix import error on server caused by matplotlib
+  * [jsk_pcl_ros] Check header.frame_id before resolving 3-D spacially
+    Modified:
+    jsk_pcl_ros/src/multi_plane_extraction_nodelet.cpp
+    jsk_perception/src/polygon_array_color_histogram.cpp
+    jsk_recognition_utils/include/jsk_recognition_utils/pcl_ros_util.h
+    jsk_recognition_utils/src/pcl_ros_util.cpp
+  * Contributors: Kentaro Wada, Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 17 Dec 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.9-1focal) focal; urgency=high
+
+  * [jsk_perception] Compute polygon likelihood based on color histogram.
+  * [jsk_perception] Add PolygonArrayColorHistogram
+  * [jsk_recognition_utils] Better API to measure and publish computation time
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 14 Dec 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.8-1focal) focal; urgency=high
+
+  * Use ccache if installed to make it fast to generate object file
+  * [jsk_recognition_utils, jsk_pcl_ros] Measure time to compute
+    NormalEstimationOMP and RegionGriwongMultiplePlaneSegmentation.
+    Add utility class to measure time: jsk_recognition_utils::WallDurationTimer
+  * [jsk_recognition_utils] Split fore/background with depth
+  * Contributors: Kei Okada, Kentaro Wada, Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 08 Dec 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.7-1focal) focal; urgency=high
+
+  * Use gcc -z defs to check undefined symbols in shared
+    objects (jsk_recognitoin_utils, jsk_pcl_ros, jsk_perception).
+    build_check.cpp cannot run on the environment using  multiple processes
+    because of invoking libjsk_pcl_ros.so link.
+  * Merge pull request #1319 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1319> from wkentaro/146-various-rgb-colors
+    [jsk_recognition_utils] Add labelToRGB with 146 rgb colors
+  * Merge pull request #1324 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1324> from wkentaro/test-tf-listener-singleton
+    [jsk_recognition_utils] Test tf_listener_singleton.cpp
+  * [jsk_recognition_utils] Test rgb_colors.cpp
+  * [jsk_recognition_utils] Test labelToRGB
+  * [jsk_recognition_utils] 146 rgb colors
+  * [jsk_recognition_utils] Test tf_listener_singleton.cpp
+  * [jsk_recognition_utils] Add labelToRGB
+  * [jsk_recognition_utils] 146 rgb colors
+  * [jsk_recognition_utils] Util to decompose descriptors with label
+  * [jsk_recognition_utils] Test tf::Transformer::lookupTransformation
+  * [jsk_recognition_utils] Bag of Features as python module
+  * [jsk_recognition_utils] Handle canvas to get safely plot image
+  * [jsk_recognition_utils] Add bounding_rect_of_mask
+  * [jsk_recognition_utils] Add jsk_recognition_utils.get_tile_image()
+  * [jsk_recognition_utils] Fix laser model
+  * Contributors: Kei Okada, Kentaro Wada, Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 19 Nov 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.6-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 11 Sep 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.5-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 09 Sep 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.4-1focal) focal; urgency=high
+
+  * Merge pull request #1168 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1168> from k-okada/add_yaml
+    jsk_recognition_utils: forget to add include to install
+  * jsk_recognition_utils: forget to add include to install
+  * [jsk_recognition_utils/README] Add link to doxygen documentation
+  * [jsk_recognition_utils/Line] Add documentation
+  * Contributors: Kei Okada, Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 07 Sep 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.3-1focal) focal; urgency=high
+
+  * [jsk_recognition_utils] Depends on visualization_msgs
+  * [jsk_recognition_utils] Separate grid_plane.h from geo_util.h
+  * [jsk_recognition_utils] Separate cylinder.h from geo_util.h
+  * [jsk_recognition_utils] Separate cube.h from geo_util.h
+  * [jsk_recognition_utils] Separate convex_polygon.h from geo_util.h
+  * [jsk_recognition_utils] Separate polygon.h from geo_util.h
+  * [jsk_recognition_utils] Separate plane.h from geo_util.h
+  * [jsk_recognition_utils] Separate segment.h from geo_util.h
+  * [jsk_recognition_utils] Separate line.h from geo_util.h
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 06 Sep 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.2-1focal) focal; urgency=high
+
+  * add yaml-cpp to depends
+  * Merge pull request #1151 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1151> from garaemon/use-histograms
+    [jsk_perception] Use histograms to compute distance in TabletopColorDifferenceLikelihood
+  * [jsk_perception] Use histograms to compute distance in TabletopColorDifferenceLikelihood
+  * Contributors: Kei Okada, Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 05 Sep 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.1-1focal) focal; urgency=high
+
+  * Add README.md to jsk_recognition_utils
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 04 Sep 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.3.0-1focal) focal; urgency=high
+
+  * [jsk_recognition_utils] Introduce new package jsk_recognition_utils
+    in order to use utility libraries defined in jsk_pcl_ros in jsk_perception
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 04 Sep 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.18-1focal) focal; urgency=high
+
+  * [jsk_recognition_utils] Introduce new package jsk_recognition_utils
+    in order to use utility libraries defined in jsk_pcl_ros in jsk_perception
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 04 Sep 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.17-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 21 Aug 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.16-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 19 Aug 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.15-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 18 Aug 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.14-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 13 Aug 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.13-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 11 Jun 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.12-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 04 May 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.11-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 13 Apr 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.10-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 09 Apr 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.9-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 29 Mar 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.7-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 26 Mar 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.6-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 25 Mar 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.5-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 17 Mar 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.4-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 08 Mar 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.3-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 02 Feb 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.2-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 30 Jan 2015 19:29:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.1-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 30 Jan 2015 00:35:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.2.0-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 12:20:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.34-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 11:53:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.33-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 24 Jan 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.32-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 12 Jan 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.31-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 08 Jan 2015 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.30-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 24 Dec 2014 16:45:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.29-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 24 Dec 2014 12:43:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.28-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 17 Dec 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.27-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 09 Dec 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.26-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 23 Nov 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.25-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 21 Nov 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.24-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 15 Nov 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.23-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 09 Oct 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.22-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 24 Sep 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.21-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 20 Sep 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.20-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 17 Sep 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.19-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 15 Sep 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.18-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 13 Sep 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.17-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 07 Sep 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.16-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 04 Sep 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.15-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 26 Aug 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.14-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 01 Aug 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.13-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 29 Jul 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.12-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 24 Jul 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.11-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 08 Jul 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.10-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 07 Jul 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.9-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 01 Jul 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.8-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 29 Jun 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.7-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 31 May 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.6-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 30 May 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.5-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 May 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.4-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 25 Apr 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.3-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 12 Apr 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.2-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 11 Apr 2014 00:00:00 -0000
+
+ros-noetic-jsk-recognition-utils (0.1.1-1focal) focal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 10 Apr 2014 00:00:00 -0000
+
+
