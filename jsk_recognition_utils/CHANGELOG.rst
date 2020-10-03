@@ -2,6 +2,9 @@
 Changelog for package jsk_recognition_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.12 (2020-10-03)
+-------------------
+
 1.2.11 (2020-10-01)
 -------------------
 * Add ssd to bounding box sample (`#2513 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2513>`_)
