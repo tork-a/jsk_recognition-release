@@ -1,0 +1,12 @@
+Source: ros-kinetic-audio-to-spectrogram
+Section: misc
+Priority: optional
+Maintainer: Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-kinetic-catkin, ros-kinetic-roslaunch, ros-kinetic-rostest
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-kinetic-audio-to-spectrogram
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-matplotlib, ros-kinetic-audio-capture, ros-kinetic-audio-common-msgs, ros-kinetic-cv-bridge, ros-kinetic-image-view, ros-kinetic-jsk-recognition-msgs, ros-kinetic-sensor-msgs
+Description: Convert audio (audio_common_msgs/AudioData) to spectrogram (sensor_msgs/Image)
