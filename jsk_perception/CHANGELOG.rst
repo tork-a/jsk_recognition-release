@@ -2,6 +2,14 @@
 Changelog for package jsk_perception
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.12 (2020-10-03)
+-------------------
+* check if chainer is found before check version (`#2533 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2533>`_)
+
+  * fixes http://build.ros.org/job/Nbin_uF64__jsk_perception__ubuntu_focal_amd64__binary/1/console and http://build.ros.org/job/Mbin_uB64__jsk_perception__ubuntu_bionic_amd64__binary/91/console
+
+* Contributors: Kei Okada
+
 1.2.11 (2020-10-01)
 -------------------
 * Add FCN8sDepthPredictionConcatFirst model to fcn_depth_prediction.py (`#2481 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2481>`_)
