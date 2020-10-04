@@ -2,6 +2,9 @@
 Changelog for package jsk_recognition_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.12 (2020-10-03)
+-------------------
+
 1.2.11 (2020-10-01)
 -------------------
 * Convert audio data to spectrogram (`#2478 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2478>`_)
