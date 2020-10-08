@@ -1,0 +1,12 @@
+Source: ros-melodic-audio-to-spectrogram
+Section: misc
+Priority: optional
+Maintainer: Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-melodic-catkin, ros-melodic-roslaunch, ros-melodic-rostest
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-melodic-audio-to-spectrogram
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-matplotlib, ros-melodic-audio-capture, ros-melodic-audio-common-msgs, ros-melodic-cv-bridge, ros-melodic-image-view, ros-melodic-jsk-recognition-msgs, ros-melodic-sensor-msgs
+Description: Convert audio (audio_common_msgs/AudioData) to spectrogram (sensor_msgs/Image)
