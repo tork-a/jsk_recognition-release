@@ -1,0 +1,12 @@
+Source: ros-noetic-resized-image-transport
+Section: misc
+Priority: optional
+Maintainer: Yohei Kakiuchi <youhei@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-noetic-catkin, ros-noetic-cv-bridge, ros-noetic-image-transport, ros-noetic-jsk-recognition-utils, ros-noetic-jsk-tools, ros-noetic-jsk-topic-tools (>= 2.2.8), ros-noetic-message-generation, ros-noetic-nodelet, ros-noetic-rostest, ros-noetic-sensor-msgs, ros-noetic-std-srvs
+Homepage: https://jsk-docs.readthedocs.io/projects/jsk_recognition/en/latest/resized_image_transport
+Standards-Version: 3.9.2
+
+Package: ros-noetic-resized-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-cv-bridge, ros-noetic-image-transport, ros-noetic-jsk-topic-tools (>= 2.2.8), ros-noetic-message-runtime, ros-noetic-nodelet, ros-noetic-sensor-msgs, ros-noetic-std-srvs
+Description: ROS nodes to publish resized images.
