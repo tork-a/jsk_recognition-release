@@ -1,0 +1,13 @@
+Source: ros-noetic-checkerboard-detector
+Section: misc
+Priority: optional
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-noetic-catkin, ros-noetic-cv-bridge, ros-noetic-dynamic-reconfigure, ros-noetic-eigen-conversions, ros-noetic-image-geometry, ros-noetic-jsk-recognition-msgs, ros-noetic-jsk-tools, ros-noetic-jsk-topic-tools, ros-noetic-message-filters, ros-noetic-posedetection-msgs, ros-noetic-rosconsole, ros-noetic-roscpp, ros-noetic-rostest, ros-noetic-sensor-msgs, ros-noetic-tf, ros-noetic-tf2
+Homepage: https://jsk-docs.readthedocs.io/projects/jsk_recognition/en/latest/checkerboard_detector
+Standards-Version: 3.9.2
+
+Package: ros-noetic-checkerboard-detector
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-cv-bridge, ros-noetic-dynamic-reconfigure, ros-noetic-dynamic-tf-publisher, ros-noetic-eigen-conversions, ros-noetic-image-geometry, ros-noetic-image-publisher, ros-noetic-jsk-recognition-msgs, ros-noetic-message-filters, ros-noetic-posedetection-msgs, ros-noetic-rosconsole, ros-noetic-roscpp, ros-noetic-sensor-msgs, ros-noetic-tf, ros-noetic-tf2
+Description: Uses opencv to find checkboards and compute their 6D poses with respect to the image.
+ Requires the image to be calibrated. Parameters: display - show the checkerboard detection rect%d_size_x - size of checker in x direction rect%d_size_y - size of checker in y direction grid%d_size_x - number of checkers in x direction grid%d_size_y - number of checkers in y direction There can be more than one grid%d declared, the numbers should grow consecutively starting at 0.
