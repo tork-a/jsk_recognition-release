@@ -1,0 +1,12 @@
+Source: ros-noetic-audio-to-spectrogram
+Section: misc
+Priority: optional
+Maintainer: Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-noetic-catkin, ros-noetic-roslaunch, ros-noetic-rostest
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-noetic-audio-to-spectrogram
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-matplotlib, ros-noetic-audio-capture, ros-noetic-audio-common-msgs, ros-noetic-cv-bridge, ros-noetic-image-view, ros-noetic-jsk-recognition-msgs, ros-noetic-sensor-msgs
+Description: Convert audio (audio_common_msgs/AudioData) to spectrogram (sensor_msgs/Image)
