@@ -63,7 +63,7 @@
   <exec_depend>kdl_conversions</exec_depend>
   <exec_depend>kdl_parser</exec_depend>
   <exec_depend>laser_assembler</exec_depend>
-  <exec_depend>ml_classifiers</exec_depend>
+  <!-- <exec_depend>ml_classifiers</exec_depend> -->
   <exec_depend>moveit_core</exec_depend>
   <exec_depend>moveit_ros_perception</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
