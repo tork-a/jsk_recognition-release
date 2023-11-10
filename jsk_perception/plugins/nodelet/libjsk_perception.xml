@@ -35,6 +35,10 @@
          type="jsk_perception::LabelToMaskImage"
          base_class_type="nodelet::Nodelet">
   </class>
+  <class name="jsk_perception/LabelArrayToMaskImage"
+         type="jsk_perception::LabelArrayToMaskImage"
+         base_class_type="nodelet::Nodelet">
+  </class>
   <class name="jsk_perception/ROIToRect"
          type="jsk_perception::ROIToRect"
          base_class_type="nodelet::Nodelet">
@@ -139,6 +143,9 @@
   <class name="jsk_perception/UnapplyMaskImage" type="jsk_perception::UnapplyMaskImage"
          base_class_type="nodelet::Nodelet">
   </class>
+  <class name="jsk_perception/InvertMaskImage" type="jsk_perception::InvertMaskImage"
+         base_class_type="nodelet::Nodelet">
+  </class>
   <class name="jsk_perception/GridLabel" type="jsk_perception::GridLabel"
          base_class_type="nodelet::Nodelet">
   </class>
@@ -225,6 +232,12 @@
       Nodelet to convert fisheye image to panorama.
     </description>
   </class>
+  <class name="jsk_perception/DualFisheyeToPanorama" type="jsk_perception::DualFisheyeToPanorama"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Nodelet to convert dual fisheye image to panorama.
+    </description>
+  </class>
   <class name="jsk_perception/Skeletonization" type="jsk_perception::Skeletonization"
          base_class_type="nodelet::Nodelet">
     <description>
@@ -274,6 +287,26 @@
   </class>
   <class name="jsk_perception/DrawRects"
          type="jsk_perception::DrawRects"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/VirtualCameraMono"
+         type="jsk_perception::VirtualCameraMono"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/PointPoseExtractor"
+         type="jsk_perception::PointPoseExtractor"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/RemoveBlurredFrames"
+         type="jsk_perception::RemoveBlurredFrames"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/VideoToScene"
+         type="jsk_perception::VideoToScene"
+         base_class_type="nodelet::Nodelet">
+  </class>
+  <class name="jsk_perception/SplitImage"
+         type="jsk_perception::SplitImage"
          base_class_type="nodelet::Nodelet">
   </class>
 </library>
