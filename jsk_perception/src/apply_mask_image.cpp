@@ -13,7 +13,7 @@
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/o2r other materials provided
+ *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
  *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
@@ -51,21 +51,39 @@ namespace jsk_perception
     pnh_->param("negative", negative_, false);
     pnh_->param("negative/before_clip", negative_before_clip_, true);
     pnh_->param("mask_black_to_transparent", mask_black_to_transparent_, false);
+    pnh_->param("use_rectified_image", use_rectified_image_, true);
     pnh_->param("queue_size", queue_size_, 100);
+    pnh_->param("max_interval_duration", max_interval_duration_, ros::DURATION_MAX.toSec());
     pnh_->param("cval", cval_, 0);
     pub_image_ = advertise<sensor_msgs::Image>(
       *pnh_, "output", 1);
     pub_mask_ = advertise<sensor_msgs::Image>(
       *pnh_, "output/mask", 1);
+    pub_camera_info_ = advertise<sensor_msgs::CameraInfo>(
+      *pnh_, "output/camera_info", 1);
     onInitPostProcess();
+  }
+
+  ApplyMaskImage::~ApplyMaskImage() {
+    // message_filters::Synchronizer needs to be called reset
+    // before message_filters::Subscriber is freed.
+    // Calling reset fixes the following error on shutdown of the nodelet:
+    // terminate called after throwing an instance of
+    // 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::lock_error> >'
+    //     what():  boost: mutex lock failed in pthread_mutex_lock: Invalid argument
+    // Also see https://github.com/ros/ros_comm/issues/720 .
+    sync_.reset();
+    async_.reset();
   }
 
   void ApplyMaskImage::subscribe()
   {
     sub_image_.subscribe(*pnh_, "input", 1);
     sub_mask_.subscribe(*pnh_, "input/mask", 1);
+    sub_info_ = pnh_->subscribe("input/camera_info", 1,
+                                &ApplyMaskImage::infoCallback, this);
     if (approximate_sync_) {
-      async_ = boost::make_shared<message_filters::Synchronizer<ApproximateSyncPolicy> >(queue_size_);
+      async_ = boost::make_shared<message_filters::Synchronizer<ApproximateSyncPolicy> >(queue_size_), (max_interval_duration_);
       async_->connectInput(sub_image_, sub_mask_);
       async_->registerCallback(boost::bind(&ApplyMaskImage::apply, this, _1, _2));
     }
@@ -82,6 +100,13 @@ namespace jsk_perception
   {
     sub_image_.unsubscribe();
     sub_mask_.unsubscribe();
+  }
+
+  void ApplyMaskImage::infoCallback(
+    const sensor_msgs::CameraInfo::ConstPtr& info_msg)
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    camera_info_ = info_msg;
   }
 
   void ApplyMaskImage::apply(
@@ -113,8 +138,18 @@ namespace jsk_perception
       cv::bitwise_not(mask, mask);
     }
 
+    cv::Rect region = jsk_recognition_utils::boundingRectOfMaskImage(mask);
+    if (camera_info_) {
+      sensor_msgs::CameraInfo camera_info(*camera_info_);
+      camera_info.header = image_msg->header;
+      camera_info.roi.x_offset = region.x;
+      camera_info.roi.y_offset = region.y;
+      camera_info.roi.width = region.width;
+      camera_info.roi.height = region.height;
+      camera_info.roi.do_rectify = use_rectified_image_;
+      pub_camera_info_.publish(camera_info);
+    }
     if (clip_) {
-      cv::Rect region = jsk_recognition_utils::boundingRectOfMaskImage(mask);
       mask = mask(region);
       image = image(region);
     }
@@ -134,14 +169,17 @@ namespace jsk_perception
 
     cv::Mat output_image;
     if (mask_black_to_transparent_) {
-      if (sensor_msgs::image_encodings::isMono(image_msg->encoding)) {
-        cv::cvtColor(masked_image, output_image, CV_GRAY2BGRA);
-      }
-      else if (jsk_recognition_utils::isRGB(image_msg->encoding)) {
-        cv::cvtColor(masked_image, output_image, CV_RGB2BGRA);
-      }
-      else {  // BGR, BGRA or RGBA
-        cv::cvtColor(masked_image, output_image, CV_BGR2BGRA);
+      // Error in cvtColor when masked_image is empty.
+      if (!masked_image.empty()) {
+        if (sensor_msgs::image_encodings::isMono(image_msg->encoding)) {
+          cv::cvtColor(masked_image, output_image, CV_GRAY2BGRA);
+        }
+        else if (jsk_recognition_utils::isRGB(image_msg->encoding)) {
+          cv::cvtColor(masked_image, output_image, CV_RGB2BGRA);
+        }
+        else {  // BGR, BGRA or RGBA
+          cv::cvtColor(masked_image, output_image, CV_BGR2BGRA);
+        }
       }
       for (size_t j=0; j < mask.rows; j++) {
         for (int i=0; i < mask.cols; i++) {
@@ -159,14 +197,17 @@ namespace jsk_perception
             output_image).toImageMsg());
     }
     else {
-      if (jsk_recognition_utils::isBGRA(image_msg->encoding)) {
-        cv::cvtColor(masked_image, output_image, cv::COLOR_BGR2BGRA);
-      }
-      else if (jsk_recognition_utils::isRGBA(image_msg->encoding)) {
-        cv::cvtColor(masked_image, output_image, cv::COLOR_BGR2RGBA);
-      }
-      else {  // BGR, RGB or GRAY
-        masked_image.copyTo(output_image);
+      // Error in cvtColor when masked_image is empty.
+      if (!masked_image.empty()) {
+        if (jsk_recognition_utils::isBGRA(image_msg->encoding)) {
+          cv::cvtColor(masked_image, output_image, cv::COLOR_BGR2BGRA);
+        }
+        else if (jsk_recognition_utils::isRGBA(image_msg->encoding)) {
+          cv::cvtColor(masked_image, output_image, cv::COLOR_BGR2RGBA);
+        }
+        else {  // BGR, RGB or GRAY
+          masked_image.copyTo(output_image);
+        }
       }
       pub_image_.publish(cv_bridge::CvImage(
             image_msg->header,
