@@ -53,7 +53,12 @@ namespace imagesift
     void SiftNode::onInit()
     {
         DiagnosticNodelet::onInit();
+        // First positional argument is the transport type
+        std::string transport;
+        pnh_->param("image_transport", transport, std::string("raw"));
+        ROS_INFO_STREAM("Using transport \"" << transport << "\" for " << pnh_->getNamespace());
         _it.reset(new image_transport::ImageTransport(*nh_));
+        _hints = image_transport::TransportHints(transport, ros::TransportHints(), *pnh_);
 
         pnh_->param("use_mask", _useMask, false);
         
@@ -66,10 +71,21 @@ namespace imagesift
         onInitPostProcess();
     }
 
+    SiftNode::~SiftNode() {
+        // message_filters::Synchronizer needs to be called reset
+        // before message_filters::Subscriber is freed.
+        // Calling reset fixes the following error on shutdown of the nodelet:
+        // terminate called after throwing an instance of
+        // 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::lock_error> >'
+        //     what():  boost: mutex lock failed in pthread_mutex_lock: Invalid argument
+        // Also see https://github.com/ros/ros_comm/issues/720 .
+        _sync.reset();
+    }
+
     void SiftNode::subscribe()
     {
         if (!_useMask) {
-            _subImage = _it->subscribe("image", 1, &SiftNode::imageCb, this);
+            _subImage = _it->subscribe(nh_->resolveName("image"), 1, &SiftNode::imageCb, this, _hints);
         }
         else {
             _subImageWithMask.subscribe(*nh_, "image", 1);
