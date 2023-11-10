@@ -29,10 +29,23 @@ find_package(catkin REQUIRED COMPONENTS
   visualization_msgs
 )
 
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/jsk_recognition_utils/jsk_topic_tools_version.h.in
+  ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/jsk_recognition_utils/jsk_topic_tools_version.h)
+
+
+# ------------------------------------------------------------------------------------
+# Download
+# ------------------------------------------------------------------------------------
+
+# download and install font data
+add_custom_target(${PROJECT_NAME}_install_font_data ALL COMMAND python$ENV{ROS_PYTHON_VERSION} ${PROJECT_SOURCE_DIR}/scripts/install_font_data.py)
+
 catkin_python_setup()
 
 generate_dynamic_reconfigure_options(
   cfg/PoseArrayToPose.cfg
+  cfg/PolygonArrayToBoxArray.cfg
   cfg/PolygonArrayToPolygon.cfg
 )
 
@@ -109,6 +122,7 @@ if (CATKIN_ENABLE_TESTING)
     add_rostest(test/add_cluster_indices.test)
     add_rostest(test/image_16uc1_to_32fc1.test)
     add_rostest(test/polygon_array_publisher.test)
+    add_rostest(test/polygon_array_to_box_array.test)
     add_rostest(test/polygon_array_to_polygon.test)
     add_rostest(test/pose_array_to_pose.test)
     add_rostest(test/rect_array_to_polygon_array.test)
@@ -133,9 +147,29 @@ install(TARGETS jsk_recognition_utils
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h" # Ignore *_version.h.in files
 )
 
-install(DIRECTORY node_scripts sample test
+install(DIRECTORY sample test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS
 )
+if($ENV{ROS_DISTRO} STREQUAL "indigo") # on noetic it needs catkin_install_python to support Python3 and it does not work on indigo for some reason...
+install(DIRECTORY node_scripts
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS
+  )
+else()
+install(DIRECTORY node_scripts
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS
+  FILES_MATCHING
+  PATTERN "*"
+  PATTERN "*/*.py" EXCLUDE
+  )
+file(GLOB NODE_SCRIPT_PROGRAMS node_scripts/*.py)
+catkin_install_python(
+  PROGRAMS ${NODE_SCRIPT_PROGRAMS}
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/node_scripts
+)
+endif()
