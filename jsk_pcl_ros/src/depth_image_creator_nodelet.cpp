@@ -13,7 +13,7 @@
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/o2r other materials provided
+ *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
  *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
@@ -63,11 +63,15 @@ void jsk_pcl_ros::DepthImageCreator::onInit () {
   ROS_INFO("use_approximate : %d", use_approximate);
 
   pnh_->param("fill_value", fill_value, std::numeric_limits<float>::quiet_NaN());
+  ROS_INFO("fill_value : %f", fill_value);
   pnh_->param("organize_cloud", organize_cloud_, false);
+  ROS_INFO("organize_cloud : %d", organize_cloud_);
 
   pnh_->param("info_throttle", info_throttle_, 0);
+  ROS_INFO("info_throttle : %d", info_throttle_);
   info_counter_ = 0;
-  pnh_->param("max_queue_size", max_queue_size_, 3);
+  pnh_->param("max_queue_size", max_queue_size_, 100);
+  ROS_INFO("max_queue_size : %d", max_queue_size_);
   // maybe below queue_size can always be 1,
   // but we set max_queue_size_ for backward compatibility.
   pnh_->param("max_pub_queue_size", max_pub_queue_size_, max_queue_size_);
@@ -78,14 +82,17 @@ void jsk_pcl_ros::DepthImageCreator::onInit () {
   if (pnh_->hasParam("translation")) {
     jsk_topic_tools::readVectorParameter(*pnh_, "translation", trans_pos);
   }
+  ROS_INFO("translation : %f %f %f", trans_pos[0], trans_pos[1], trans_pos[2]);
   if (pnh_->hasParam("rotation")) {
     jsk_topic_tools::readVectorParameter(*pnh_, "rotation", trans_quat);
   }
+  ROS_INFO("rotation : %f %f %f %f", trans_quat[0], trans_quat[1], trans_quat[2], trans_quat[3]);
   tf::Quaternion btq(trans_quat[0], trans_quat[1], trans_quat[2], trans_quat[3]);
   tf::Vector3 btp(trans_pos[0], trans_pos[1], trans_pos[2]);
   fixed_transform.setOrigin(btp);
   fixed_transform.setRotation(btq);
   pnh_->param("tf_duration", tf_duration_, 0.001);
+  ROS_INFO("tf_duration : %f", tf_duration_);
 
   pub_depth_ = advertise<sensor_msgs::Image> (*pnh_, "output", max_pub_queue_size_);
   pub_image_ = advertise<sensor_msgs::Image> (*pnh_, "output_image", max_pub_queue_size_);
@@ -97,6 +104,18 @@ void jsk_pcl_ros::DepthImageCreator::onInit () {
                                       &DepthImageCreator::service_cb, this);
   }
   onInitPostProcess();
+}
+
+jsk_pcl_ros::DepthImageCreator::~DepthImageCreator() {
+  // message_filters::Synchronizer needs to be called reset
+  // before message_filters::Subscriber is freed.
+  // Calling reset fixes the following error on shutdown of the nodelet:
+  // terminate called after throwing an instance of
+  // 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::lock_error> >'
+  //     what():  boost: mutex lock failed in pthread_mutex_lock: Invalid argument
+  // Also see https://github.com/ros/ros_comm/issues/720 .
+  sync_inputs_e_.reset();
+  sync_inputs_a_.reset();
 }
 
 void jsk_pcl_ros::DepthImageCreator::subscribe() {
