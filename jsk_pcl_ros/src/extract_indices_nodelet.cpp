@@ -13,7 +13,7 @@
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/o2r other materials provided
+ *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
  *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
@@ -58,6 +58,18 @@ namespace jsk_pcl_ros
     onInitPostProcess();
   }
 
+  ExtractIndices::~ExtractIndices() {
+    // message_filters::Synchronizer needs to be called reset
+    // before message_filters::Subscriber is freed.
+    // Calling reset fixes the following error on shutdown of the nodelet:
+    // terminate called after throwing an instance of
+    // 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::lock_error> >'
+    //     what():  boost: mutex lock failed in pthread_mutex_lock: Invalid argument
+    // Also see https://github.com/ros/ros_comm/issues/720 .
+    sync_.reset();
+    async_.reset();
+  }
+
   void ExtractIndices::subscribe()
   {
     sub_cloud_.subscribe(*pnh_, "input", max_queue_size_);
@@ -92,6 +104,16 @@ namespace jsk_pcl_ros
     pcl_conversions::toPCL(*cloud_msg, *input);
     pcl::PointIndices::Ptr indices (new pcl::PointIndices ());
     pcl_conversions::toPCL(*indices_msg, *indices);
+    
+    // check if input size is bigger than indices size 
+    int32_t data_size = static_cast<int32_t>(input->data.size());
+    int32_t point_step_size = static_cast<int32_t>(input->point_step);
+    int32_t cloud_size = data_size / point_step_size;
+    int32_t indices_size = static_cast<int32_t>(indices->indices.size());
+    if (cloud_size < indices_size){
+        NODELET_ERROR("Input index is out of expected cloud size: %d > %d", indices_size, cloud_size);
+        return;
+    }
 
     // extract pointcloud with indices
     pcl::ExtractIndices<pcl::PCLPointCloud2> extract;

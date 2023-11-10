@@ -27,6 +27,10 @@ import posedetection_msgs.msg
 
 from openravepy import *
 
+# use raw_input for python2 c.f. https://stackoverflow.com/questions/5868506/backwards-compatible-input-calls-in-python
+if hasattr(__builtins__, 'raw_input'):
+    input = raw_input
+
 class VisibilityModel(metaclass.AutoReloader):
     def __init__(self,measurements=None,filename=None,symmetricplane=None,kinbodyfile=None):
         if measurements is not None:
@@ -74,7 +78,7 @@ class VisibilityModel(metaclass.AutoReloader):
         kdtree = pyANN.KDTree(self.measurements/bandwidth)
         sampledists = zeros(samplepoints.shape[0])
         goodpoints = []
-        for i in xrange(samplepoints.shape[0]):
+        for i in range(samplepoints.shape[0]):
             neighs,dists,kball = kdtree.kFRSearchArray(samplepoints[i:(i+1),:],5.0**2,32,0.0001)
             sampledists[i] = sum(exp(-dists[neighs>=0]))
         uniformpoints = samplepoints[sampledists>bandthresh,:]*bandwidth
@@ -86,7 +90,7 @@ class VisibilityModel(metaclass.AutoReloader):
         """rawposes is Nx7"""
         iter = 1
         poses = array(rawposes)
-        indices = range(poses.shape[0])
+        indices = list(range(poses.shape[0]))
         N = poses.shape[0]
         nochange=0
         while N > nsize:
@@ -197,7 +201,7 @@ if __name__=='__main__':
 
     visualizer = OpenRAVEVisualizer(options.kinbodyfile,measurementsfilename=options.measurements,automaticadd=not options.single)
     while True:
-        cmd = raw_input('Enter command (q-quit and save,c-capture): ');
+        cmd = input('Enter command (q-quit and save,c-capture): ');
         if cmd == 'q':
             break
         elif cmd == 'c' and options.single:

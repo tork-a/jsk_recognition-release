@@ -13,7 +13,7 @@
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/o2r other materials provided
+ *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
  *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
@@ -61,6 +61,20 @@ namespace jsk_pcl_ros
   {
     ClusterPointIndicesDecomposer::onInit();
     sort_by_ = "z_axis";
+  }
+
+  ClusterPointIndicesDecomposer::~ClusterPointIndicesDecomposer() {
+    // message_filters::Synchronizer needs to be called reset
+    // before message_filters::Subscriber is freed.
+    // Calling reset fixes the following error on shutdown of the nodelet:
+    // terminate called after throwing an instance of
+    // 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::lock_error> >'
+    //     what():  boost: mutex lock failed in pthread_mutex_lock: Invalid argument
+    // Also see https://github.com/ros/ros_comm/issues/720 .
+    sync_.reset();
+    async_.reset();
+    sync_align_.reset();
+    async_align_.reset();
   }
 
   void ClusterPointIndicesDecomposer::onInit()
@@ -134,21 +148,30 @@ namespace jsk_pcl_ros
     sub_input_.subscribe(*pnh_, "input", 1);
     sub_target_.subscribe(*pnh_, "target", 1);
     if (align_boxes_ && align_boxes_with_plane_) {
-      sync_align_ = boost::make_shared<message_filters::Synchronizer<SyncAlignPolicy> >(queue_size_);
       sub_polygons_.subscribe(*pnh_, "align_planes", 1);
       sub_coefficients_.subscribe(*pnh_, "align_planes_coefficients", 1);
-      sync_align_->connectInput(sub_input_, sub_target_, sub_polygons_, sub_coefficients_);
-      sync_align_->registerCallback(boost::bind(&ClusterPointIndicesDecomposer::extract, this, _1, _2, _3, _4));
-    }
-    else if (use_async_) {
-      async_ = boost::make_shared<message_filters::Synchronizer<ApproximateSyncPolicy> >(queue_size_);
-      async_->connectInput(sub_input_, sub_target_);
-      async_->registerCallback(boost::bind(&ClusterPointIndicesDecomposer::extract, this, _1, _2));
+      if (use_async_) {
+        async_align_ = boost::make_shared<message_filters::Synchronizer<ApproximateSyncAlignPolicy> >(queue_size_);
+        async_align_->connectInput(sub_input_, sub_target_, sub_polygons_, sub_coefficients_);
+        async_align_->registerCallback(boost::bind(&ClusterPointIndicesDecomposer::extract, this, _1, _2, _3, _4));
+      }
+      else {
+        sync_align_ = boost::make_shared<message_filters::Synchronizer<SyncAlignPolicy> >(queue_size_);
+        sync_align_->connectInput(sub_input_, sub_target_, sub_polygons_, sub_coefficients_);
+        sync_align_->registerCallback(boost::bind(&ClusterPointIndicesDecomposer::extract, this, _1, _2, _3, _4));
+      }
     }
     else {
-      sync_ = boost::make_shared<message_filters::Synchronizer<SyncPolicy> >(queue_size_);
-      sync_->connectInput(sub_input_, sub_target_);
-      sync_->registerCallback(boost::bind(&ClusterPointIndicesDecomposer::extract, this, _1, _2));
+      if (use_async_) {
+        async_ = boost::make_shared<message_filters::Synchronizer<ApproximateSyncPolicy> >(queue_size_);
+        async_->connectInput(sub_input_, sub_target_);
+        async_->registerCallback(boost::bind(&ClusterPointIndicesDecomposer::extract, this, _1, _2));
+      }
+      else {
+        sync_ = boost::make_shared<message_filters::Synchronizer<SyncPolicy> >(queue_size_);
+        sync_->connectInput(sub_input_, sub_target_);
+        sync_->registerCallback(boost::bind(&ClusterPointIndicesDecomposer::extract, this, _1, _2));
+      }
     }
   }
 
@@ -415,10 +438,12 @@ namespace jsk_pcl_ros
    const jsk_recognition_msgs::PolygonArrayConstPtr& planes,
    const jsk_recognition_msgs::ModelCoefficientsArrayConstPtr& coefficients,
    geometry_msgs::Pose& center_pose_msg,
-   jsk_recognition_msgs::BoundingBox& bounding_box)
+   jsk_recognition_msgs::BoundingBox& bounding_box,
+   bool& publish_tf)
   {
     bounding_box.header = header;
     if (segmented_cloud->points.size() == 0) {
+      publish_tf = false;
       NODELET_WARN("segmented cloud size is zero");
       return true;
     }
@@ -737,8 +762,9 @@ namespace jsk_pcl_ros
         pcl::removeNaNFromPointCloud(*segmented_cloud, *segmented_cloud, nan_indices);
       }
 
+      bool publish_tf = publish_tf_;
       bool successp = computeCenterAndBoundingBox(
-        segmented_cloud, input->header, planes, coefficients, pose_msg, bounding_box);
+        segmented_cloud, input->header, planes, coefficients, pose_msg, bounding_box, publish_tf);
       if (!successp) {
         return;
       }
@@ -752,7 +778,7 @@ namespace jsk_pcl_ros
       center_pose_array.poses.push_back(pose_msg);
       bounding_box.header.frame_id = target_frame;
       bounding_box_array.boxes.push_back(bounding_box);
-      if (publish_tf_) {
+      if (publish_tf) {
         tf::Transform transform;
         transform.setOrigin(tf::Vector3(pose_msg.position.x, pose_msg.position.y, pose_msg.position.z));
         transform.setRotation(tf::createIdentityQuaternion());
