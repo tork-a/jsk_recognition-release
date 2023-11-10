@@ -1,0 +1,12 @@
+Source: ros-melodic-sound-classification
+Section: misc
+Priority: optional
+Maintainer: Naoya Yamaguchi <708yamaguchi@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-melodic-catkin, ros-melodic-catkin-virtualenv, ros-melodic-message-generation, ros-melodic-roslaunch <!nocheck>, ros-melodic-rostest <!nocheck>
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-melodic-sound-classification
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-melodic-audio-capture, ros-melodic-audio-to-spectrogram, ros-melodic-image-view, ros-melodic-jsk-recognition-msgs, ros-melodic-jsk-topic-tools, ros-melodic-message-filters, ros-melodic-message-runtime, ros-melodic-rospy, ros-melodic-sensor-msgs
+Description: The sound_classification package
