@@ -1,0 +1,34 @@
+From daa083a076932f4ef8c903f2cbaa7f8c9a04215c Mon Sep 17 00:00:00 2001
+From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Date: Fri, 10 Nov 2023 17:51:23 +0900
+Subject: [PATCH] skip ml_classifiers which is not released on noetic
+
+---
+ package.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/package.xml b/package.xml
+index ae0ea1345..bb602b614 100644
+--- a/package.xml
++++ b/package.xml
+@@ -38,7 +38,7 @@
+   <build_depend>boost</build_depend>
+   <build_depend>rosboost_cfg</build_depend>
+   <build_depend>cv_bridge</build_depend>
+-  <build_depend>ml_classifiers</build_depend>
++  <!-- <build_depend>ml_classifiers</build_depend> -->
+   <build_depend>diagnostic_updater</build_depend>
+   <build_depend>diagnostic_msgs</build_depend>
+   <build_depend>jsk_topic_tools</build_depend>
+@@ -87,7 +87,7 @@
+   <exec_depend>rosboost_cfg</exec_depend>
+   <exec_depend>rviz</exec_depend>
+   <exec_depend>cv_bridge</exec_depend>
+-  <exec_depend>ml_classifiers</exec_depend>
++  <!-- <exec_depend>ml_classifiers</exec_depend> -->
+   <exec_depend>diagnostic_updater</exec_depend>
+   <exec_depend>diagnostic_msgs</exec_depend>
+   <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-sklearn</exec_depend>
+-- 
+2.17.1
+
