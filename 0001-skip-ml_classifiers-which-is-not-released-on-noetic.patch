@@ -1,0 +1,25 @@
+From 76763514660a64897920203947c685c447d6ecc6 Mon Sep 17 00:00:00 2001
+From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Date: Fri, 10 Nov 2023 17:50:35 +0900
+Subject: [PATCH] skip ml_classifiers which is not released on noetic
+
+---
+ package.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package.xml b/package.xml
+index 1e867ea4a..2483682fd 100644
+--- a/package.xml
++++ b/package.xml
+@@ -59,7 +59,7 @@
+   <exec_depend>kdl_conversions</exec_depend>
+   <exec_depend>kdl_parser</exec_depend>
+   <exec_depend>laser_assembler</exec_depend>
+-  <exec_depend>ml_classifiers</exec_depend>
++  <!-- <exec_depend>ml_classifiers</exec_depend> -->
+   <exec_depend>moveit_core</exec_depend>
+   <exec_depend>moveit_ros_perception</exec_depend>
+   <exec_depend>nav_msgs</exec_depend>
+-- 
+2.17.1
+
