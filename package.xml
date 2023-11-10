@@ -72,7 +72,7 @@
   <exec_depend>libuvc_camera</exec_depend>
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>mk</exec_depend>
-  <exec_depend>ml_classifiers</exec_depend>
+  <!-- <exec_depend>ml_classifiers</exec_depend> -->
   <exec_depend>nodelet</exec_depend>
   <exec_depend>opencv_apps</exec_depend>
   <exec_depend>openni2_launch</exec_depend>
