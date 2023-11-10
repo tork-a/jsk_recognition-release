@@ -1,0 +1,23 @@
+<launch>
+  <arg name="gui" default="true"/>
+
+  <include file="$(find jsk_pcl_ros_utils)/sample/include/play_rosbag_shelf_bin.xml"/>
+  <arg name="MANAGER" value="/right_hand_camera/right_hand_camera_nodelet_manager" />
+
+  <node name="normal_estimation_omp"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl/NormalEstimationOMP $(arg MANAGER)"
+        respawn="true">
+    <remap from="~input" to="/right_hand_camera/depth_registered/points"/>
+    <rosparam>
+      k_search: 15
+      radius_search: 0.0
+    </rosparam>
+  </node>
+
+  <group if="$(arg gui)">
+    <node name="rviz"
+          pkg="rviz" type="rviz"
+          args="-d $(find jsk_pcl_ros)/sample/rviz/normal_estimation_omp.rviz"/>
+  </group>
+</launch>
