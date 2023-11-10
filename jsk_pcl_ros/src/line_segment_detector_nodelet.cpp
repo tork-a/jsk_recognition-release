@@ -13,7 +13,7 @@
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/o2r other materials provided
+ *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
  *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
@@ -221,6 +221,7 @@ namespace jsk_pcl_ros
       coefficients.push_back(segments[i]->getCoefficients());
       std_msgs::ColorRGBA color = jsk_topic_tools::colorCategory20(i);
       color.a = 1.0;
+      marker.colors.push_back(color);
       marker.colors.push_back(color);
     }
 

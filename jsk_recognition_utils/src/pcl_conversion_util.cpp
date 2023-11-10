@@ -13,7 +13,7 @@
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/o2r other materials provided
+ *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
  *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
@@ -51,7 +51,7 @@ namespace jsk_recognition_utils
     for (int y=0; y < range_image.height; y++) {
       for (int x=0; x<range_image.width; x++) {
         pcl::PointWithRange rangePt = range_image.getPoint(x,y);
-        if (!pcl_isfinite(rangePt.range)) {
+        if (!std::isfinite(rangePt.range)) {
           pcl::visualization::FloatImageUtils::getColorForFloat(
             rangePt.range, r, g, b);
         }
