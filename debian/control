@@ -1,0 +1,12 @@
+Source: ros-noetic-sound-classification
+Section: misc
+Priority: optional
+Maintainer: Naoya Yamaguchi <708yamaguchi@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-noetic-catkin, ros-noetic-catkin-virtualenv, ros-noetic-message-generation, ros-noetic-roslaunch <!nocheck>, ros-noetic-rostest <!nocheck>
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-noetic-sound-classification
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-audio-capture, ros-noetic-audio-to-spectrogram, ros-noetic-image-view, ros-noetic-jsk-recognition-msgs, ros-noetic-jsk-topic-tools, ros-noetic-message-filters, ros-noetic-message-runtime, ros-noetic-rospy, ros-noetic-sensor-msgs
+Description: The sound_classification package
