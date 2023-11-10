@@ -13,7 +13,7 @@
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/o2r other materials provided
+ *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
  *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
@@ -82,10 +82,13 @@ namespace jsk_pcl_ros
     ros::Publisher pub_config_;
     ros::Subscriber sub_;
     boost::shared_ptr<dynamic_reconfigure::Server<Config> > srv_;
+    double duration_transform_timeout_;
     double min_x_;
     double max_x_;
     double min_y_;
     double max_y_;
+    double min_z_;
+    double max_z_;
     int resolution_x_;
     int resolution_y_;
     int max_queue_size_;
