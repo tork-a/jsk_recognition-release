@@ -11,14 +11,14 @@ import itertools, pkg_resources, sys
 from distutils.version import LooseVersion
 if LooseVersion(pkg_resources.get_distribution("chainer").version) >= LooseVersion('7.0.0') and \
    sys.version_info.major == 2:
-   print('''Please install chainer <= 7.0.0:
+   print('''Please install chainer < 7.0.0:
 
     sudo pip install chainer==6.7.0
 
 c.f https://github.com/jsk-ros-pkg/jsk_recognition/pull/2485
 ''', file=sys.stderr)
    sys.exit(1)
-if [p for p in list(itertools.chain(*[pkg_resources.find_distributions(_) for _ in sys.path])) if "cupy-" in p.project_name ] == []:
+if [p for p in list(itertools.chain(*[pkg_resources.find_distributions(_) for _ in sys.path])) if "cupy-" in p.project_name or "cupy" == p.project_name ] == []:
    print('''Please install CuPy
 
     sudo pip install cupy-cuda[your cuda version]
@@ -26,7 +26,7 @@ i.e.
     sudo pip install cupy-cuda91
 
 ''', file=sys.stderr)
-   sys.exit(1)
+   # sys.exit(1)
 import chainer
 import chainer.functions as F
 from chainer import cuda
@@ -304,7 +304,7 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
                     z = float(depth_img[int(joint_pos['y'])][int(joint_pos['x'])])
                 else:
                     continue
-                if np.isnan(z):
+                if np.isnan(z) or z <= 0:
                     continue
                 x = (joint_pos['x'] - cx) * z / fx
                 y = (joint_pos['y'] - cy) * z / fy
@@ -494,10 +494,10 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
             vec = chainer.cuda.to_gpu(vec)
         norm = xp.sqrt(xp.sum(vec ** 2, axis=1)) + eps
         vec = vec / norm[:, None]
-        start_end = zip(np.round(np.mgrid[np.vstack(target_candidates_A)[:, 1].reshape(-1, 1):np.vstack(target_candidates_B)[:, 1].reshape(-1, 1):(mid_num * 1j)]).astype(np.int32),
+        start_end = list(zip(np.round(np.mgrid[np.vstack(target_candidates_A)[:, 1].reshape(-1, 1):np.vstack(target_candidates_B)[:, 1].reshape(-1, 1):(mid_num * 1j)]).astype(np.int32),
                         np.round(np.mgrid[np.vstack(target_candidates_A)[:, 0].reshape(-1, 1):np.vstack(
                             target_candidates_B)[:, 0].reshape(-1, 1):(mid_num * 1j)]).astype(np.int32),
-                        np.concatenate([[[index] * mid_num for i in range(len(c))] for index, c in zip(target_indices, target_candidates_B)]),)
+                        np.concatenate([[[index] * mid_num for i in range(len(c))] for index, c in zip(target_indices, target_candidates_B)]),))
 
         v = score_mid[np.concatenate(
             start_end, axis=1).tolist()].reshape(-1, mid_num, 2)
@@ -706,7 +706,7 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
                         cv2.fillConvexPoly(roi2, polygon - np.array([left, top]), color)
                         cv2.addWeighted(roi, 0.4, roi2, 0.6, 0.0, dst=roi)
                     #
-                    offset += len(self.index2handname) / 2
+                    offset += int(len(self.index2handname) / 2)
 
         return img
 
@@ -812,8 +812,8 @@ class PeoplePoseEstimation2D(ConnectionBasedTransport):
         for i, heatmap in enumerate(hmaps):
             conf = heatmap.max()
             cds = np.array(np.where(heatmap==conf)).flatten().tolist()
-            py = cy + cds[0] - hand_bgr.shape[0] / 2
-            px = cx + cds[1] - hand_bgr.shape[1] / 2
+            py = cy + cds[0] - int(hand_bgr.shape[0] / 2)
+            px = cx + cds[1] - int(hand_bgr.shape[1] / 2)
             keypoints.append({'x': px, 'y': py, 'score': conf,
                               'limb': self.index2handname[idx_offset+i]})
         return keypoints
