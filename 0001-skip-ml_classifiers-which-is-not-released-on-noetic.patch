@@ -1,4 +1,4 @@
-From 5248a3a43592561924256a2c6bc5da572125642a Mon Sep 17 00:00:00 2001
+From c672197d2305428f8c00c0dbc43296ccc5a1e6cb Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Fri, 10 Nov 2023 17:52:04 +0900
 Subject: [PATCH] skip ml_classifiers which is not released on noetic
@@ -8,11 +8,11 @@ Subject: [PATCH] skip ml_classifiers which is not released on noetic
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/package.xml b/package.xml
-index df0e7f170..0d5c8cb9f 100644
+index d1ea9cae9..e6a5423d9 100644
 --- a/package.xml
 +++ b/package.xml
-@@ -69,7 +69,7 @@
-   <exec_depend>libcmt</exec_depend>
+@@ -72,7 +72,7 @@
+   <exec_depend>libuvc_camera</exec_depend>
    <exec_depend>message_runtime</exec_depend>
    <exec_depend>mk</exec_depend>
 -  <exec_depend>ml_classifiers</exec_depend>
