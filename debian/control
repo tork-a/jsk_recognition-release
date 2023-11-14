@@ -1,0 +1,12 @@
+Source: ros-noetic-jsk-recognition
+Section: misc
+Priority: optional
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-noetic-catkin
+Homepage: http://ros.org/wiki/jsk_recognition
+Standards-Version: 3.9.2
+
+Package: ros-noetic-jsk-recognition
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-checkerboard-detector, ros-noetic-imagesift, ros-noetic-jsk-pcl-ros, ros-noetic-jsk-perception, ros-noetic-jsk-recognition-msgs, ros-noetic-jsk-recognition-utils, ros-noetic-resized-image-transport
+Description: Metapackage that contains recognition package for jsk-ros-pkg
