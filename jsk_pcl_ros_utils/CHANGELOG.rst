@@ -2,6 +2,9 @@
 Changelog for package jsk_pcl_ros_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.17 (2023-11-14)
+-------------------
+
 1.2.16 (2023-11-10)
 -------------------
 * [jsk_pcl_ros_utils] use nodelet logger and fix logging info (`#2774 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2774>`_)
