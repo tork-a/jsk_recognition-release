@@ -2,6 +2,9 @@
 Changelog for package jsk_recognition_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.17 (2023-11-14)
+-------------------
+
 1.2.16 (2023-11-10)
 -------------------
 * [feature] VQA using Large-Scale Vision and Language model (`#2730 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2730>`_)

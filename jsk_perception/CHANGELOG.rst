@@ -2,6 +2,9 @@
 Changelog for package jsk_perception
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.17 (2023-11-14)
+-------------------
+
 1.2.16 (2023-11-10)
 -------------------
 * [AWS] use logdebug when detect face (`#2766 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2766>`_)
