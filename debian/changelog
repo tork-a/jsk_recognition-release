@@ -1,10 +1,10 @@
-ros-noetic-jsk-perception (1.2.17-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.17-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 13 Nov 2023 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.16-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.16-1buster) buster; urgency=high
 
   * [AWS] use logdebug when detect face (#2766 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2766>)
   * Aws face update (#2744 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2744>)
@@ -92,7 +92,7 @@ ros-noetic-jsk-perception (1.2.16-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 09 Nov 2023 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.15-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.15-1buster) buster; urgency=high
 
   * check if template/ direcotry exists, because this is auto-generated directory (#2537 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2537>)
     
@@ -103,7 +103,7 @@ ros-noetic-jsk-perception (1.2.15-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 09 Oct 2020 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.14-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.14-1buster) buster; urgency=high
 
   * remove packages=['jsk_perceptoin'] (#2536 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2536>)
   * fix
@@ -112,7 +112,7 @@ ros-noetic-jsk-perception (1.2.14-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 08 Oct 2020 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.13-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.13-1buster) buster; urgency=high
 
   * fix logic to check chainer version (#2534 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2534>)
     
@@ -122,17 +122,17 @@ ros-noetic-jsk-perception (1.2.13-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 07 Oct 2020 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.12-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.12-1buster) buster; urgency=high
 
   * check if chainer is found before check version (#2533 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2533>)
     
-      * fixes http://build.ros.org/job/Nbin_uF64__jsk_perception__ubuntu_focal_amd64__binary/1/console and http://build.ros.org/job/Mbin_uB64__jsk_perception__ubuntu_bionic_amd64__binary/91/console
+      * fixes http://build.ros.org/job/Nbin_uF64__jsk_perception__ubuntu_buster_amd64__binary/1/console and http://build.ros.org/job/Mbin_uB64__jsk_perception__ubuntu_bionic_amd64__binary/91/console
     
   * Contributors: Kei Okada
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 02 Oct 2020 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.11-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.11-1buster) buster; urgency=high
 
   * Add FCN8sDepthPredictionConcatFirst model to fcn_depth_prediction.py (#2481 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2481>)
     
@@ -442,7 +442,7 @@ ros-noetic-jsk-perception (1.2.11-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 30 Sep 2020 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.10-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.10-1buster) buster; urgency=high
 
   * Fix error on setting device number other than 0 on multiple gpu env. (#2412 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2412>)
     
@@ -461,19 +461,19 @@ ros-noetic-jsk-perception (1.2.10-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 26 Mar 2019 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.9-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.9-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 22 Feb 2019 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.8-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.8-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 21 Feb 2019 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.7-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.7-1buster) buster; urgency=high
 
   * [jsk_perception/ssd_object_detector.py] Add header for publishing result image (#2367 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2367> )
   * [jsk_perception] Add deep_sort_tracker_node.py (#2351 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2351> )
@@ -545,7 +545,7 @@ ros-noetic-jsk-perception (1.2.7-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 13 Feb 2019 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.6-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.6-1buster) buster; urgency=high
 
   * Add hand pose detection (#2324 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2324>)
     * [jsk_perception/people_pose_estimation.py] Fixed for cpu inference
@@ -618,7 +618,7 @@ ros-noetic-jsk-perception (1.2.6-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 01 Nov 2018 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.5-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.5-1buster) buster; urgency=high
 
   * Add MaskRCNNInstanceSegmentation node (#2257 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2257>)
     * MaskRCNN node publishes label imgs that have class and instance id
@@ -648,14 +648,14 @@ ros-noetic-jsk-perception (1.2.5-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 08 Apr 2018 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.4-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.4-1buster) buster; urgency=high
 
   * jsk_perception: install template dir (#2222 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2222>)
   * Contributors: Yuki Furuta
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 11 Jan 2018 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.3-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.3-1buster) buster; urgency=high
 
   * jsk_perception: add face_pose_estimation (#2207 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2207>)
   * jsk_perception: people_pose_estimation_2d.py: add option not to synchronize camera info
@@ -707,7 +707,7 @@ ros-noetic-jsk-perception (1.2.3-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 22 Nov 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.2-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.2-1buster) buster; urgency=high
 
   * add bg_label in apply_context_to_label_probability (#2175 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2175>)
     * Remove no need ~use_topic flag
@@ -720,7 +720,7 @@ ros-noetic-jsk-perception (1.2.2-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sat, 22 Jul 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.1-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.1-1buster) buster; urgency=high
 
   * If chainer is not installed, use v2 (#2167 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2167>)
     * chainer can not install in ros build firm
@@ -728,7 +728,7 @@ ros-noetic-jsk-perception (1.2.1-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 14 Jul 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.2.0-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.2.0-1buster) buster; urgency=high
 
   * [jsk_perception][people_pose_estimation_2d] publish image only when subscribed (#2164 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2164>)
   * Enhance PeoplePoseEstimation2D (#2162 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2162>)
@@ -747,7 +747,7 @@ ros-noetic-jsk-perception (1.2.0-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 14 Jul 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.1.3-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.1.3-1buster) buster; urgency=high
 
   * [jsk_perception] add FCN-based classifiers (#2142 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2142>)
     * make FCN-based classifiers pass test
@@ -792,7 +792,7 @@ ros-noetic-jsk-perception (1.1.3-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 06 Jul 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.1.2-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.1.2-1buster) buster; urgency=high
 
   * label_image_decomposer.py: Faster and better visualization of segmentation (#2109 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2109> )
   * fcn_object_segmentation.{launch,py} : Support .npz in chainermodel (https://github.com/jsk-ros-pkg/jsk_recognition/commit/19d7a2ac09bab2b470a8b06e0ed98d072b4958d4)
@@ -901,33 +901,33 @@ ros-noetic-jsk-perception (1.1.2-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 15 Jun 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.1.1-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.1.1-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 03 Mar 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.1.0-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.1.0-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 08 Feb 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.0.4-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.0.4-1buster) buster; urgency=high
 
   * package.xml: python-chainer -> python-chainer-pip (#2014 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2014>)
   * Contributors: Kentaro Wada
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 08 Feb 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.0.3-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.0.3-1buster) buster; urgency=high
 
   * Fix cpp format of consensus_tracking(#1999 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1999>)
   * Contributors: Kentaro Wada
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 07 Feb 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.0.2-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.0.2-1buster) buster; urgency=high
 
   * fix typo in vgg16_object_recognition (#1990 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1990>)
   * No longer required python-gdown dependency
@@ -941,14 +941,14 @@ ros-noetic-jsk-perception (1.0.2-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 11 Jan 2017 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.0.1-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.0.1-1buster) buster; urgency=high
 
   * jsk_perception/node_scripts/speak_when_label_found.py: Speak when target labels are found ( #1923 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1923>)
   * Contributors: Kentaro Wada
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 12 Dec 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (1.0.0-1focal) focal; urgency=high
+ros-noetic-jsk-perception (1.0.0-1buster) buster; urgency=high
 
   * Fix for kinetic build (#1943 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1943>)
   * Add missing packages(jsk_data, opencv_apps) to find_package (#1984 <https://github.com/jsk-ros-pkg/jsk_recognition/pull/1984>)
@@ -969,14 +969,14 @@ ros-noetic-jsk-perception (1.0.0-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 11 Dec 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.29-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.29-1buster) buster; urgency=high
 
   * CMakeLists.txt: install nodelet.xml: for get to care about install process in #1929
   * Contributors: Kei Okada
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sat, 29 Oct 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.28-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.28-1buster) buster; urgency=high
 
   * [Major Release] Copy jsk_pcl_ros/srv and  jsk_perception/srv files to jsk_recognition_msgs (#1914 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1914> )
   * Copy deprecated srv files to jsk_recognition_msgs
@@ -989,7 +989,7 @@ ros-noetic-jsk-perception (0.3.28-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 28 Oct 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.27-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.27-1buster) buster; urgency=high
 
   * Fix rosdep installation for jsk_perception with pip (#1883 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1883> )
     * Fix pip installation with libleveldb-dev installation
@@ -1007,7 +1007,7 @@ ros-noetic-jsk-perception (0.3.27-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 28 Oct 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.26-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.26-1buster) buster; urgency=high
 
   * Stop using deprecated jsk_topic_tools/log_utils.h (#1933 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1933>)
   * Fix unparsable nodelet pluginlib xml file (#1929 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1929>)
@@ -1056,20 +1056,20 @@ ros-noetic-jsk-perception (0.3.26-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 26 Oct 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.25-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.25-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 15 Sep 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.24-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.24-1buster) buster; urgency=high
 
   * CMakeLists.txt : jsk_data is required in build time, used in scripts/install_sample_data
   * Contributors: Kei Okada
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 14 Sep 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.23-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.23-1buster) buster; urgency=high
 
   * euslisp/eusmodel_template_gen_utils.l: create directory if tepmlate path is not found
   * CMakeLists.txt : Makefile.slic is no longer used
@@ -1077,7 +1077,7 @@ ros-noetic-jsk-perception (0.3.23-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 13 Sep 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.22-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.22-1buster) buster; urgency=high
 
   * Basically, if the angle is less than 0, just add 180. Likewise if the angle is greater than 180, just subtract by 180. https://github.com/jsk-ros-pkg/jsk_recognition/pull/1593/files#r77976906
   * Sobel operator with higher kernel can give better response https://github.com/jsk-ros-pkg/jsk_recognition/pull/1593#discussion_r77976333
@@ -1287,13 +1287,13 @@ ros-noetic-jsk-perception (0.3.22-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 12 Sep 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.21-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.21-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 14 Apr 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.20-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.20-1buster) buster; urgency=high
 
   * Add sample/test for image_cluster_indices_decomposer.py (#1580 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1580>)
   * Add sample and test for BoundingBoxToRect (#1577 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1577>)
@@ -1343,7 +1343,7 @@ ros-noetic-jsk-perception (0.3.20-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 13 Apr 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.19-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.19-1buster) buster; urgency=high
 
   * remove rosbuild from run/build depend
   * remove dynamic_reconfigure.parameter_generator, which only used for rosbuild
@@ -1351,14 +1351,14 @@ ros-noetic-jsk-perception (0.3.19-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 21 Mar 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.18-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.18-1buster) buster; urgency=high
 
   * jsk_perception/CMakeLists.txt: remove depends to rosbuild
   * Contributors: Kei Okada
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 20 Mar 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.17-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.17-1buster) buster; urgency=high
 
   * remove dynamic_reconfigure.parameter_generator, which only used for rosbuild
   * [jsk_perception] binpack_rect_array.py to enumerate jsk_recognition_msgs/RectArray
@@ -1369,7 +1369,7 @@ ros-noetic-jsk-perception (0.3.17-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sat, 19 Mar 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.16-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.16-1buster) buster; urgency=high
 
   * Merge pull request #1531 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1531> from k-okada/sed_package_xml
     .travis.yml: sed package.xml to use opencv3
@@ -1382,7 +1382,7 @@ ros-noetic-jsk-perception (0.3.16-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 10 Feb 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.15-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.15-1buster) buster; urgency=high
 
   * U and V has strange library options; https://github.com/ros/rosdistro/pull/10436#issuecomment-180763393
   * [jsk_perception] Do not subscribe camera info in calc_flow
@@ -1395,7 +1395,7 @@ ros-noetic-jsk-perception (0.3.15-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 08 Feb 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.14-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.14-1buster) buster; urgency=high
 
   * Merge pull request #1513 from garaemon/bounding-box-to-rect-array
     [jsk_perception] BoundingBoxToRectArray and rect_array_to_image_marker.py
@@ -1530,27 +1530,27 @@ ros-noetic-jsk-perception (0.3.14-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 03 Feb 2016 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.13-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.13-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 18 Dec 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.12-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.12-1buster) buster; urgency=high
 
   * Revert "[jsk_perception] slic as submodule"
   * Contributors: Ryohei Ueda
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 18 Dec 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.11-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.11-1buster) buster; urgency=high
 
   * [jsk_perception] slic as submodule
   * Contributors: Ryohei Ueda
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 17 Dec 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.10-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.10-1buster) buster; urgency=high
 
   * [jsk_perception] Add utils to save images by request or from bagfile
     I sent PR to upstream:
@@ -1571,7 +1571,7 @@ ros-noetic-jsk-perception (0.3.10-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 16 Dec 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.9-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.9-1buster) buster; urgency=high
 
   * [jsk_perception] Test slop with test_topic_published.py
     Depends on https://github.com/jsk-ros-pkg/jsk_common/pull/1254
@@ -1595,7 +1595,7 @@ ros-noetic-jsk-perception (0.3.9-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 13 Dec 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.8-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.8-1buster) buster; urgency=high
 
   * [jsk_perception] Add CATKIN_ENABLE_TESTING if block
   * Use ccache if installed to make it fast to generate object file
@@ -1619,7 +1619,7 @@ ros-noetic-jsk-perception (0.3.8-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 07 Dec 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.7-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.7-1buster) buster; urgency=high
 
   * Use gcc -z defs to check undefined symbols in shared
     objects (jsk_recognitoin_utils, jsk_pcl_ros, jsk_perception).
@@ -1667,19 +1667,19 @@ ros-noetic-jsk-perception (0.3.7-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 18 Nov 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.6-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.6-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 10 Sep 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.5-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.5-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 08 Sep 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.4-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.4-1buster) buster; urgency=high
 
   * Swap doc soft links (to make 'Edit on GitHub' work)
   * ColorizeFloatImage correct image link
@@ -1688,7 +1688,7 @@ ros-noetic-jsk-perception (0.3.4-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 06 Sep 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.3-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.3-1buster) buster; urgency=high
 
   * [jsk_perception] README.md -> readthedocs.org
   * Revert "[jsk_perception] use sphinx for rosdoc"
@@ -1699,7 +1699,7 @@ ros-noetic-jsk-perception (0.3.3-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sat, 05 Sep 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.2-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.2-1buster) buster; urgency=high
 
   * [jsk_perception] Ignore autogenerated files
   * [jsk_perception] Use histograms to compute distance in TabletopColorDifferenceLikelihood
@@ -1707,7 +1707,7 @@ ros-noetic-jsk-perception (0.3.2-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 04 Sep 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.1-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.1-1buster) buster; urgency=high
 
   * [jsk_pcl_ros, jsk_perception] Fix dependency of jsk_recognition_utils for child packages
     like jsk_rviz_plugins
@@ -1715,7 +1715,7 @@ ros-noetic-jsk-perception (0.3.1-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 03 Sep 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.3.0-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.3.0-1buster) buster; urgency=high
 
   * [jsk_perception/CMakeLists.txt] set ROS_PACKAGE_PATH before run roseus using package://
   * [jsk_recognition_utils] Introduce new package jsk_recognition_utils in order to use utility libraries defined in jsk_pcl_ros in jsk_perception
@@ -1723,7 +1723,7 @@ ros-noetic-jsk-perception (0.3.0-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 03 Sep 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.18-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.18-1buster) buster; urgency=high
 
   * [jsk_perception] Do not specify sexp from cmake, just write in file
   * [jsk_perception] Add .gitignore about auto-generated files
@@ -1742,20 +1742,20 @@ ros-noetic-jsk-perception (0.2.18-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 03 Sep 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.17-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.17-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 20 Aug 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.16-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.16-1buster) buster; urgency=high
 
   * [CMakeLists.txt] we can not use rospack within cmake process
   * Contributors: Kei Okada
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 18 Aug 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.15-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.15-1buster) buster; urgency=high
 
   * Merge pull request #1058 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/1058> from garaemon/uncomment-generate-template
     Uncomment generate template
@@ -1765,7 +1765,7 @@ ros-noetic-jsk-perception (0.2.15-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 17 Aug 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.14-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.14-1buster) buster; urgency=high
 
   * [jsk_perception] pub posewithcovariancestamped
   * [jsk_perception] Add nodelet ColorizeFloatImage to colorize generic float image
@@ -1785,7 +1785,7 @@ ros-noetic-jsk-perception (0.2.14-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 12 Aug 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.13-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.13-1buster) buster; urgency=high
 
   * [jsk_perception] Use dynamic_reconfigure in ImageTimeDiff
   * [jsk_perception] Update image_time_diff to use hue/saturation
@@ -1830,7 +1830,7 @@ ros-noetic-jsk-perception (0.2.13-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 10 Jun 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.12-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.12-1buster) buster; urgency=high
 
   * Revert "[jsk_perception/point_pose_extractor] Use OpenCV's matcher class to estimate mathcing"
   * [jsk_perception/point_pose_extractor] Use OpenCV's matcher class to
@@ -1870,14 +1870,14 @@ ros-noetic-jsk-perception (0.2.12-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 03 May 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.11-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.11-1buster) buster; urgency=high
 
   * add encoded points rate
   * Contributors: Kamada Hitoshi
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 12 Apr 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.10-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.10-1buster) buster; urgency=high
 
   * [jsk_perception] add Simple Fisheye to Panorama
   * [jsk_perception] changed order of dynamic reconfigure
@@ -1890,7 +1890,7 @@ ros-noetic-jsk-perception (0.2.10-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 08 Apr 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.9-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.9-1buster) buster; urgency=high
 
   * 0.2.8
   * Update Changelog
@@ -1898,25 +1898,25 @@ ros-noetic-jsk-perception (0.2.9-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sat, 28 Mar 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.8-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.8-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sat, 28 Mar 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.7-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.7-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 25 Mar 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.6-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.6-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 24 Mar 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.5-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.5-1buster) buster; urgency=high
 
   * check target cloud data ifnot invalid
   * Validate image message without image array (width == 0 and height == 0)
@@ -1927,7 +1927,7 @@ ros-noetic-jsk-perception (0.2.5-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 16 Mar 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.4-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.4-1buster) buster; urgency=high
 
   * [jsk_perception] Add simple script to publish image file into ros image
   * Fix license: WillowGarage -> JSK Lab
@@ -1935,7 +1935,7 @@ ros-noetic-jsk-perception (0.2.4-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sat, 07 Mar 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.3-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.3-1buster) buster; urgency=high
 
   * [jsk_pcl_ros, jsk_perception] Move mask image operation to jsk_perception
   * Remove rosbuild files
@@ -1945,7 +1945,7 @@ ros-noetic-jsk-perception (0.2.3-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 01 Feb 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.2-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.2-1buster) buster; urgency=high
 
   * [jsk_perception] add posedetection_msgs
   * add image_view2 to depends
@@ -1953,19 +1953,19 @@ ros-noetic-jsk-perception (0.2.2-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.1-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.1-1buster) buster; urgency=high
 
   * add image_view2 to depends
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.2.0-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.2.0-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 28 Jan 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.34-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.34-1buster) buster; urgency=high
 
   * [jsk_perception, checkerboard_detector] Remove dependency to jsk_pcl_ros
   * [jsk_pcl_ros, jsk_perception] Move find_object_on_plane from
@@ -1984,7 +1984,7 @@ ros-noetic-jsk-perception (0.1.34-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 28 Jan 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.33-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.33-1buster) buster; urgency=high
 
   * [jsk_perception] FindObjectOnPlane: Find object on plane from 2d binary
     image and 3-d polygon coefficients
@@ -2062,13 +2062,13 @@ ros-noetic-jsk-perception (0.1.33-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 23 Jan 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.32-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.32-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 11 Jan 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.31-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.31-1buster) buster; urgency=high
 
   * [jsk_perception] Add parameter to select seed policy (definitely
     back/foreground or probably back/foreground) to GrabCut
@@ -2080,20 +2080,20 @@ ros-noetic-jsk-perception (0.1.31-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 07 Jan 2015 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.30-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.30-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 23 Dec 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.29-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.29-1buster) buster; urgency=high
 
   * added some more parameters for detection
   * Contributors: Yu Ohara
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 23 Dec 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.28-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.28-1buster) buster; urgency=high
 
   * added param to set threshold of best_Windoq
   * Add dynamic reconfigure to background substraction
@@ -2109,7 +2109,7 @@ ros-noetic-jsk-perception (0.1.28-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 16 Dec 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.27-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.27-1buster) buster; urgency=high
 
   * added some algolism to get best window
   * changed codes to pub center of object
@@ -2119,13 +2119,13 @@ ros-noetic-jsk-perception (0.1.27-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 08 Dec 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.26-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.26-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sat, 22 Nov 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.25-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.25-1buster) buster; urgency=high
 
   * kalmanfilter
   * changed name
@@ -2135,7 +2135,7 @@ ros-noetic-jsk-perception (0.1.25-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 20 Nov 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.24-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.24-1buster) buster; urgency=high
 
   * servicecall
   * Use intrinsicMatrix instead of projectionMatrix to specify 3x3 matrix(K)
@@ -2153,7 +2153,7 @@ ros-noetic-jsk-perception (0.1.24-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 14 Nov 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.23-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.23-1buster) buster; urgency=high
 
   * Install nodelet executables
   * mend spell-miss in launch
@@ -2164,14 +2164,14 @@ ros-noetic-jsk-perception (0.1.23-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 08 Oct 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.22-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.22-1buster) buster; urgency=high
 
   * Disable ssl when calling git
   * Contributors: Ryohei Ueda
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 23 Sep 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.21-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.21-1buster) buster; urgency=high
 
   * Add more diagnostics to OrganizedMultiPlaneSegmentation and fix global
     hook for ConvexHull
@@ -2179,66 +2179,66 @@ ros-noetic-jsk-perception (0.1.21-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 19 Sep 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.20-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.20-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Tue, 16 Sep 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.19-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.19-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 14 Sep 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.18-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.18-1buster) buster; urgency=high
 
   * add git to build_depend of jsk_libfreenect2
   * Contributors: Ryohei Ueda
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 12 Sep 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.17-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.17-1buster) buster; urgency=high
 
   * add mk/git to build_depend
   * Contributors: Kei Okada
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sat, 06 Sep 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.16-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.16-1buster) buster; urgency=high
 
   * do not use rosrun in the script of jsk_perception/src/eusmodel_template_gen.sh
   * Contributors: Ryohei Ueda
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 03 Sep 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.14-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.14-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 31 Jul 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.13-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.13-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 28 Jul 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.12-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.12-1buster) buster; urgency=high
 
   * fix to use catkin to link rospack
   * Contributors: Kei Okada, Dave Coleman
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 23 Jul 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.11-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.11-1buster) buster; urgency=high
 
   * jsk_perception does not depends on pcl, but depends on eigen and tf
   * Contributors: Ryohei Ueda
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 07 Jul 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.10-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.10-1buster) buster; urgency=high
 
   * adding oriented_gradient_node
   * add calc_flow program to calc optical flow
@@ -2246,13 +2246,13 @@ ros-noetic-jsk-perception (0.1.10-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sun, 06 Jul 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.9-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.9-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Mon, 30 Jun 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.8-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.8-1buster) buster; urgency=high
 
   * initialize _img_ptr at first
   * convert color image to GRAY
@@ -2264,26 +2264,26 @@ ros-noetic-jsk-perception (0.1.8-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Sat, 28 Jun 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.7-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.7-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 30 May 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.6-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.6-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 29 May 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.5-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.5-1buster) buster; urgency=high
 
   * add service interface with sensor_msgs/SetCameraInfo to camshiftdemo, not only mouse selection.
   * Contributors: Ryohei Ueda
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Wed, 28 May 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.4-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.4-1buster) buster; urgency=high
 
   * add sparse_image program to jsk_percepton
   * make edge_detector nodelet class
@@ -2293,19 +2293,19 @@ ros-noetic-jsk-perception (0.1.4-1focal) focal; urgency=high
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 24 Apr 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.3-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.3-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Fri, 11 Apr 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.2-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.2-1buster) buster; urgency=high
 
 
 
  -- Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>  Thu, 10 Apr 2014 15:00:00 -0000
 
-ros-noetic-jsk-perception (0.1.1-1focal) focal; urgency=high
+ros-noetic-jsk-perception (0.1.1-1buster) buster; urgency=high
 
   * catkinize jsk_perception
   * check initialization in check_subscribers function
