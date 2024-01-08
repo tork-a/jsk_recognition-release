@@ -1,3 +1,37 @@
+## jsk_recognition (noetic) - 1.2.17-2
+
+The packages in the `jsk_recognition` repository were released into the `noetic` distro by running `/usr/bin/bloom-release jsk_recognition --track noetic --rosdistro noetic --skip-pip` on `Mon, 08 Jan 2024 07:27:59 -0000`
+
+These packages were released:
+- `audio_to_spectrogram`
+- `checkerboard_detector`
+- `imagesift`
+- `jsk_pcl_ros`
+- `jsk_pcl_ros_utils`
+- `jsk_perception`
+- `jsk_recognition`
+- `jsk_recognition_msgs`
+- `jsk_recognition_utils`
+- `resized_image_transport`
+- `sound_classification`
+
+Version of package(s) in repository `jsk_recognition`:
+
+- upstream repository: https://github.com/jsk-ros-pkg/jsk_recognition
+- release repository: https://github.com/tork-a/jsk_recognition-release.git
+- rosdistro version: `1.2.17-1`
+- old version: `1.2.17-1`
+- new version: `1.2.17-2`
+
+Versions of tools used:
+
+- bloom version: `0.11.2`
+- catkin_pkg version: `0.5.2`
+- rosdep version: `0.22.1`
+- rosdistro version: `0.8.3`
+- vcstools version: `0.1.42`
+
+
 ## jsk_recognition (noetic) - 1.2.17-1
 
 The packages in the `jsk_recognition` repository were released into the `noetic` distro by running `/usr/bin/bloom-release jsk_recognition --rosdistro noetic --track noetic --skip-pip` on `Tue, 14 Nov 2023 11:07:27 -0000`
