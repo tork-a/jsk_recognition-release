@@ -1,0 +1,28 @@
+From 055f4e399e9b1e095d3b886357bc49349b50b3d3 Mon Sep 17 00:00:00 2001
+From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Date: Mon, 8 Jan 2024 16:16:54 +0900
+Subject: [PATCH] debian/rules: remove dh_shlibsdeps
+
+close https://github.com/jsk-ros-pkg/jsk_recognition/issues/2810
+---
+ debian/rules | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/debian/rules b/debian/rules
+index 14c964063..eb6a74b5d 100755
+--- a/debian/rules
++++ b/debian/rules
+@@ -56,8 +56,8 @@ override_dh_shlibdeps:
+ 	# In case we're installing to a non-standard location, look for a setup.sh
+ 	# in the install tree that was dropped by catkin, and source it.  It will
+ 	# set things like CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
+-	if [ -f "/opt/ros/noetic/setup.sh" ]; then . "/opt/ros/noetic/setup.sh"; fi && \
+-	dh_shlibdeps -l$(CURDIR)/debian/ros-noetic-sound-classification//opt/ros/noetic/lib/
++	# if [ -f "/opt/ros/noetic/setup.sh" ]; then . "/opt/ros/noetic/setup.sh"; fi && \
++	# dh_shlibdeps -l$(CURDIR)/debian/ros-noetic-sound-classification//opt/ros/noetic/lib/
+ 
+ override_dh_auto_install:
+ 	# In case we're installing to a non-standard location, look for a setup.sh
+-- 
+2.17.1
+
