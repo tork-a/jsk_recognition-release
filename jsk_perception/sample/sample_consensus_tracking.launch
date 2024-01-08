@@ -1,0 +1,37 @@
+<launch>
+
+  <arg name="gui" default="true" />
+  <arg name="launch_manager" default="true" />
+
+  <param name="/use_sim_time" value="true" />
+  <node name="rosbag_play"
+        pkg="rosbag" type="play"
+        args="$(find jsk_perception)/sample/data/2016-10-15-23-21-42_moving_bottle.bag --clock --loop">
+  </node>
+
+  <arg name="INPUT_IMAGE" default="/camera/rgb/image_rect_color" />
+  <arg name="MANAGER" default="sample_manager" />
+  <node name="$(arg MANAGER)"
+        pkg="nodelet" type="nodelet" args="manager"
+        if="$(arg launch_manager)"
+        output="screen" />
+
+  <node name="consensus_tracking"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_perception/ConsensusTracking $(arg MANAGER)"
+        respawn="true">
+    <remap from="~input" to="$(arg INPUT_IMAGE)"/>
+    <remap from="~input/polygon" to="$(arg INPUT_IMAGE)/screenrectangle" />
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </node>
+
+  <group if="$(arg gui)">
+    <node name="rqt_gui"
+          pkg="rqt_gui" type="rqt_gui"
+          args="--perspective-file $(find jsk_perception)/sample/config/sample_consensus_tracking.perspective">
+    </node>
+  </group>
+
+</launch>
