@@ -2,16 +2,19 @@ cmake_minimum_required(VERSION 2.8.3)
 project(jsk_recognition_utils)
 
 # Use ccache if installed to make it fast to generate object files
-find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif(CCACHE_FOUND)
+if (${CMAKE_VERSION} VERSION_LESS 3.4)
+  find_program(CCACHE_FOUND ccache)
+  if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+  endif()
+endif()
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
   dynamic_reconfigure
   jsk_recognition_msgs
   pcl_ros
@@ -52,7 +55,7 @@ generate_dynamic_reconfigure_options(
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES jsk_recognition_utils
- CATKIN_DEPENDS jsk_recognition_msgs pcl_ros visualization_msgs message_runtime
+ CATKIN_DEPENDS cv_bridge jsk_recognition_msgs pcl_ros visualization_msgs message_runtime
 )
 
 # Cythonize pyx files
