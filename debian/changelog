@@ -1,0 +1,682 @@
+ros-noetic-audio-to-spectrogram (1.2.18-1focal) focal; urgency=high
+
+  * [audio_to_spectrogram] Fix when to use catkin_install_python (#2859 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2859>)
+    Conditional branch introduced by https://github.com/jsk-ros-pkg/jsk_recognition/pull/2743 is wrong
+  * Add missing ros_environment dependency to package.xml (#2837)
+    
+    Any package that evaluates ROS_VERSION, ROS_DISTRO or ROS_PYTHON_VERSION
+    at build time should add ros_environment as a dependency.
+  * Contributors: Jeremy Kolb, Shingo Kitagawa, Shun Hasegawa, Yoshiki Obinata, Yuki Furuta
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 09 May 2025 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.17-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 13 Nov 2023 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.16-1focal) focal; urgency=high
+
+  * [audio_to_spectrogram, sound_classification] Add data_to_spectrogram (#2767 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2767>)
+  * [audio_to_spectrogram] Enable to change spectrum plot from rosparam (#2760 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2760>)
+  * Fix audio to spectrogram plot and add test (#2764 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2764>)
+  * [audio_to_spectrogram] Add AudioAmplitudePlot node to visualize audio amplitude #2657 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2657> (#2755 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2755>)
+  * [audio_to_spectrogram] Enable publishing frequency vs amplitude plot (#2654 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2654>)
+  * use catkin_install_python to install python scripts under node_scripts/ scripts/ (#2743 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2743>)
+  * Contributors: Kei Okada, Naoto Tsukamoto, Shingo Kitagawa, Shun Hasegawa, Yoshiki Obinata, Iory Yanokura
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 09 Nov 2023 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.15-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 09 Oct 2020 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.14-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 08 Oct 2020 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.13-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 07 Oct 2020 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.12-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 02 Oct 2020 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.11-1focal) focal; urgency=high
+
+  * Fix for  noetic / 20.04 (#2507 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2507>)
+    
+      * upgrade package.xml to format=3, migrate to noetic with ROS_PYTHON_VERSION=2/3, use multiple ROS distro strategy http://wiki.ros.org/noetic/Migration
+    
+  * [audio_to_spectrogram] Enable multi channel input by retrieving single channel data (#2514 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2514>)
+  * [audio_to_spectrogram] Add README for usage and scripts interface (#2498 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2498>)
+    
+      * [audio_to_spectrogram] Add README for usage and scripts interface
+      * [audio_to_spectrogram] add args to audio_to_spectrogram.launch
+      * [audio_to_spectrogram] Add arg to run audio_capture
+    
+  * Convert audio data to spectrogram (#2478 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2478>)
+    
+      * Make audio_to_spectrogram as ROS package
+    
+  * Contributors: Kei Okada, Naoya Yamaguchi, Shingo Kitagawa
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 30 Sep 2020 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.10-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 26 Mar 2019 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.9-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 22 Feb 2019 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.8-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 21 Feb 2019 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.7-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 13 Feb 2019 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.6-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 01 Nov 2018 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.5-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 08 Apr 2018 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.4-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 11 Jan 2018 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.3-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 22 Nov 2017 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.2-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 22 Jul 2017 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.1-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 15 Jul 2017 11:44:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.2.0-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 15 Jul 2017 00:14:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.1.3-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 06 Jul 2017 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.1.2-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 15 Jun 2017 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.1.1-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 03 Mar 2017 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.1.0-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 09 Feb 2017 13:50:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.0.4-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 09 Feb 2017 13:48:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.0.3-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 07 Feb 2017 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.0.2-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 11 Jan 2017 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.0.1-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 12 Dec 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (1.0.0-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 11 Dec 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.29-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 29 Oct 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.28-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 29 Oct 2016 07:34:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.27-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 28 Oct 2016 15:14:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.26-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 26 Oct 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.25-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 15 Sep 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.24-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 14 Sep 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.23-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 13 Sep 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.22-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 12 Sep 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.21-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 14 Apr 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.20-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 13 Apr 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.19-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 21 Mar 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.18-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 20 Mar 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.17-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 19 Mar 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.16-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 10 Feb 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.15-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 08 Feb 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.14-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 03 Feb 2016 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.13-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 19 Dec 2015 08:35:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.12-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 19 Dec 2015 05:44:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.11-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 17 Dec 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.10-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 16 Dec 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.9-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 13 Dec 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.8-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 07 Dec 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.7-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 18 Nov 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.6-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 10 Sep 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.5-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 08 Sep 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.4-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 06 Sep 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.3-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 05 Sep 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.2-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 04 Sep 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.1-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 04 Sep 2015 08:12:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.3.0-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 04 Sep 2015 03:37:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.18-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 03 Sep 2015 16:07:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.17-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 20 Aug 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.16-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 18 Aug 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.15-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 17 Aug 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.14-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 12 Aug 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.13-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 10 Jun 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.12-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 03 May 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.11-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 12 Apr 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.10-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 08 Apr 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.9-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 28 Mar 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.7-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 25 Mar 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.6-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 24 Mar 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.5-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 16 Mar 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.4-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 07 Mar 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.3-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 01 Feb 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.2-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 29 Jan 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.2.0-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 29 Jan 2015 03:20:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.34-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 29 Jan 2015 02:53:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.33-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 23 Jan 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.32-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 11 Jan 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.31-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 07 Jan 2015 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.30-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 24 Dec 2014 07:45:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.29-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 24 Dec 2014 03:43:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.28-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 16 Dec 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.27-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 08 Dec 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.26-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 22 Nov 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.25-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 20 Nov 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.24-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 14 Nov 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.23-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 08 Oct 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.22-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 23 Sep 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.21-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 19 Sep 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.20-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Tue, 16 Sep 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.19-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 14 Sep 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.18-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 12 Sep 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.17-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 06 Sep 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.16-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 03 Sep 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.15-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 25 Aug 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.14-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 31 Jul 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.13-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 28 Jul 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.12-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 23 Jul 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.11-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 07 Jul 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.10-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sun, 06 Jul 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.9-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Mon, 30 Jun 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.8-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Sat, 28 Jun 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.7-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 30 May 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.6-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 29 May 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.5-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 28 May 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.4-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 24 Apr 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.3-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Fri, 11 Apr 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.2-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Thu, 10 Apr 2014 15:00:00 -0000
+
+ros-noetic-audio-to-spectrogram (0.1.1-1focal) focal; urgency=high
+
+
+
+ -- Naoya Yamaguchi <yamaguchi@jsk.imi.i.u-tokyo.ac.jp>  Wed, 09 Apr 2014 15:00:00 -0000
+
+
