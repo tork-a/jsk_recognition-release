@@ -2,6 +2,34 @@
 Changelog for package sound_classification
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.18 (2025-05-10)
+-------------------
+* fix for ROS-O (`#2861 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2861>`_)
+* add std_mgs build_depends, to fix obase-build (maybe and others)
+  ```
+  2025-01-03T00:50:28.1527201Z -- BUILD_SHARED_LIBS is on
+  2025-01-03T00:50:28.2543412Z -- Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
+  2025-01-03T00:50:28.2568008Z -- Could NOT find std_msgs (missing: std_msgs_DIR)
+  2025-01-03T00:50:28.2569369Z -- Could not find the required component 'std_msgs'. The following CMake error indicates that you\
+  either need to install the package with the same name or change your environment so that it can be found.
+  2025-01-03T00:50:28.2584407Z CMake Error at /usr/share/catkin/cmake/catkinConfig.cmake:82 (find_package):
+  2025-01-03T00:50:28.2585511Z   Could not find a package configuration file provided by "std_msgs" with any
+  2025-01-03T00:50:28.2586306Z   of the following names:
+  2025-01-03T00:50:28.2586595Z
+  2025-01-03T00:50:28.2586761Z     std_msgsConfig.cmake
+  2025-01-03T00:50:28.2587107Z     std_msgs-config.cmake
+  2025-01-03T00:50:28.2587292Z
+  2025-01-03T00:50:28.2587515Z   Add the installation prefix of "std_msgs" to CMAKE_PREFIX_PATH or set
+  2025-01-03T00:50:28.2588032Z   "std_msgs_DIR" to a directory containing one of the above files.  If
+  2025-01-03T00:50:28.2588533Z   "std_msgs" provides a separate development package or SDK, be sure it has
+  2025-01-03T00:50:28.2588941Z   been installed.
+  2025-01-03T00:50:28.2589180Z Call Stack (most recent call first):
+  2025-01-03T00:50:28.2589472Z   CMakeLists.txt:4 (find_package)
+  2025-01-03T00:50:28.2589660Z
+  ```
+* [ros-o] sound_classification: use Python3 and requirements.in.obase (`#2853 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2853>`_)
+* Contributors: Kei Okada, Shingo Kitagawa, Yoshiki Obinata, Yuki Furuta
+
 1.2.17 (2023-11-14)
 -------------------
 
