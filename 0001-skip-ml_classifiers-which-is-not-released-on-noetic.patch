@@ -1,4 +1,4 @@
-From 3e40f8cd1e23225623e6dea39fef9d4e434925c5 Mon Sep 17 00:00:00 2001
+From b7903c173d90092be4fee7be969edbdc3313ff45 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Fri, 10 Nov 2023 17:51:23 +0900
 Subject: [PATCH] skip ml_classifiers which is not released on noetic
@@ -8,7 +8,7 @@ Subject: [PATCH] skip ml_classifiers which is not released on noetic
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/package.xml b/package.xml
-index 2b9b7f361..2ca57a626 100644
+index 8e3d487bb..0663a54ca 100644
 --- a/package.xml
 +++ b/package.xml
 @@ -38,7 +38,7 @@
@@ -20,7 +20,7 @@ index 2b9b7f361..2ca57a626 100644
    <build_depend>diagnostic_updater</build_depend>
    <build_depend>diagnostic_msgs</build_depend>
    <build_depend>jsk_topic_tools</build_depend>
-@@ -87,7 +87,7 @@
+@@ -88,7 +88,7 @@
    <exec_depend>rosboost_cfg</exec_depend>
    <exec_depend>rviz</exec_depend>
    <exec_depend>cv_bridge</exec_depend>
