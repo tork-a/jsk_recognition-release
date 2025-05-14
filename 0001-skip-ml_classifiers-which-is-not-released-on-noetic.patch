@@ -1,4 +1,4 @@
-From 86292cd2dbbed8f1a6c990741576bd62f4b568ff Mon Sep 17 00:00:00 2001
+From 6c5f646fc576b5c1e2d0eaaa428b39dbdaa6aef7 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Fri, 10 Nov 2023 17:50:35 +0900
 Subject: [PATCH] skip ml_classifiers which is not released on noetic
@@ -8,10 +8,10 @@ Subject: [PATCH] skip ml_classifiers which is not released on noetic
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/package.xml b/package.xml
-index 40507cb90..ad491ac93 100644
+index bbb883350..b880346a5 100644
 --- a/package.xml
 +++ b/package.xml
-@@ -61,7 +61,7 @@
+@@ -63,7 +63,7 @@
    <exec_depend>kdl_conversions</exec_depend>
    <exec_depend>kdl_parser</exec_depend>
    <exec_depend>laser_assembler</exec_depend>
