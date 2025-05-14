@@ -1,4 +1,4 @@
-From f41faeb43fff888d5aa60bccbf3a0b5a614154a2 Mon Sep 17 00:00:00 2001
+From e8e039693a484faa2a8b906bed4e9763679f71f0 Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Mon, 8 Jan 2024 16:16:54 +0900
 Subject: [PATCH] debian/rules: remove dh_shlibsdeps
