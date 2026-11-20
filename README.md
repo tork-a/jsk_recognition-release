@@ -1,3 +1,40 @@
+## jsk_recognition (kilted) - 2.0.0-1
+
+The packages in the `jsk_recognition` repository were released into the `kilted` distro by running `/usr/bin/bloom-release --rosdistro kilted --track kilted --new-track --override-release-repository-url https://github.com/tork-a/jsk_recognition-release.git jsk_recognition` on `Fri, 20 Nov 2026 04:31:08 -0000`
+
+These packages were released:
+- `jsk_recognition_msgs`
+- `jsk_recognition_utils`
+
+These packages were explicitly ignored:
+- `audio_to_spectrogram`
+- `checkerboard_detector`
+- `depth_image_publisher`
+- `imagesift`
+- `jsk_pcl_ros`
+- `jsk_pcl_ros_utils`
+- `jsk_perception`
+- `jsk_recognition`
+- `resized_image_transport`
+- `sound_classification`
+
+Version of package(s) in repository `jsk_recognition`:
+
+- upstream repository: https://github.com/jsk-ros-pkg/jsk_recognition
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `2.0.0-1`
+
+Versions of tools used:
+
+- bloom version: `0.14.4`
+- catkin_pkg version: `1.1.1`
+- rosdep version: `0.27.0`
+- rosdistro version: `1.1.0`
+- vcstools version: `0.1.42`
+
+
 ## jsk_recognition (jazzy) - 2.0.0-1
 
 The packages in the `jsk_recognition` repository were released into the `jazzy` distro by running `/usr/bin/bloom-release --rosdistro jazzy --track jazzy --new-track --override-release-repository-url https://github.com/tork-a/jsk_recognition-release.git jsk_recognition` on `Fri, 20 Nov 2026 04:28:18 -0000`
