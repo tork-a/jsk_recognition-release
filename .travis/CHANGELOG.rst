@@ -2,6 +2,28 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.29 (2026-11-18)
+-------------------
+* travis.sh: add ppa:git-core/ppa only for git older than 2.18, with retries (`#463 <https://github.com/jsk-ros-pkg/jsk_travis/issues/463>`_)
+
+  * Improve Git PPA addition with retry logic
+  * travis.sh: ppa:git-core/ppa only for git older than 2.18, with retries
+
+* Contributors: Kei Okada
+
+0.5.28 (2025-07-22)
+-------------------
+* [noetic] switch to new key / fix CI (`#459 <https://github.com/jsk-ros-pkg/jsk_travis/issues/459>`_)
+
+  * [docker_kinetic][docker_melodic] fix Error: Access to the path '/home/runner/work/jsk_travis/jsk_travis' is denied.
+  * downgrade checkout
+  * fix mkdir: cannot create directory ‘.travis’: Permission denied
+  * Fix ubuntu container and checkout version for fixing glibc issue
+  * switch to new apt key in travis.sh
+  * [noetic] switch to new key
+
+* Contributors: Yoshiki Obinata
+
 0.5.27 (2024-01-15)
 -------------------
 * Use snapshot of rosdep list on melodic (`#457 <https://github.com/jsk-ros-pkg/jsk_travis/issues/457>`_)
