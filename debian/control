@@ -1,0 +1,12 @@
+Source: ros-kilted-jsk-recognition-msgs
+Section: misc
+Priority: optional
+Maintainer: "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-kilted-ament-cmake, ros-kilted-builtin-interfaces, ros-kilted-geometry-msgs, ros-kilted-jsk-footstep-msgs, ros-kilted-pcl-msgs, ros-kilted-ros-environment, ros-kilted-rosidl-default-generators, ros-kilted-sensor-msgs, ros-kilted-std-msgs, ros-kilted-ros-workspace, ros-kilted-rosidl-typesupport-fastrtps-c, ros-kilted-rosidl-typesupport-fastrtps-cpp
+Homepage: https://jsk-docs.readthedocs.io/projects/jsk_recognition/en/latest/jsk_recognition_msgs
+Standards-Version: 3.9.2
+
+Package: ros-kilted-jsk-recognition-msgs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-kilted-builtin-interfaces, ros-kilted-geometry-msgs, ros-kilted-jsk-footstep-msgs, ros-kilted-pcl-msgs, ros-kilted-rosidl-default-runtime, ros-kilted-sensor-msgs, ros-kilted-std-msgs, ros-kilted-ros-workspace
+Description: ROS messages for jsk_pcl_ros and jsk_perception.
