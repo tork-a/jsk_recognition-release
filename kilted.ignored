@@ -1,0 +1,10 @@
+audio_to_spectrogram
+checkerboard_detector
+depth_image_publisher
+imagesift
+jsk_pcl_ros
+jsk_pcl_ros_utils
+jsk_perception
+jsk_recognition
+resized_image_transport
+sound_classification
