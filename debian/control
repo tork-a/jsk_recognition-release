@@ -1,0 +1,12 @@
+Source: ros-kilted-jsk-recognition-utils
+Section: misc
+Priority: optional
+Maintainer: "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), cython3, libboost-all-dev, libeigen3-dev, libjsoncpp-dev, libopencv-dev, libpcl-dev, libyaml-cpp-dev, python3-setuptools, ros-kilted-ament-cmake, ros-kilted-ament-cmake-gtest <!nocheck>, ros-kilted-geometry-msgs, ros-kilted-image-geometry, ros-kilted-jsk-recognition-msgs, ros-kilted-pcl-conversions, ros-kilted-pcl-msgs, ros-kilted-rclcpp, ros-kilted-ros-environment, ros-kilted-sensor-msgs, ros-kilted-std-msgs, ros-kilted-visualization-msgs, ros-kilted-ros-workspace
+Homepage: https://jsk-docs.readthedocs.io/projects/jsk_recognition/en/latest/jsk_recognition_utils
+Standards-Version: 3.9.2
+
+Package: ros-kilted-jsk-recognition-utils
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libboost-all-dev, libeigen3-dev, libjsoncpp-dev, libopencv-dev, libpcl-apps1.14, libpcl-common1.14, libpcl-dev, libpcl-features1.14, libpcl-filters1.14, libpcl-io1.14, libpcl-kdtree1.14, libpcl-keypoints1.14, libpcl-ml1.14, libpcl-octree1.14, libpcl-outofcore1.14, libpcl-people1.14, libpcl-recognition1.14, libpcl-registration1.14, libpcl-sample-consensus1.14, libpcl-search1.14, libpcl-segmentation1.14, libpcl-stereo1.14, libpcl-surface1.14, libpcl-tracking1.14, libpcl-visualization1.14, libyaml-cpp-dev, python3-shapely, python3-skimage, ros-kilted-geometry-msgs, ros-kilted-image-geometry, ros-kilted-jsk-recognition-msgs, ros-kilted-pcl-conversions, ros-kilted-pcl-msgs, ros-kilted-rclcpp, ros-kilted-sensor-msgs, ros-kilted-std-msgs, ros-kilted-visualization-msgs, ros-kilted-ros-workspace
+Description: C++ library about sensor model, geometrical modeling and perception.
