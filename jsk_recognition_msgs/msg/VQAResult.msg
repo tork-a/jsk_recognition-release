@@ -1,1 +1,0 @@
-jsk_recognition_msgs/QuestionAndAnswerText[] result
