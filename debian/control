@@ -1,0 +1,12 @@
+Source: ros-lyrical-jsk-recognition-utils
+Section: misc
+Priority: optional
+Maintainer: "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), cython3, libboost-all-dev, libeigen3-dev, libjsoncpp-dev, libopencv-dev, libpcl-dev, libyaml-cpp-dev, python3-setuptools, ros-lyrical-ament-cmake, ros-lyrical-ament-cmake-gtest <!nocheck>, ros-lyrical-geometry-msgs, ros-lyrical-image-geometry, ros-lyrical-jsk-recognition-msgs, ros-lyrical-pcl-conversions, ros-lyrical-pcl-msgs, ros-lyrical-rclcpp, ros-lyrical-ros-environment, ros-lyrical-sensor-msgs, ros-lyrical-std-msgs, ros-lyrical-visualization-msgs, ros-lyrical-ros-workspace
+Homepage: https://jsk-docs.readthedocs.io/projects/jsk_recognition/en/latest/jsk_recognition_utils
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-jsk-recognition-utils
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libboost-all-dev, libeigen3-dev, libjsoncpp-dev, libopencv-dev, libpcl-apps1.15, libpcl-common1.15, libpcl-dev, libpcl-features1.15, libpcl-filters1.15, libpcl-io1.15, libpcl-kdtree1.15, libpcl-keypoints1.15, libpcl-ml1.15, libpcl-octree1.15, libpcl-outofcore1.15, libpcl-people1.15, libpcl-recognition1.15, libpcl-registration1.15, libpcl-sample-consensus1.15, libpcl-search1.15, libpcl-segmentation1.15, libpcl-stereo1.15, libpcl-surface1.15, libpcl-tracking1.15, libpcl-visualization1.15, libyaml-cpp-dev, python3-shapely, python3-skimage, ros-lyrical-geometry-msgs, ros-lyrical-image-geometry, ros-lyrical-jsk-recognition-msgs, ros-lyrical-pcl-conversions, ros-lyrical-pcl-msgs, ros-lyrical-rclcpp, ros-lyrical-sensor-msgs, ros-lyrical-std-msgs, ros-lyrical-visualization-msgs, ros-lyrical-ros-workspace
+Description: C++ library about sensor model, geometrical modeling and perception.
