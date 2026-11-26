@@ -27,17 +27,3 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
---------------------------------------------------------------------------------
-
-The BSD 3-Clause License above is the license of most of the packages in this
-repository. Each package has its own LICENSE file, which is authoritative for
-that package; see it for the details. In particular:
-
-* imagesift: GNU Lesser General Public License, version 3 or later
-  (imagesift/LICENSE)
-* jsk_libfreenect2: GNU General Public License, version 2
-  (jsk_libfreenect2/LICENSE)
-* jsk_recognition_utils: BSD 3-Clause, with third-party code under the MIT
-  License and the Apache License, Version 2.0, listed in
-  jsk_recognition_utils/LICENSE (texts in LICENSE.MIT and LICENSE.Apache-2.0)
