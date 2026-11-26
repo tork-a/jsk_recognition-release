@@ -1,0 +1,21 @@
+<launch>
+
+  <arg name="gui" default="true" />
+
+  <include file="$(find jsk_pcl_ros_utils)/sample/include/play_rosbag_shelf_bin.xml"/>
+  <arg name="MANAGER" value="/right_hand_camera/right_hand_camera_nodelet_manager" />
+
+  <node name="colorize_height_2d_mapping"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_pcl_utils/ColorizeHeight2DMapping $(arg MANAGER)"
+        respawn="true" >
+    <remap from="~input" to="/right_hand_camera/depth_registered/points"/>
+  </node>
+
+  <group if="$(arg gui)">
+    <node name="rviz"
+          pkg="rviz" type="rviz"
+          args="-d $(find jsk_pcl_ros_utils)/sample/config/sample_colorize_height_2d_mapping.rviz"/>
+  </group>
+
+</launch>
