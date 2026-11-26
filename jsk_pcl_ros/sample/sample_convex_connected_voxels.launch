@@ -1,0 +1,39 @@
+<launch>
+  <arg name="INPUT_CLOUD" />
+  <arg name="MANAGER" default="nodelet_manager" />
+  <arg name="launch_manager" default="true" />
+
+  <node name="$(arg MANAGER)"
+        pkg="nodelet" type="nodelet"
+        args="manager" output="screen"
+        if="$(arg launch_manager)" />
+
+  <node name="sample_supervoxel_segmentation"
+      type="nodelet" pkg="nodelet"
+      args="load jsk_pcl/SupervoxelSegmentation $(arg MANAGER)">
+    <remap from="~input" to="$(arg INPUT_CLOUD)" />
+    <rosparam>
+      color_importance: 0.2
+      spatial_importance: 0.4
+      normal_importance: 1.0
+      voxel_resolution: 0.01
+      seed_resolution: 0.1
+    </rosparam>
+  </node>
+  <node name="sample_convex_connected_voxels"
+      type="nodelet" pkg="nodelet"
+      args="load jsk_pcl/ConvexConnectedVoxels $(arg MANAGER)"
+      respawn="true" >
+    <remap from="~input/indices" to="sample_supervoxel_segmentation/output/indices" />
+    <remap from="~input/cloud" to="sample_supervoxel_segmentation/output/cloud" />
+  </node>
+  <node name="sample_cpi_decomposer"
+      type="nodelet" pkg="nodelet"
+      args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg MANAGER)">
+    <remap from="~input" to="sample_supervoxel_segmentation/output/cloud" />
+    <remap from="~target" to="sample_convex_connected_voxels/output/indices"/>
+    <rosparam>
+      queue_size: 1000
+    </rosparam>
+  </node>
+</launch>
