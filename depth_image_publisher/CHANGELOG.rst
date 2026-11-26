@@ -2,6 +2,11 @@
 Changelog for package depth_image_publisher
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.1 (2026-11-26)
+------------------
+* Use SPDX license identifiers matching the LICENSE files in package.xml (`#2909 <https://github.com/jsk-ros-pkg/jsk_recognition/issues/2909>`_)
+* Contributors: Kei Okada
+
 2.0.0 (2026-11-20)
 ------------------
 
