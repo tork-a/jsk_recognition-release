@@ -1,0 +1,12 @@
+Source: ros-jazzy-jsk-recognition-utils
+Section: misc
+Priority: optional
+Maintainer: "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), cython3, libboost-all-dev, libeigen3-dev, libjsoncpp-dev, libopencv-dev, libpcl-dev, libyaml-cpp-dev, python3-setuptools, ros-jazzy-ament-cmake, ros-jazzy-ament-cmake-gtest <!nocheck>, ros-jazzy-geometry-msgs, ros-jazzy-image-geometry, ros-jazzy-jsk-recognition-msgs, ros-jazzy-pcl-conversions, ros-jazzy-pcl-msgs, ros-jazzy-rclcpp, ros-jazzy-ros-environment, ros-jazzy-sensor-msgs, ros-jazzy-std-msgs, ros-jazzy-visualization-msgs, ros-jazzy-ros-workspace
+Homepage: https://jsk-docs.readthedocs.io/projects/jsk_recognition/en/latest/jsk_recognition_utils
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-jsk-recognition-utils
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libboost-all-dev, libeigen3-dev, libjsoncpp-dev, libopencv-dev, libpcl-apps1.13, libpcl-common1.13, libpcl-dev, libpcl-features1.13, libpcl-filters1.13, libpcl-io1.13, libpcl-kdtree1.13, libpcl-keypoints1.13, libpcl-ml1.13, libpcl-octree1.13, libpcl-outofcore1.13, libpcl-people1.13, libpcl-recognition1.13, libpcl-registration1.13, libpcl-sample-consensus1.13, libpcl-search1.13, libpcl-segmentation1.13, libpcl-stereo1.13, libpcl-surface1.13, libpcl-tracking1.13, libpcl-visualization1.13, libyaml-cpp-dev, python3-shapely, python3-skimage, ros-jazzy-geometry-msgs, ros-jazzy-image-geometry, ros-jazzy-jsk-recognition-msgs, ros-jazzy-pcl-conversions, ros-jazzy-pcl-msgs, ros-jazzy-rclcpp, ros-jazzy-sensor-msgs, ros-jazzy-std-msgs, ros-jazzy-visualization-msgs, ros-jazzy-ros-workspace
+Description: C++ library about sensor model, geometrical modeling and perception.
